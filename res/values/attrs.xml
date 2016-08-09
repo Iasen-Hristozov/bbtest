@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <declare-styleable name="Title">
+   <attr name="text" format="string"/>
+   <attr name="color" format="color"/>
+   <attr name="textSize" format="dimension"/>
+   <attr name="lineSize" format="dimension"/>
+   
+   </declare-styleable>   
+</resources>

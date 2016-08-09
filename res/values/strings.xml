@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <string name="app_name">BooksBag</string>
+   <string name="hello_world">Hello world!</string>
+   <string name="action_settings">Settings</string>
+   <string name="title_book_detail">Book Detail</string>
+   <string name="et_title">Title</string>
+   <string name="lbl_authors">Authors</string>
+   <string name="lbl_author">Author</string>
+   <string name="lbl_description">Description</string>
+   <string name="lbl_category">Category</string>
+   <string name="hnt_description">Description</string>
+   <string name="title_activity_main">MainActivity</string>
+   <string name="title_activity_edi_book1">EdiBook1Activity</string>
+   <string name="done">DONE</string>
+   <string name="cancel">Discard</string>
+   <string name="add_new">Add new</string>
+
+</resources>
