@@ -50,12 +50,12 @@ public class Title extends LinearLayout
          line.setBackgroundColor(valueColor);
          android.view.ViewGroup.LayoutParams params = line.getLayoutParams();
       // Changes the height and width to the specified *pixels*
-//         if(lineSize > 0)
-//         {
+         if(lineSize > 0)
+         {
             params.height = lineSize;
             params.width = LayoutParams.MATCH_PARENT;
             line.setLayoutParams(params);
-//         }
+         }
             
 
 
