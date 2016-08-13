@@ -27,10 +27,6 @@ public class DBAdapter
    private static final String TABLE_BOOKS = "books";
    private static final String TABLE_FIELDS = "fields";
    private static final String TABLE_BOOK_FIELDS = "book_fields";
-	private static final String TABLE_SCHOOLS = "schools";
-	private static final String TABLE_CLASSES = "classes";
-	private static final String TABLE_SERVICES = "services";
-	private static final String TABLE_MODELS = "models";
 	private static final String TABLE_PRESENCES = "presences";
 	private static final int DATABASE_VERSION = 1;
 
@@ -134,19 +130,19 @@ public class DBAdapter
 	private final Context context;
 	private DBOpenHelper dbHelper;
 
-   public final static int FLD_AUT = 1,
+   public final static int FLD_AUTHOR = 1,
 //                            FLD_AUT2 = 2,
 //                            FLD_AUT3 = 3,
-                           FLD_SRS = 2,
-                           FLD_CTG = 3,
-                           FLD_LNG = 4,
-                           FLD_PBL = 5,
-                           FLD_PBL_LCT = 6,
-                           FLD_STS = 7,
-                           FLD_RTN = 8,
-                           FLD_FMT = 9,
-                           FLD_LCT = 10,
-                           FLD_CND = 11;
+                           FLD_SERIE = 2,
+                           FLD_CATEGORY = 3,
+                           FLD_LANGUAGE = 4,
+                           FLD_PUBLISHER = 5,
+                           FLD_PUBLICATION_LOCATION = 6,
+                           FLD_STATUS = 7,
+                           FLD_RATING = 8,
+                           FLD_FORMAT = 9,
+                           FLD_LOCATION = 10,
+                           FLD_CONDITION = 11;
 
    public final static int ORD_TTL = 1,
                            ORD_AUT = 2;
@@ -210,7 +206,7 @@ public class DBAdapter
             query = "b." + KEY_ID + ", b." + KEY_TTL + ", GROUP_CONCAT(f." + KEY_NM + ") AS authors "
                   + "FROM " + TABLE_BOOKS + " AS b LEFT JOIN " + TABLE_BOOK_FIELDS + " AS bf ON bf." + KEY_BK_ID + " = " + "b." + KEY_ID
                   + " LEFT JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-                  + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUT
+                  + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUTHOR
                   + " GROUP BY b." + KEY_ID
                   + " ORDER BY b." + KEY_TTL;
          break;
@@ -219,7 +215,7 @@ public class DBAdapter
             query = "b." + KEY_ID + ", b." + KEY_TTL + ", GROUP_CONCAT(f." + KEY_NM + ") AS authors "
                   + "FROM " + TABLE_BOOKS + " AS b LEFT JOIN " + TABLE_BOOK_FIELDS + " AS bf ON bf." + KEY_BK_ID + " = " + "b." + KEY_ID
                   + " LEFT JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-                  + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUT
+                  + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUTHOR
                   + " GROUP BY b." + KEY_ID
                   + " ORDER BY authors";
          break;

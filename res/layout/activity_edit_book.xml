@@ -148,6 +148,7 @@
 
       <com.discworld.booksbag.dto.MultiSpinner
          android:id="@+id/multi_spinner"
+         style="?android:attr/spinnerStyle"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_gravity="center_horizontal"

@@ -184,7 +184,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
    private void addAuthor(LinearLayout llAuthors)
    {
-      Field fldAuthor = new Field(DBAdapter.FLD_AUT);
+      Field fldAuthor = new Field(DBAdapter.FLD_AUTHOR);
       oBook.alFields.add(fldAuthor);
       addAuthorFld(llAuthors, fldAuthor);
    }
