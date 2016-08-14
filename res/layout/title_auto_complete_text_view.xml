@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:custom="http://schemas.android.com/apk/res/com.discworld.booksbag"
    android:id="@+id/ll_parent"
    android:layout_width="match_parent"
    android:layout_height="wrap_content"
    android:orientation="vertical">
 
-   <TextView
-      android:id="@+id/tv_title"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/et_title"
-      android:textAppearance="?android:attr/textAppearanceMedium"
-      android:textColor="@color/colorBlue" />
+<!--    <TextView -->
+<!--       android:id="@+id/tv_title" -->
+<!--       android:layout_width="wrap_content" -->
+<!--       android:layout_height="wrap_content" -->
+<!--       android:text="@string/et_title" -->
+<!--       android:textAppearance="?android:attr/textAppearanceMedium" -->
+<!--       android:textColor="@color/colorBlue" /> -->
 
-   <LinearLayout
-      android:id="@+id/ll_line"
+<!--    <LinearLayout -->
+<!--       android:id="@+id/ll_line" -->
+<!--       android:layout_width="match_parent" -->
+<!--       android:layout_height="1dp" -->
+<!--       android:background="@color/colorBlue" -->
+<!--       android:orientation="vertical" > -->
+<!--    </LinearLayout> -->
+
+   <com.discworld.booksbag.Title
+      android:id="@+id/title1"
       android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:background="@color/colorBlue"
-      android:orientation="vertical" >
-   </LinearLayout>
+      android:layout_height="wrap_content"
+      custom:lineSize="1dp"
+      custom:text="Title"
+      custom:color="@color/colorBlue" >
+   </com.discworld.booksbag.Title>
 
    <AutoCompleteTextView
       android:id="@+id/autoCompleteTextView1"
@@ -28,7 +38,6 @@
       android:ems="10"
       android:text="AutoCompleteTextView" >
 
-      <requestFocus />
    </AutoCompleteTextView>
 
 </LinearLayout>

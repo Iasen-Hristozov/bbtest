@@ -146,6 +146,15 @@
          android:layout_height="wrap_content"
          android:src="@drawable/list_divide" />
 
+      <com.discworld.booksbag.TitleAutoCompleteTextView
+         android:id="@+id/titleAutoCompleteTextView1"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         custom:text="ttttaa"
+         custom:lineSize="1dp"
+         custom:color="@color/colorBlue" >
+      </com.discworld.booksbag.TitleAutoCompleteTextView>
+
       <com.discworld.booksbag.dto.MultiSpinner
          android:id="@+id/multi_spinner"
          style="?android:attr/spinnerStyle"

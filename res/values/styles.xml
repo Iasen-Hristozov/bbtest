@@ -9,8 +9,7 @@
     <!--<item name="colorAccent">@color/colorAccent</item>-->
 
     <!--<style name="AppTheme" parent="android:Theme.Holo.Light">-->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-
+    <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
     </style>
 
     <style name="AppTheme.NoActionBar">

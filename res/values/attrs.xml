@@ -5,7 +5,8 @@
    <attr name="color" format="color"/>
    <attr name="textSize" format="dimension"/>
    <attr name="lineSize" format="dimension"/>
-   </declare-styleable>   
-   <declare-styleable name="MultiSpinner">
    </declare-styleable>
+   <declare-styleable name="TitleAutoCompleteTextView">
+   </declare-styleable>
+   
 </resources>
