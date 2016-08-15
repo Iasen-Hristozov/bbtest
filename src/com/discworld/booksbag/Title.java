@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 public class Title extends LinearLayout
 {
-
+   TextView title;
+   LinearLayout line;
+   
    public Title(Context context)
    {
       this(context, null);
@@ -39,8 +41,8 @@ public class Title extends LinearLayout
 //         addView(inflater.inflate(R.layout.title, this));
          
          
-         TextView title = (TextView)this.findViewById(R.id.tv_title);
-         LinearLayout line = (LinearLayout)this.findViewById(R.id.ll_line);
+         title = (TextView)this.findViewById(R.id.tv_title);
+         line = (LinearLayout)this.findViewById(R.id.ll_line);
 //         TextView title1 = (TextView) getChildAt(0);
          title.setText(titleText);
          title.setTextColor(valueColor);
@@ -63,6 +65,39 @@ public class Title extends LinearLayout
          // mValue.setBackgroundColor(valueColor);
          // mImage = (ImageView) getChildAt(2);
 //      }
+   }
+   
+   public void setText(String text)
+   {
+      title.setText(text);
+   }
+   
+   public void setTextSize(int textSize)
+   {
+      if(textSize > 0)
+         title.setTextSize(textSize);
+   }
+   
+   public void setColor(int valueColor)
+   {
+      title.setTextColor(valueColor);
+      line.setBackgroundColor(valueColor);
+   }
+   
+   public void setLineSize(int lineSize)
+   {
+      android.view.ViewGroup.LayoutParams params = line.getLayoutParams();
+      if(lineSize > 0)
+      {
+         params.height = lineSize;
+         params.width = LayoutParams.MATCH_PARENT;
+         line.setLayoutParams(params);
+      }
+   }
+   
+   private void init()
+   {
+      
    }
 
 }

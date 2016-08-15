@@ -150,9 +150,10 @@
          android:id="@+id/titleAutoCompleteTextView1"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         custom:text="ttttaa"
+         custom:color="@color/colorBlue"
          custom:lineSize="1dp"
-         custom:color="@color/colorBlue" >
+         custom:text="ttttaa" >
+
       </com.discworld.booksbag.TitleAutoCompleteTextView>
 
       <com.discworld.booksbag.dto.MultiSpinner

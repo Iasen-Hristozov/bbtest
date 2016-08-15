@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
-public class TitleAutoCompleteTextView extends Title
+public class TitleAutoCompleteTextView extends LinearLayout
 {
 
    public TitleAutoCompleteTextView(Context context)
@@ -22,11 +22,11 @@ public class TitleAutoCompleteTextView extends Title
    {
       super(context, attrs);
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TitleAutoCompleteTextView, 0, 0);
-//      String titleText = a.getString(R.styleable.TitleAutoCompleteTextView_text);
+      String titleText = a.getString(R.styleable.TitleAutoCompleteTextView_text);
       
-//      int valueColor = a.getColor(R.styleable.TitleAutoCompleteTextView_color, android.R.color.black);
-//      int textSize = a.getDimensionPixelOffset(R.styleable.TitleAutoCompleteTextView_textSize, 0);
-//      int lineSize = a.getDimensionPixelOffset(R.styleable.TitleAutoCompleteTextView_lineSize, 1);
+      int valueColor = a.getColor(R.styleable.TitleAutoCompleteTextView_color, android.R.color.black);
+      int textSize = a.getDimensionPixelOffset(R.styleable.TitleAutoCompleteTextView_textSize, 0);
+      int lineSize = a.getDimensionPixelOffset(R.styleable.TitleAutoCompleteTextView_lineSize, 1);
       
       a.recycle();
 
@@ -37,6 +37,11 @@ public class TitleAutoCompleteTextView extends Title
       inflater.inflate(R.layout.title_auto_complete_text_view, this, true);
 //      addView(inflater.inflate(R.layout.title, this));
       
+      Title title = (Title)this.findViewById(R.id.title1);
+      title.setText(titleText);
+      title.setColor(valueColor);
+      title.setTextSize(textSize);
+      title.setLineSize(lineSize);
       
 //      TextView title = (TextView)this.findViewById(R.id.tv_title);
 //      LinearLayout line = (LinearLayout)this.findViewById(R.id.ll_line);
