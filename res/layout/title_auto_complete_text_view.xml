@@ -23,13 +23,15 @@
 <!--    </LinearLayout> -->
 
    <com.discworld.booksbag.Title
-      android:id="@+id/title1"
+      android:id="@+id/title"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content" >
+      android:layout_height="wrap_content"
+      custom:text="@string/et_title"
+      custom:color="@color/colorBlue" >
    </com.discworld.booksbag.Title>
 
    <AutoCompleteTextView
-      android:id="@+id/autoCompleteTextView1"
+      android:id="@+id/autoCompleteTextView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:ems="10"

@@ -61,8 +61,8 @@ public class BookDetailActivity extends AppCompatActivity
          // Create the detail fragment and add it to the activity
          // using a fragment transaction.
          Bundle arguments = new Bundle();
-         arguments.putString(BookDetailFragment.ARG_ITEM_ID,
-                             getIntent().getStringExtra(BookDetailFragment.ARG_ITEM_ID));
+//         arguments.putString(BookDetailFragment.ARG_ITEM_ID, getIntent().getStringExtra(BookDetailFragment.ARG_ITEM_ID));
+         arguments.putLong(BookDetailFragment.ARG_ITEM_ID, getIntent().getLongExtra(BookDetailFragment.ARG_ITEM_ID, 0));
          BookDetailFragment fragment = new BookDetailFragment();
          fragment.setArguments(arguments);
          getSupportFragmentManager().beginTransaction()
@@ -74,7 +74,7 @@ public class BookDetailActivity extends AppCompatActivity
    @Override
    public boolean onOptionsItemSelected(MenuItem item)
    {
-      int id = item.getItemId();
+      long id = item.getItemId();
       if (id == android.R.id.home)
       {
          // This ID represents the Home or Up button. In the case of this

@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
+import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dummy.DummyContent;
 
 import java.util.List;
@@ -80,16 +80,18 @@ public class BookListActivity extends AppCompatActivity
 
    private void setupRecyclerView(@NonNull RecyclerView recyclerView)
    {
-      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+//      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.BOOKS));
    }
 
-   public class SimpleItemRecyclerViewAdapter
-         extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>
+   public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>
    {
 
-      private final List<DummyContent.DummyItem> mValues;
+//      private final List<DummyContent.DummyItem> mValues;
+      private final List<Book> mValues;
 
-      public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items)
+//      public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items)
+      public SimpleItemRecyclerViewAdapter(List<Book> items)
       {
          mValues = items;
       }
@@ -97,8 +99,7 @@ public class BookListActivity extends AppCompatActivity
       @Override
       public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
       {
-         View view = LayoutInflater.from(parent.getContext())
-                                   .inflate(R.layout.book_list_content, parent, false);
+         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_list_content, parent, false);
          return new ViewHolder(view);
       }
 
@@ -106,8 +107,8 @@ public class BookListActivity extends AppCompatActivity
       public void onBindViewHolder(final ViewHolder holder, int position)
       {
          holder.mItem = mValues.get(position);
-         holder.mIdView.setText(mValues.get(position).id);
-         holder.mContentView.setText(mValues.get(position).content);
+         holder.mIdView.setText(String.valueOf(mValues.get(position).iID));
+         holder.mContentView.setText(mValues.get(position).sTitle);
 
          holder.mView.setOnClickListener(new View.OnClickListener()
          {
@@ -117,7 +118,7 @@ public class BookListActivity extends AppCompatActivity
                if (mTwoPane)
                {
                   Bundle arguments = new Bundle();
-                  arguments.putString(BookDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                  arguments.putLong(BookDetailFragment.ARG_ITEM_ID, holder.mItem.iID);
                   BookDetailFragment fragment = new BookDetailFragment();
                   fragment.setArguments(arguments);
                   getSupportFragmentManager().beginTransaction()
@@ -128,7 +129,7 @@ public class BookListActivity extends AppCompatActivity
                {
                   Context context = v.getContext();
                   Intent intent = new Intent(context, BookDetailActivity.class);
-                  intent.putExtra(BookDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                  intent.putExtra(BookDetailFragment.ARG_ITEM_ID, holder.mItem.iID);
 
                   context.startActivity(intent);
                }
@@ -147,7 +148,7 @@ public class BookListActivity extends AppCompatActivity
          public final View mView;
          public final TextView mIdView;
          public final TextView mContentView;
-         public DummyContent.DummyItem mItem;
+         public Book mItem;
 
          public ViewHolder(View view)
          {

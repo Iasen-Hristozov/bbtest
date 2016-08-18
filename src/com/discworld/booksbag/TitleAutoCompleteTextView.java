@@ -2,16 +2,26 @@ package com.discworld.booksbag;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.database.DataSetObserver;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListAdapter;
 
 public class TitleAutoCompleteTextView extends LinearLayout
 {
-
+   
+   AutoCompleteTextView autoCompleteTextView;
+   
    public TitleAutoCompleteTextView(Context context)
    {
       super(context);
@@ -37,11 +47,13 @@ public class TitleAutoCompleteTextView extends LinearLayout
       inflater.inflate(R.layout.title_auto_complete_text_view, this, true);
 //      addView(inflater.inflate(R.layout.title, this));
       
-      Title title = (Title)this.findViewById(R.id.title1);
+      Title title = (Title)this.findViewById(R.id.title);
       title.setText(titleText);
       title.setColor(valueColor);
       title.setTextSize(textSize);
       title.setLineSize(lineSize);
+      
+      autoCompleteTextView = (AutoCompleteTextView) this.findViewById(R.id.autoCompleteTextView);
       
 //      TextView title = (TextView)this.findViewById(R.id.tv_title);
 //      LinearLayout line = (LinearLayout)this.findViewById(R.id.ll_line);
@@ -65,5 +77,15 @@ public class TitleAutoCompleteTextView extends LinearLayout
       // mValue.setBackgroundColor(valueColor);
       // mImage = (ImageView) getChildAt(2);
 //   }   
+   }
+   
+   public void setAdapter(ArrayAdapter<?> adapter)
+   {
+      autoCompleteTextView.setAdapter(adapter);
+   }
+   
+   public void setOnItemSelectedListener(OnItemSelectedListener l)
+   {
+      autoCompleteTextView.setOnItemSelectedListener(l);
    }
 }

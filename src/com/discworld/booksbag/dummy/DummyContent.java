@@ -39,6 +39,7 @@ public class DummyContent
     * A map of sample (dummy) items, by ID.
     */
    public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+   public static final Map<Long, Book> BOOKS_MAP = new HashMap<Long, Book>();
 
    private static final int COUNT = 25;
    private static final int BOOKS_COUNT = 3;
@@ -105,6 +106,7 @@ public class DummyContent
       oBook.alFields.add(new Field(DBAdapter.FLD_FORMAT, 24, "Hard copy"));
       oBook.alFields.add(new Field(DBAdapter.FLD_CONDITION, 29, "Отлично"));
       BOOKS.add(oBook);
+      BOOKS_MAP.put(oBook.iID, oBook);
       
       oBook = new Book(2, "Винету", "Приключенията на Винету и Олд Шетърхенд", 2, 1981, 321, 150, 500, 0, 19850620, 5, "", "");
       oBook.alFields.add(new Field(DBAdapter.FLD_AUTHOR, 3, "Карл Май"));
@@ -119,6 +121,7 @@ public class DummyContent
       oBook.alFields.add(new Field(DBAdapter.FLD_LOCATION, 27, "Горна библиотека"));
       oBook.alFields.add(new Field(DBAdapter.FLD_CONDITION, 31, "Добро"));
       BOOKS.add(oBook);
+      BOOKS_MAP.put(oBook.iID, oBook);
    }
 
    private static void addItem(DummyItem item)
