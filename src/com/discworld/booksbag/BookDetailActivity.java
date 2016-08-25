@@ -19,12 +19,16 @@ import android.view.MenuItem;
  */
 public class BookDetailActivity extends AppCompatActivity
 {
+   long iBookID = 0;
 
    @Override
    protected void onCreate(Bundle savedInstanceState)
    {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_book_detail);
+      
+      iBookID = getIntent().getLongExtra(BookDetailFragment.ARG_ITEM_ID, 0);
+      
       Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
       setSupportActionBar(toolbar);
 
@@ -34,9 +38,9 @@ public class BookDetailActivity extends AppCompatActivity
          @Override
          public void onClick(View view)
          {
-            Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null)
-                    .show();
+            Intent intent = new Intent(getApplicationContext(), EditBookActivity.class);
+            intent.putExtra(EditBookActivity.BOOK_ID, iBookID);
+            startActivityForResult(intent, BookListActivity.SHOW_EDIT_BOOK);
          }
       });
 
@@ -62,7 +66,8 @@ public class BookDetailActivity extends AppCompatActivity
          // using a fragment transaction.
          Bundle arguments = new Bundle();
 //         arguments.putString(BookDetailFragment.ARG_ITEM_ID, getIntent().getStringExtra(BookDetailFragment.ARG_ITEM_ID));
-         arguments.putLong(BookDetailFragment.ARG_ITEM_ID, getIntent().getLongExtra(BookDetailFragment.ARG_ITEM_ID, 0));
+//         arguments.putLong(BookDetailFragment.ARG_ITEM_ID, getIntent().getLongExtra(BookDetailFragment.ARG_ITEM_ID, 0));
+         arguments.putLong(BookDetailFragment.ARG_ITEM_ID, iBookID);
          BookDetailFragment fragment = new BookDetailFragment();
          fragment.setArguments(arguments);
          getSupportFragmentManager().beginTransaction()

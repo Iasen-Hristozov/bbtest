@@ -36,6 +36,7 @@ import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.EditTextUpdatable;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.MultiSpinner;
+import com.discworld.booksbag.dummy.DummyContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,15 +69,6 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          return;
 
       long iBookID = extras.getLong(BOOK_ID);
-
-      if(iBookID != 0)
-      {
-         /* TODO Error!!! Fixi it!*/
-         oBook = oDbAdapter.getBook(iBookID);
-         loadBook();
-      }
-      else
-         oBook = new Book();
 
 //      // BEGIN_INCLUDE (inflate_set_custom_view)
 //      // Inflate a "Done" custom action bar view to serve as the "Up" affordance.
@@ -117,6 +109,17 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
       etTitle = (EditText) findViewById(R.id.et_title);
       etDescription = (EditText) findViewById(R.id.et_description);
+      if(iBookID != 0)
+      {
+         oBook = DummyContent.BOOKS_MAP.get(iBookID);
+         /* TODO Error!!! Fixi it!*/
+//         oBook = oDbAdapter.getBook(iBookID);
+         loadBook();
+      }
+      else
+         oBook = new Book();
+
+      
       llAuthors = (LinearLayout) findViewById(R.id.ll_authors);
       ((ImageButton) findViewById(R.id.ib_add_author)).setOnClickListener(new View.OnClickListener()
       {

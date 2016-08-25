@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class BookListActivity extends AppCompatActivity
 {
-   private final static int SHOW_EDIT_BOOK = 101;
+   public final static int SHOW_EDIT_BOOK = 101;
 
    /**
     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
