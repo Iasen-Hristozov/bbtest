@@ -259,7 +259,7 @@ public class DBAdapter
             if (oField.iID == 0)
             {
                values = new ContentValues();
-               values.put(KEY_NM, oField.sName);
+               values.put(KEY_NM, oField.sValue);
                oField.iID = db.insert(TABLE_FIELDS, null, values);
             }
          }
@@ -417,7 +417,7 @@ public class DBAdapter
             if (oField.iID == 0)
             {
                oValues = new ContentValues();
-               oValues.put(KEY_NM, oField.sName);
+               oValues.put(KEY_NM, oField.sValue);
                oField.iID = db.insert(TABLE_FIELDS, null, oValues);
             }
          }

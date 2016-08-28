@@ -7,7 +7,7 @@ public class Field
 {
    public int iTypeID;
    public long iID = 0;
-   public String sName;
+   public String sValue;
 
    public Field(int iTypeID)
    {
@@ -17,13 +17,13 @@ public class Field
    public Field(long iID, String sName)
    {
       this.iID = iID;
-      this.sName = sName;
+      this.sValue = sName;
    }
 
    public Field(int iTypeID, long iID, String sName)
    {
       this.iID = iID;
       this.iTypeID = iTypeID;
-      this.sName = sName;
+      this.sValue = sName;
    }
 }

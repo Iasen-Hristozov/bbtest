@@ -213,7 +213,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          public void onUpdate(EditText et)
          {
             String sAuthor = et.getText().toString();
-            ((Field) vRow.getTag()).sName = et.getText().toString();
+            ((Field) vRow.getTag()).sValue = et.getText().toString();
          }
       });
       etAuthor.setOnFocusChangeListener(new View.OnFocusChangeListener()
@@ -254,7 +254,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
       Field fldAuthor = (Field) ((View) etAuthor.getParent()).getTag();
       String sAuthor = etAuthor.getText().toString();
-      fldAuthor.sName = sAuthor;
+      fldAuthor.sValue = sAuthor;
 //      ((Field) vRow.getTag()).sName = et.getText().toString();
 
    }

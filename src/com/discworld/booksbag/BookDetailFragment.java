@@ -7,9 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.discworld.booksbag.dto.Book;
+import com.discworld.booksbag.dto.Field;
+import com.discworld.booksbag.dto.FieldType;
 import com.discworld.booksbag.dummy.DummyContent;
 
 /**
@@ -73,9 +76,148 @@ public class BookDetailFragment extends Fragment
       if (mItem != null)
       {
 //         ((TextView) rootView.findViewById(R.id.book_detail)).setText(mItem.details);
-         ((TextView) rootView.findViewById(R.id.book_detail)).setText(mItem.sDescription);
+//         ((TextView) rootView.findViewById(R.id.book_detail)).setText(mItem.sDescription);
+         
+         LinearLayout llCategories = (LinearLayout) rootView.findViewById(R.id.ll_categories);
+         String sName = "", sValue = "";
+         
+         for(FieldType fieldType: DummyContent.FIELD_TYPES)
+         {
+            if(fieldType.iID < 100)
+            {
+               for(Field oField: mItem.alFields)
+               {
+                  if(oField.iTypeID == fieldType.iID)
+                  {
+                     if(!sName.trim().isEmpty())
+                        sValue += "\n" + oField.sValue;
+                     else
+                     {
+                        sName = fieldType.sName + ":";
+                        sValue = oField.sValue;
+                     }
+                  }
+               }
+//               if(!sName.trim().isEmpty())
+//               {
+//                  addField(llCategories, sName, sValue);
+//                  sName = "";
+//                  sValue = "";
+//               }
+            }
+            else
+            {
+               switch(fieldType.iID)
+               {
+                  case DummyContent.FLD_DESCRIPTION:
+                     if(!mItem.sDescription.trim().isEmpty())
+                     {
+                        sName = "Description:";
+                        sValue = mItem.sDescription;
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_VOLUME:
+                     if(mItem.iVolume != 0)
+                     {
+                        sName = "Volume:";
+                        sValue = String.valueOf(mItem.iVolume);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_PUBLICATION_DATE:
+                     if(mItem.iPublicationDate != 0)
+                     {
+                        sName = "Publication Date:";
+                        sValue = String.valueOf(mItem.iPublicationDate);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_PAGES:
+                     if(mItem.iPages != 0)
+                     {
+                        sName = "Pages:";
+                        sValue = String.valueOf(mItem.iPages);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_PRICE:
+                     if(mItem.iPrice != 0)
+                     {
+                        sName = "Price:";
+                        sValue = String.valueOf(mItem.iPrice);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_VALUE:
+                     if(mItem.iValue != 0)
+                     {
+                        sName = "Value:";
+                        sValue = String.valueOf(mItem.iValue);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_DUE_DATE:
+                     if(mItem.iDueDate != 0)
+                     {
+                        sName = "Due Date:";
+                        sValue = String.valueOf(mItem.iDueDate);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_READ_DATE:
+                     if(mItem.iReadDate != 0)
+                     {
+                        sName = "Read Date:";
+                        sValue = String.valueOf(mItem.iReadDate);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_EDITION:
+                     if(mItem.iEdition != 0)
+                     {
+                        sName = "Edition:";
+                        sValue = String.valueOf(mItem.iEdition);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_ISBN:
+                     if(!mItem.sISBN.trim().isEmpty())
+                     {
+                        sName = "ISBN:";
+                        sValue = String.valueOf(mItem.sISBN);
+                     }
+                  break;
+                  
+                  case DummyContent.FLD_WEB:
+                     if(!mItem.sWeb.trim().isEmpty())
+                     {
+                        sName = "Web:";
+                        sValue = String.valueOf(mItem.sWeb);
+                     }
+                  break;
+               }
+            }
+            if(!sName.trim().isEmpty())
+            {
+               addField(llCategories, sName, sValue);
+               sName = "";
+               sValue = "";
+            }
+         }
       }
 
       return rootView;
+   }
+
+   private void addField(LinearLayout rootView, String sName, String sValue)
+   {
+      LayoutInflater oInflater = LayoutInflater.from(getActivity());
+      
+      View vRow = oInflater.inflate(R.layout.row_category, null);
+      ((TextView) vRow.findViewById(R.id.tv_name)).setText(sName);
+      ((TextView) vRow.findViewById(R.id.tv_value)).setText(sValue);
+      
+      rootView.addView(vRow);  
    }
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.discworld.booksbag.DBAdapter;
 import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.Field;
+import com.discworld.booksbag.dto.FieldType;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -17,6 +18,17 @@ import com.discworld.booksbag.dto.Field;
  */
 public class DummyContent
 {
+   public final static int FLD_DESCRIPTION = 100,
+                           FLD_VOLUME = 101,
+                           FLD_PUBLICATION_DATE = 102,
+                           FLD_PAGES = 103,
+                           FLD_PRICE = 104,
+                           FLD_VALUE = 105,
+                           FLD_DUE_DATE = 106,
+                           FLD_READ_DATE = 107,
+                           FLD_EDITION = 108,
+                           FLD_ISBN = 109,
+                           FLD_WEB = 110;                           
 
    /**
     * An array of sample (dummy) items.
@@ -34,6 +46,7 @@ public class DummyContent
    public static final List<Field> FORMATS = new ArrayList<Field>();
    public static final List<Field> LOCATIONS = new ArrayList<Field>();
    public static final List<Field> CONDITIONS = new ArrayList<Field>();
+   public static final List<FieldType> FIELD_TYPES = new ArrayList<>();
    
    /**
     * A map of sample (dummy) items, by ID.
@@ -67,7 +80,7 @@ public class DummyContent
       LANGUAGES.add(new Field(DBAdapter.FLD_LANGUAGE, 10, "Английски"));
       
       PUBLISHERS.add(new Field(DBAdapter.FLD_PUBLISHER, 11, "Отечество"));
-      PUBLISHERS.add(new Field(DBAdapter.FLD_PUBLISHER, 12, "Галктика"));
+      PUBLISHERS.add(new Field(DBAdapter.FLD_PUBLISHER, 12, "Галактика"));
       PUBLISHERS.add(new Field(DBAdapter.FLD_PUBLISHER, 14, "Юношески романи"));
 
       PUBLISHING_LOCATIONS.add(new Field(DBAdapter.FLD_PUBLICATION_LOCATION, 15, "София"));
@@ -122,6 +135,30 @@ public class DummyContent
       oBook.alFields.add(new Field(DBAdapter.FLD_CONDITION, 31, "Добро"));
       BOOKS.add(oBook);
       BOOKS_MAP.put(oBook.iID, oBook);
+      
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_AUTHOR, "Authors"));
+      FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, "Description"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_SERIE, "Serie"));
+      FIELD_TYPES.add(new FieldType(FLD_VOLUME, "Volume"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_CATEGORY, "Category"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_LANGUAGE, "Language"));
+      FIELD_TYPES.add(new FieldType(FLD_PAGES, "Pages"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_PUBLISHER, "Publisher"));
+      FIELD_TYPES.add(new FieldType(FLD_PUBLICATION_DATE, "Publication Date"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_PUBLICATION_LOCATION, "Publication Location"));
+      FIELD_TYPES.add(new FieldType(FLD_EDITION, "Edition"));
+      FIELD_TYPES.add(new FieldType(FLD_PRICE, "Price"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_STATUS, "Status"));
+      FIELD_TYPES.add(new FieldType(FLD_VALUE, "Value"));
+      FIELD_TYPES.add(new FieldType(FLD_READ_DATE, "Read Date"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_RATING, "Rating"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_FORMAT, "Format"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_LOCATION, "Location"));
+      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_CONDITION, "Condition"));
+      FIELD_TYPES.add(new FieldType(FLD_DUE_DATE, "Due Date"));
+      FIELD_TYPES.add(new FieldType(FLD_ISBN, "ISBN"));
+      FIELD_TYPES.add(new FieldType(FLD_WEB, "Web"));
+      
    }
 
    private static void addItem(DummyItem item)
