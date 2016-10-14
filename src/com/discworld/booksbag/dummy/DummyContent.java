@@ -124,7 +124,8 @@ public class DummyContent
       oBook = new Book(2, "Винету", "Приключенията на Винету и Олд Шетърхенд", 2, 1981, 321, 150, 500, 0, 19850620, 5, "", "");
       oBook.alFields.add(new Field(DBAdapter.FLD_AUTHOR, 3, "Карл Май"));
       oBook.alFields.add(new Field(DBAdapter.FLD_SERIE, 5, "Винету"));
-      oBook.alFields.add(new Field(DBAdapter.FLD_CATEGORY, 6, "Приключения"));
+//      oBook.alFields.add(new Field(DBAdapter.FLD_CATEGORY, 6, "Приключения"));
+      oBook.alFields.add(CATEGORIES.get(0));
       oBook.alFields.add(new Field(DBAdapter.FLD_LANGUAGE, 8, "Български"));
       oBook.alFields.add(new Field(DBAdapter.FLD_PUBLISHER, 11, "Отечество"));
       oBook.alFields.add(new Field(DBAdapter.FLD_PUBLICATION_LOCATION, 15, "София"));

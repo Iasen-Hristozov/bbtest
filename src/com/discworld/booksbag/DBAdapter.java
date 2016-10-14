@@ -170,9 +170,9 @@ public class DBAdapter
 		db.close();
 	}
 
-   public ArrayList<Field> getBooksOrder(String query)
+   public ArrayList<Book> getBooksOrderedBy(String query)
    {
-      ArrayList<Field> alBooks = new ArrayList<Field>();
+      ArrayList<Book> alBooks = new ArrayList<Book>();
 
 //      String query = "b." + KEY_ID + ", b." + KEY_TTL + ", GROUP_CONCAT(f." + KEY_NM + ") AS authors "
 //            + "FROM " + TABLE_BOOKS + " AS b LEFT JOIN " + TABLE_BOOK_FIELDS + " AS bf ON bf." + KEY_BK_ID + " = " + "b." + KEY_ID
@@ -182,13 +182,27 @@ public class DBAdapter
 //            + " ORDER BY b." + KEY_TTL;
 
       Cursor cursor = db.rawQuery(query, null);
-      Field oBook;
+      Book oBook;
 
       if(cursor.moveToFirst())
       {
          do
          {
-            oBook = new Field(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+//            oBook = new Field(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+            oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
+                     cursor.getString(ID_KEY_TTL),
+                     cursor.getString(ID_KEY_DSCR),
+                     Integer.parseInt(cursor.getString(ID_KEY_VLM)),
+                     Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
+                     Integer.parseInt(cursor.getString(ID_KEY_PGS)),
+                     Integer.parseInt(cursor.getString(ID_KEY_PRC)),
+                     Integer.parseInt(cursor.getString(ID_KEY_VL)),
+                     Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
+                     Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
+                     Integer.parseInt(cursor.getString(ID_KEY_EDN)),
+                     cursor.getString(ID_KEY_ISBN),
+                     cursor.getString(ID_KEY_WEB));
+            
             alBooks.add(oBook);
          } while (cursor.moveToNext());
       }
@@ -197,7 +211,7 @@ public class DBAdapter
       return alBooks;
    }
 
-   public ArrayList<Field> getBooks(int iOrder)
+   public ArrayList<Book> getBooks(int iOrder)
    {
       String query = "";
       switch(iOrder)
@@ -224,7 +238,7 @@ public class DBAdapter
             return null;
       }
 
-      return getBooksOrder(query);
+      return getBooksOrderedBy(query);
    }
 
    public void insertBook(Book oBook)

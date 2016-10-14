@@ -91,7 +91,6 @@ public class MultiSpinner extends Spinner implements DialogInterface.OnCancelLis
       setAdapter(adapter);
    }
 
-
    @Override
    public boolean performClick()
    {

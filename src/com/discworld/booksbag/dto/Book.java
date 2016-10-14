@@ -7,25 +7,36 @@ import java.util.ArrayList;
  */
 public class Book
 {
+   public int iAuthor1ID,
+              iAuthor2ID,
+              iAuthor3ID,
+              iSeriesID,
+              iVolume = 0,
+              iCategoryID,
+              iLanguageID,
+              iPublisherID,
+              iPublicationLocationID,
+              iPublicationDate = 0,
+              iPages = 0,
+              iStatusID,
+              iRatingID,
+              iFormatID,
+              iLocationID,
+              iPrice = 0,
+              iValue = 0,
+              iConditionID,
+              iDueDate,
+              iReadDate,
+              iEdition;
+
    public long iID = 0;
-   public int iAuthor1ID;
-   public int iAuthor2ID;
-   public int iAuthor3ID;
-   public int iSeriesID;
-   public int iVolume = 0;
-   public int iCategoryID;
-   public int iLanguageID;
-   public int iPublisherID;
-   public int iPublicationLocationID;
-   public int iPublicationDate = 0;
-   public int iPages = 0;
-   public int iStatusID;
-   public int iRatingID;
-   public int iFormatID;
-   public int iLocationID;
-   public int iPrice = 0;
-   public int iValue = 0;
-   public int iConditionID;
+   
+   public String sTitle,
+                 sDescription,
+                 sISBN,
+                 sWeb;
+   
+   public ArrayList<Field> alFields = new ArrayList<>();
 
    private static final int ID_KEY_ID = 1,
          ID_KEY_TTL = 2,
@@ -73,15 +84,4 @@ public class Book
       this.sISBN = sISBN;
       this.sWeb = sWeb;
    }
-
-   public int iDueDate;
-   public int iReadDate;
-   public int iEdition;
-
-   public String sTitle,
-                  sDescription,
-                  sISBN,
-                  sWeb;
-
-   public ArrayList<Field> alFields = new ArrayList<>();
 }

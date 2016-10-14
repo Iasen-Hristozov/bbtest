@@ -14,16 +14,16 @@ public class Field
       this.iTypeID = iTypeID;
    }
 
-   public Field(long iID, String sName)
+   public Field(int iTypeID, String sValue)
    {
-      this.iID = iID;
-      this.sValue = sName;
+      this.iTypeID = iTypeID;
+      this.sValue = sValue;
    }
 
-   public Field(int iTypeID, long iID, String sName)
+   public Field(int iTypeID, long iID, String sValue)
    {
       this.iID = iID;
       this.iTypeID = iTypeID;
-      this.sValue = sName;
+      this.sValue = sValue;
    }
 }

@@ -1,14 +1,19 @@
 package com.discworld.booksbag;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,8 +22,10 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -59,7 +66,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
    protected void onCreate(Bundle savedInstanceState)
    {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_edit_book);
+      setContentView(R.layout.activity_edit_book_old);
       getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
       oDbAdapter = new DBAdapter(this);
@@ -121,7 +128,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
       
       llAuthors = (LinearLayout) findViewById(R.id.ll_authors);
-      ((ImageButton) findViewById(R.id.ib_add_author)).setOnClickListener(new View.OnClickListener()
+      findViewById(R.id.ib_add_author).setOnClickListener(new View.OnClickListener()
       {
          @Override
          public void onClick(View v)
@@ -161,13 +168,23 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //      setSupportActionBar(toolbar);
 
       btnShowPopup = (Button) findViewById(R.id.button1);
+      setButtonText(btnShowPopup, DummyContent.CATEGORIES);
+//      for(Field oField: DummyContent.CATEGORIES)
+//      {
+//         String sButtonText = "";
+//         if(oBook.alFields.contains(oField))
+//            sButtonText += (sButtonText.isEmpty() ? "" : ", ") + oField.sValue; 
+//         if(!sButtonText.isEmpty())
+//            btnShowPopup.setText(sButtonText);
+//      }
       btnShowPopup.setOnClickListener(new OnClickListener() 
       {
         @Override
         public void onClick(View v) 
         {
           // Display popup attached to the button as a position anchor
-          displayPopupWindow(v);
+           
+          displayPopupWindow1(v, oBook.alFields, DummyContent.CATEGORIES);
         }
       });
    
@@ -292,8 +309,6 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       return true;
    }
 
-
-
    @Override
    public boolean onOptionsItemSelected(MenuItem item)
    {
@@ -334,6 +349,123 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          oDbAdapter.insertBook(oBook);
    }
 
+   private void displayPopupWindow1(final View anchorView, final ArrayList<Field> fldSelected, final List<Field> fldDictionary)
+   {
+      final Context context = this;
+      final PopupMenu popupMenu = new PopupMenu(this, anchorView);
+      initPopupMenu(popupMenu, fldSelected, fldDictionary);
+//    for(Field oField: fldDictionary)
+      
+//      for(int i = 0; i < fldDictionary.size(); i++)
+//      {
+////       popupMenu.getMenu().add(Menu.NONE, 0, 0, oField.sValue).setCheckable(true).setChecked(fldSelected.contains(oField));
+//         Field oField = fldDictionary.get(i);
+//         popupMenu.getMenu().add(Menu.NONE, i, 0, oField.sValue).setCheckable(true).setChecked(fldSelected.contains(oField));
+//      }
+//      popupMenu.getMenu().add(Menu.NONE, fldDictionary.size(), 0, "<add>");
+    
+//    popupMenu.getMenu().add(Menu.NONE, 1, 1, "Item 1").setCheckable(true).setActionView(R.layout.row_spinner).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//    popupMenu.getMenu().add(2, 2, 2, "Item 2").setCheckable(true);
+//    popupMenu.getMenu().add(0, 0, 3, "").setEnabled(false).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//    popupMenu.getMenu().add(3, 3, 3, "Item 3").setCheckable(true);
+//    popupMenu.getMenu().add(4, 4, 4, "Item 4").setCheckable(true);
+//    popupMenu.getMenu().add(5, 5, 5, "Item 5").setCheckable(true);
+//    popupMenu.getMenu().add(6, 6, 6, "Item 5").setCheckable(true);
+//    popupMenu.getMenu().add(6, 7, 7, "Item 5").setCheckable(true);
+//    popupMenu.getMenu().add(6, 8, 8, "Item 5").setCheckable(true);
+//    popupMenu.getMenu().add(6, 9, 9, "Item 5").setCheckable(true);
+//    popupMenu.getMenu().add(6, 9, 9, "Item 5").setCheckable(true);
+//    popupMenu.getMenu().add(6, 10, 10, "Item 5").setCheckable(true);
+//    popupMenu.getMenu().setGroupCheckable(6, true, true);
+//    popupMenu.inflate(R.menu.popup_menu);
+      
+      
+//      popupMenu.setOnDismissListener(new OnDismissListener());
+      popupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener()
+      {
+         final int iFieldType = fldDictionary.get(0).iTypeID;   
+         @Override
+         public boolean onMenuItemClick(MenuItem menuItem)
+         {
+            if(menuItem.getItemId() < fldDictionary.size())
+            {
+               menuItem.setChecked(!menuItem.isChecked());
+               if(menuItem.isChecked())
+                  fldSelected.add(fldDictionary.get(menuItem.getItemId()));
+               else
+                  fldSelected.remove(fldDictionary.get(menuItem.getItemId()));
+               
+   //            for(int i = 0; i < popupMenu.getMenu().size(); i++)
+   //            {
+   ////               for(Field oField: fldSelected)
+   ////                  if(oField.iTypeID == iFieldType)
+   ////                     fldSelected.remove(oField);
+   //               
+   //               if(popupMenu.getMenu().getItem(i).isChecked())
+   //                  fldSelected.add(fldDictionary.get(i));
+   //               else
+   //                  fldSelected.remove(fldDictionary.get(i));
+   //            }
+               
+               setButtonText((Button)anchorView, fldDictionary);
+               
+               popupMenu.show();
+            }
+            else
+            {
+               AlertDialog.Builder builder = new AlertDialog.Builder(context);
+               builder.setTitle(R.string.add_new);
+               final EditText etNewValue = new EditText(context);
+               builder.setView(etNewValue);
+               builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+               {
+                  public void onClick(DialogInterface dialog, int id)
+                  {
+                     String sNewValue = etNewValue.getText().toString();
+                     Field oField = new Field(iFieldType, sNewValue);
+                     fldDictionary.add(oField);
+                     fldSelected.add(oField);
+                     setButtonText((Button)anchorView, fldDictionary);
+                     initPopupMenu(popupMenu, fldSelected, fldDictionary);
+//                     listitems.add(listitems.size()-1, sNewValue);
+//                     boolean checkedOld[] = new boolean[checked.length];
+//                     java.lang.System.arraycopy(checked,0, checkedOld, 0, checked.length);
+//                     checked = new boolean[checked.length+1];
+//                     java.lang.System.arraycopy(checkedOld, 0, checked, 0, checkedOld.length);
+//                     customAdapter.notifyDataSetChanged();
+                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                     dialog.cancel();
+                     popupMenu.show();
+                  }
+               });
+
+               builder.setNegativeButton(android.R.string.cancel, new DialogInterface
+                     .OnClickListener() {
+                  public void onClick(DialogInterface dialog, int id)
+                  {
+                     InputMethodManager imm = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                     dialog.cancel();
+                     popupMenu.show();
+                  }
+               });
+
+               builder.show();
+               
+            }
+            return true;
+//          //This will refer to the default, ascending or descending item.
+//            MenuItem subMenuItem = menuItem.getSubMenu().getItem(menuItem.); 
+//            //Check or uncheck it.
+//            subMenuItem.setChecked(!subMenuItem.isChecked());            
+            
+         }
+      });
+      
+      popupMenu.show();
+   }
+   
    private void displayPopupWindow(View anchorView) 
    {
 //      PopupWindow popup = new PopupWindow(EditBookActivity.this);
@@ -349,8 +481,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //      popup.setBackgroundDrawable(new BitmapDrawable());
 //      popup.showAsDropDown(anchorView);
       
-      int h = btnShowPopup.getHeight();
-      float y = btnShowPopup.getY();
+      int h = anchorView.getHeight();
+      float y = anchorView.getY();
       
       
       final ArrayList<String> items = new ArrayList<String>();
@@ -358,6 +490,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       items.add("Item 2");
       items.add("Item 3");
       items.add("Item 4");
+      items.add("Item 5");
+      items.add("Item 5");
       items.add("Item 5");
       items.add("Item 5");
       items.add("Item 5");
@@ -397,7 +531,11 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          anchorView.getLocationOnScreen(loc);
          int list_height = getListViewHeight(list);
 //         pw.showAtLocation(llParent, Gravity.NO_GRAVITY, location.left, list_height);
-       pw.showAsDropDown(btnShowPopup, 0, -(list_height+h));         
+//       pw.showAsDropDown(anchorView, 0, -(list_height+h));         
+//       pw.showAsDropDown(anchorView, 0, -(location.top));
+       pw.showAsDropDown(anchorView);
+//       pw.isAboveAnchor()
+//       pw.showAsDropDown(btnShowPopup, 0, -(list_height));
 //         pw.showAtLocation(btnShowPopup, Gravity.TOP, 0, list_height);
 
 //         pw.addOnLayoutChangeListener(new OnLayoutChangeListener()
@@ -436,6 +574,32 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
       return listviewHeight;
 }
+
+   private void initPopupMenu(PopupMenu popupMenu, final ArrayList<Field> fldSelected, final List<Field> fldDictionary)
+   {
+      popupMenu.getMenu().clear();
+      
+      for(int i = 0; i < fldDictionary.size(); i++)
+      {
+//       popupMenu.getMenu().add(Menu.NONE, 0, 0, oField.sValue).setCheckable(true).setChecked(fldSelected.contains(oField));
+         Field oField = fldDictionary.get(i);
+         popupMenu.getMenu().add(Menu.NONE, i, 0, oField.sValue).setCheckable(true).setChecked(fldSelected.contains(oField));
+      }
+      popupMenu.getMenu().add(Menu.NONE, fldDictionary.size(), 0, "<add>");
+      
+   }
+   
+   private void setButtonText(Button oButton, List<Field> alFields)
+   {
+      String sButtonText = "";
+      for(Field oField: alFields)
+         if(oBook.alFields.contains(oField))
+            sButtonText += (sButtonText.isEmpty() ? "" : ", ") + oField.sValue; 
+      if(!sButtonText.isEmpty())
+         oButton.setText(sButtonText);
+      else
+         oButton.setText("select");
+   }
    
    public static Rect locateView(View v)
    {
@@ -545,10 +709,5 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          TextView tvName;
          CheckBox cbSelected;
       }
-   }
-   
-   private class MyPopupWindow extends PopupWindow
-   {
-//      onSi
    }
 }

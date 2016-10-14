@@ -40,27 +40,37 @@
 
       <!-- /> -->
 
+      <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerVertical="true"
+         android:text="@string/et_title"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:textColor="@color/colorBlue" />
+
       <com.discworld.booksbag.Title
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          custom:lineSize="1dp"
-         custom:text="@string/et_title"
+         custom:text="Testtttt"
          custom:color="@color/colorBlue" >
+
       </com.discworld.booksbag.Title>
 
-<!--       <ImageView -->
-<!--          android:layout_width="match_parent" -->
-<!--          android:layout_height="wrap_content" -->
-<!--          android:src="@drawable/list_divide" /> -->
+      <ImageView
+         android:id="@+id/imageView2"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:src="@drawable/list_divide" />
 
       <EditText
          android:id="@+id/et_title"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_gravity="center_horizontal"
+         android:contentDescription="@string/et_title"
          android:hint="@string/et_title" />
-<!--          android:contentDescription="@string/et_title" -->
-      
+
       <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="wrap_content" >
@@ -100,27 +110,19 @@
          android:orientation="vertical" >
       </LinearLayout>
 
-      <com.discworld.booksbag.Title
+      <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerVertical="true"
+         android:text="@string/lbl_description"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:textColor="@color/colorBlue" />
+
+      <ImageView
+         android:id="@+id/imageView"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         custom:lineSize="1dp"
-         custom:text="@string/lbl_description"
-         custom:color="@color/colorBlue" >
-      </com.discworld.booksbag.Title>
-      
-      
-<!--       <TextView -->
-<!--          android:layout_width="wrap_content" -->
-<!--          android:layout_height="wrap_content" -->
-<!--          android:text="@string/lbl_description" -->
-<!--          android:textAppearance="?android:attr/textAppearanceMedium" -->
-<!--          android:textColor="@color/colorBlue" /> -->
-
-<!--       <ImageView -->
-<!--          android:id="@+id/imageView" -->
-<!--          android:layout_width="match_parent" -->
-<!--          android:layout_height="wrap_content" -->
-<!--          android:src="@drawable/list_divide" /> -->
+         android:src="@drawable/list_divide" />
 
       <EditText
          android:id="@+id/et_description"
@@ -130,25 +132,29 @@
          android:hint="@string/hnt_description"
          android:inputType="textMultiLine" />
 
-<!--       <TextView -->
-<!--          android:layout_width="wrap_content" -->
-<!--          android:layout_height="wrap_content" -->
-<!--          android:layout_marginTop="60dp" -->
-<!--          android:text="@string/lbl_category" -->
-<!--          android:textAppearance="?android:attr/textAppearanceMedium" -->
-<!--          android:textColor="@color/colorBlue" /> -->
+      <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerVertical="true"
+         android:layout_marginTop="60dp"
+         android:text="@string/lbl_category"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:textColor="@color/colorBlue" />
 
-<!--       <ImageView -->
-<!--          android:layout_width="match_parent" -->
-<!--          android:layout_height="wrap_content" -->
-<!--          android:src="@drawable/list_divide" /> -->
-
-      <com.discworld.booksbag.Title
+      <ImageView
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
+         android:src="@drawable/list_divide" />
+
+      <com.discworld.booksbag.TitleAutoCompleteTextView
+         android:id="@+id/titleAutoCompleteTextView1"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         custom:color="@color/colorBlue"
          custom:lineSize="1dp"
-         custom:text="@string/lbl_category"
-         custom:color="@color/colorBlue" />
+         custom:text="ttttaa" >
+
+      </com.discworld.booksbag.TitleAutoCompleteTextView>
 
       <com.discworld.booksbag.dto.MultiSpinner
          android:id="@+id/multi_spinner"
@@ -158,16 +164,14 @@
          android:layout_gravity="center_horizontal"
          android:gravity="left"
          android:spinnerMode="dropdown" />
-      
-      
-      <com.discworld.booksbag.TitleAutoCompleteTextView
-         android:id="@+id/titleAutoCompleteTextView1"
+
+      <Button
+         android:id="@+id/button1"
+         style="?android:attr/spinnerStyle"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         custom:color="@color/colorBlue"
-         custom:lineSize="1dp"
-         custom:text="ttttaa" />
-
+         android:layout_marginTop="100dp"
+         android:text="Button" />
 
    </LinearLayout>
 
