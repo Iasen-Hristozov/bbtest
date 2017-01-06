@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.ActionBar;
@@ -26,6 +28,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -39,6 +43,7 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.discworld.booksbag.dto.AutoCompleteTextViewUpdatable;
 import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.EditTextUpdatable;
 import com.discworld.booksbag.dto.Field;
@@ -61,11 +66,13 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
    private EditText etAuthorFocused;
    Button btnShowPopup;
    DBAdapter oDbAdapter = null;
+   ArrayAdapter<String> adapter ;
 
    @Override
    protected void onCreate(Bundle savedInstanceState)
    {
       super.onCreate(savedInstanceState);
+//      setContentView(R.layout.activity_edit_book_old);
       setContentView(R.layout.activity_edit_book_old);
       getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -126,6 +133,11 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       else
          oBook = new Book();
 
+      String tAuthors[] = new String[DummyContent.AUTHORS.size()];
+      for(int i = 0; i < DummyContent.AUTHORS.size(); i++)
+         tAuthors[i] = DummyContent.AUTHORS.get(i).sValue;
+
+      adapter = new ArrayAdapter<String> (this,android.R.layout.select_dialog_item, tAuthors);  
       
       llAuthors = (LinearLayout) findViewById(R.id.ll_authors);
       findViewById(R.id.ib_add_author).setOnClickListener(new View.OnClickListener()
@@ -136,7 +148,9 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
             addAuthor(llAuthors);
          }
       });
-
+      
+      initAuthors(llAuthors, oBook.alFields);
+      
       addAuthor(llAuthors);
 
       MultiSpinner ms   = (MultiSpinner) findViewById(R.id.multi_spinner);
@@ -223,8 +237,10 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          }
       });
 
-      final EditTextUpdatable etAuthor = (EditTextUpdatable)vRow.findViewById(R.id.et_author);
-      etAuthor.setOnUpdateListener(new EditTextUpdatable.OnUpdateListener()
+//      final EditTextUpdatable etAuthor = (EditTextUpdatable)vRow.findViewById(R.id.et_author);
+//      etAuthor.setOnUpdateListener(new EditTextUpdatable.OnUpdateListener()
+      final AutoCompleteTextViewUpdatable etAuthor = (AutoCompleteTextViewUpdatable)vRow.findViewById(R.id.et_author);
+      etAuthor.setOnUpdateListener(new AutoCompleteTextViewUpdatable.OnUpdateListener()
       {
          @Override
          public void onUpdate(EditText et)
@@ -250,7 +266,10 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
             }
          }
       });
-
+      etAuthor.setAdapter(adapter);
+      etAuthor.setThreshold(1);
+      if(fldAuthor.iID != 0) // fldAuthor is not new 
+         etAuthor.setText(fldAuthor.sValue);
       vRow.setTag(fldAuthor);
       llAuthors.addView(vRow);
       if(llAuthors.getChildCount() == 1)
@@ -264,6 +283,15 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       ViewGroup parent = (ViewGroup) vParent.getParent();
       parent.removeView(vParent);
 //      llAuthors.removeView(vParent);
+   }
+
+   private void initAuthors(LinearLayout llAuthors, final ArrayList<Field> fldSelected)
+   {
+      for(Field oField : fldSelected)
+      {
+         if(oField.iTypeID == DBAdapter.FLD_AUTHOR)
+            addAuthorFld(llAuthors, oField);
+      }
    }
 
    private void updateAuthor(EditText etAuthor)
@@ -440,8 +468,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
                   }
                });
 
-               builder.setNegativeButton(android.R.string.cancel, new DialogInterface
-                     .OnClickListener() {
+               builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() 
+               {
                   public void onClick(DialogInterface dialog, int id)
                   {
                      InputMethodManager imm = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -596,9 +624,15 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          if(oBook.alFields.contains(oField))
             sButtonText += (sButtonText.isEmpty() ? "" : ", ") + oField.sValue; 
       if(!sButtonText.isEmpty())
+      {
          oButton.setText(sButtonText);
+         oButton.setTextColor(Color.BLACK);
+      }
       else
+      {
          oButton.setText("select");
+         oButton.setTextColor(Color.GRAY);
+      }
    }
    
    public static Rect locateView(View v)

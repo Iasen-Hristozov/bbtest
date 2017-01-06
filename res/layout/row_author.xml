@@ -3,7 +3,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <com.discworld.booksbag.dto.EditTextUpdatable
+<!--     <com.discworld.booksbag.dto.EditTextUpdatable -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:inputType="textPersonName" -->
+<!--         android:id="@+id/et_author" -->
+<!--         android:layout_gravity="center_horizontal" -->
+<!--         android:layout_toStartOf="@+id/ib_remove_author" -->
+<!--         android:layout_toLeftOf="@+id/ib_remove_author" -->
+<!--         android:layout_alignParentLeft="true" -->
+<!--         android:hint="@string/lbl_author"/> -->
+
+    <com.discworld.booksbag.dto.AutoCompleteTextViewUpdatable
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
@@ -13,7 +24,8 @@
         android:layout_toLeftOf="@+id/ib_remove_author"
         android:layout_alignParentLeft="true"
         android:hint="@string/lbl_author"/>
-
+    
+    
     <ImageButton
         android:id="@+id/ib_remove_author"
         android:layout_width="wrap_content"
