@@ -1,9 +1,6 @@
 package com.discworld.booksbag;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,12 +9,12 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteStatement;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.Field;
+import com.discworld.booksbag.dto.FieldType;
+import com.discworld.booksbag.dummy.DummyContent;
 
 public class DBAdapter
 {
@@ -125,7 +122,7 @@ public class DBAdapter
          + KEY_BK_ID + " INTEGER, "
          + KEY_FLD_ID + " INTEGER, "
          + KEY_TP_ID + " INTEGER)";
-
+   
 	private SQLiteDatabase db;
 	private final Context context;
 	private DBOpenHelper dbHelper;
@@ -142,11 +139,53 @@ public class DBAdapter
                            FLD_RATING = 8,
                            FLD_FORMAT = 9,
                            FLD_LOCATION = 10,
-                           FLD_CONDITION = 11;
+                           FLD_CONDITION = 11,
+                           FLD_DESCRIPTION = 100,
+                           FLD_VOLUME = 101,
+                           FLD_PUBLICATION_DATE = 102,
+                           FLD_PAGES = 103,
+                           FLD_PRICE = 104,
+                           FLD_VALUE = 105,
+                           FLD_DUE_DATE = 106,
+                           FLD_READ_DATE = 107,
+                           FLD_EDITION = 108,
+                           FLD_ISBN = 109,
+                           FLD_WEB = 110;                           
 
    public final static int ORD_TTL = 1,
                            ORD_AUT = 2;
 
+   public final static ArrayList<FieldType> FIELD_TYPES = new ArrayList<FieldType>()
+   {/**
+       * 
+       */
+      private static final long serialVersionUID = 1397960005890445623L;
+
+   {
+      add(new FieldType(FLD_AUTHOR, "Authors"));
+      add(new FieldType(FLD_DESCRIPTION, "Description"));
+      add(new FieldType(FLD_SERIE, "Serie"));
+      add(new FieldType(FLD_VOLUME, "Volume"));
+      add(new FieldType(FLD_CATEGORY, "Category"));
+      add(new FieldType(FLD_LANGUAGE, "Language"));
+      add(new FieldType(FLD_PAGES, "Pages"));
+      add(new FieldType(FLD_PUBLISHER, "Publisher"));
+      add(new FieldType(FLD_PUBLICATION_DATE, "Publication Date"));
+      add(new FieldType(FLD_PUBLICATION_LOCATION, "Publication Location"));
+      add(new FieldType(FLD_EDITION, "Edition"));
+      add(new FieldType(FLD_PRICE, "Price"));
+      add(new FieldType(FLD_STATUS, "Status"));
+      add(new FieldType(FLD_VALUE, "Value"));
+      add(new FieldType(FLD_READ_DATE, "Read Date"));
+      add(new FieldType(FLD_RATING, "Rating"));
+      add(new FieldType(FLD_FORMAT, "Format"));
+      add(new FieldType(FLD_LOCATION, "Location"));
+      add(new FieldType(FLD_CONDITION, "Condition"));
+      add(new FieldType(FLD_DUE_DATE, "Due Date"));
+      add(new FieldType(FLD_ISBN, "ISBN"));
+      add(new FieldType(FLD_WEB, "Web"));
+   }};
+   
 	public DBAdapter(Context _context)
 	{
 		this.context = _context;
@@ -172,43 +211,50 @@ public class DBAdapter
 
    public ArrayList<Book> getBooksOrderedBy(String query)
    {
-      ArrayList<Book> alBooks = new ArrayList<Book>();
-
-//      String query = "b." + KEY_ID + ", b." + KEY_TTL + ", GROUP_CONCAT(f." + KEY_NM + ") AS authors "
-//            + "FROM " + TABLE_BOOKS + " AS b LEFT JOIN " + TABLE_BOOK_FIELDS + " AS bf ON bf." + KEY_BK_ID + " = " + "b." + KEY_ID
-//            + " LEFT JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-//            + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUT
-//            + " GROUP BY b." + KEY_ID
-//            + " ORDER BY b." + KEY_TTL;
-
-      Cursor cursor = db.rawQuery(query, null);
-      Book oBook;
-
-      if(cursor.moveToFirst())
+      if(Debug.ON)
       {
-         do
-         {
-//            oBook = new Field(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
-            oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-                     cursor.getString(ID_KEY_TTL),
-                     cursor.getString(ID_KEY_DSCR),
-                     Integer.parseInt(cursor.getString(ID_KEY_VLM)),
-                     Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
-                     Integer.parseInt(cursor.getString(ID_KEY_PGS)),
-                     Integer.parseInt(cursor.getString(ID_KEY_PRC)),
-                     Integer.parseInt(cursor.getString(ID_KEY_VL)),
-                     Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
-                     Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
-                     Integer.parseInt(cursor.getString(ID_KEY_EDN)),
-                     cursor.getString(ID_KEY_ISBN),
-                     cursor.getString(ID_KEY_WEB));
-            
-            alBooks.add(oBook);
-         } while (cursor.moveToNext());
+         return DummyContent.BOOKS;
       }
-      cursor.close();
-
-      return alBooks;
+      else
+      {
+         ArrayList<Book> alBooks = new ArrayList<Book>();
+   
+   //      String query = "b." + KEY_ID + ", b." + KEY_TTL + ", GROUP_CONCAT(f." + KEY_NM + ") AS authors "
+   //            + "FROM " + TABLE_BOOKS + " AS b LEFT JOIN " + TABLE_BOOK_FIELDS + " AS bf ON bf." + KEY_BK_ID + " = " + "b." + KEY_ID
+   //            + " LEFT JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+   //            + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUT
+   //            + " GROUP BY b." + KEY_ID
+   //            + " ORDER BY b." + KEY_TTL;
+   
+         Cursor cursor = db.rawQuery(query, null);
+         Book oBook;
+   
+         if(cursor.moveToFirst())
+         {
+            do
+            {
+   //            oBook = new Field(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+               oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
+                        cursor.getString(ID_KEY_TTL),
+                        cursor.getString(ID_KEY_DSCR),
+                        Integer.parseInt(cursor.getString(ID_KEY_VLM)),
+                        Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
+                        Integer.parseInt(cursor.getString(ID_KEY_PGS)),
+                        Integer.parseInt(cursor.getString(ID_KEY_PRC)),
+                        Integer.parseInt(cursor.getString(ID_KEY_VL)),
+                        Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
+                        Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
+                        Integer.parseInt(cursor.getString(ID_KEY_EDN)),
+                        cursor.getString(ID_KEY_ISBN),
+                        cursor.getString(ID_KEY_WEB));
+               
+               alBooks.add(oBook);
+            } while (cursor.moveToNext());
+         }
+         cursor.close();
+   
+         return alBooks;
+      }      
    }
 
    public ArrayList<Book> getBooks(int iOrder)
@@ -310,109 +356,157 @@ public class DBAdapter
 
    public ArrayList<Field> getFieldValues(int iTypeID)
    {
-      ArrayList<Field> alFieldValues = new ArrayList<>();
-
-//      SELECT f.id, bf.type_id, f.name
-//      FROM book_fields as bf LEFT JOIN fields AS f ON bf.field_id = f.id
-//      WHERE bf.type_id =1
-//      ORDER BY f.name
-
-      String sql = "SELECT f." + KEY_ID + ", bf." + KEY_TP_ID + ", f." + KEY_NM
-            + " FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS + " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
-            + " WHERE bf." + KEY_TP_ID + " = " + iTypeID
-            + "ORDER BY f." + KEY_NM;
-
-      Cursor cursor = db.rawQuery(sql, null);
-
-      Field oField;
-      ArrayList<Field> alFields = new ArrayList<>();
-      if(cursor.moveToFirst())
+      if(Debug.ON)
       {
-         do
+         switch(iTypeID)
          {
-            oField = new Field(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-                               Integer.parseInt(cursor.getString(ID_KEY_TP_ID)),
-                               cursor.getString(ID_KEY_NM));
-
-            alFieldValues.add(oField);
-         } while (cursor.moveToNext());
+            case FLD_AUTHOR:
+               return DummyContent.AUTHORS;
+            case FLD_CATEGORY:
+               return DummyContent.CATEGORIES;
+            case FLD_CONDITION:
+               return DummyContent.CONDITIONS;
+            case FLD_FORMAT:
+               return DummyContent.FORMATS;
+            case FLD_LANGUAGE:
+               return DummyContent.LANGUAGES;
+            case FLD_LOCATION:
+               return DummyContent.LOCATIONS;
+            case FLD_PUBLICATION_LOCATION:
+               return DummyContent.PUBLISHING_LOCATIONS;
+            case FLD_PUBLISHER:
+               return DummyContent.PUBLISHERS;
+            case FLD_RATING:
+               return DummyContent.RATINGS;
+            case FLD_SERIE:
+               return DummyContent.SERIES;
+            case FLD_STATUS:
+               return DummyContent.STATUS;
+            default:
+               return null;
+         }
       }
-
-      return alFieldValues;
+      else
+      {
+         ArrayList<Field> alFieldValues = new ArrayList<>();
+   
+   //      SELECT f.id, bf.type_id, f.name
+   //      FROM book_fields as bf LEFT JOIN fields AS f ON bf.field_id = f.id
+   //      WHERE bf.type_id =1
+   //      ORDER BY f.name
+   
+         String sql = "SELECT f." + KEY_ID + ", bf." + KEY_TP_ID + ", f." + KEY_NM
+               + " FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS + " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
+               + " WHERE bf." + KEY_TP_ID + " = " + iTypeID
+               + "ORDER BY f." + KEY_NM;
+   
+         Cursor cursor = db.rawQuery(sql, null);
+   
+         Field oField;
+   //      ArrayList<Field> alFields = new ArrayList<>();
+         if(cursor.moveToFirst())
+         {
+            do
+            {
+               oField = new Field(Integer.parseInt(cursor.getString(ID_KEY_ID)),
+                                  Integer.parseInt(cursor.getString(ID_KEY_TP_ID)),
+                                  cursor.getString(ID_KEY_NM));
+   
+               alFieldValues.add(oField);
+            } while (cursor.moveToNext());
+         }
+   
+         return alFieldValues;
+      }
    }
 
    public Book getBook(long iBookID)
    {
-      Book oBook = null;
-
-      Cursor cursor = db.query(TABLE_BOOKS,
-                               null,
-                               KEY_ID + " = " + iBookID,
-                               null,
-                               null,
-                               null,
-                               null);
-
-      if(cursor.moveToFirst())
+      if(Debug.ON)
       {
-         oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-                          cursor.getString(ID_KEY_TTL),
-                          cursor.getString(ID_KEY_DSCR),
-                          Integer.parseInt(cursor.getString(ID_KEY_VLM)),
-                          Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
-                          Integer.parseInt(cursor.getString(ID_KEY_PGS)),
-                          Integer.parseInt(cursor.getString(ID_KEY_PRC)),
-                          Integer.parseInt(cursor.getString(ID_KEY_VL)),
-                          Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
-                          Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
-                          Integer.parseInt(cursor.getString(ID_KEY_EDN)),
-                          cursor.getString(ID_KEY_ISBN),
-                          cursor.getString(ID_KEY_WEB));
+         return DummyContent.BOOKS_MAP.get(iBookID);
       }
-
-      String sql = "SELECT f." + KEY_ID + ", bf." + KEY_TP_ID + ", f." + KEY_NM
-                  +" FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS + " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
-                  +" WHERE bf." + KEY_ID + " = " + iBookID;
-
-      cursor = db.rawQuery(sql, null);
-
-      Field oField;
-      ArrayList<Field> alFields = new ArrayList<>();
-      if(cursor.moveToFirst())
+      else
       {
-         do
+         Book oBook = null;
+   
+         Cursor cursor = db.query(TABLE_BOOKS,
+                                  null,
+                                  KEY_ID + " = " + iBookID,
+                                  null,
+                                  null,
+                                  null,
+                                  null);
+   
+         if(cursor.moveToFirst())
          {
-            oField = new Field(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-                               Integer.parseInt(cursor.getString(ID_KEY_TP_ID)),
-                               cursor.getString(ID_KEY_NM));
-
-            alFields.add(oField);
-         } while (cursor.moveToNext());
+            oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
+                             cursor.getString(ID_KEY_TTL),
+                             cursor.getString(ID_KEY_DSCR),
+                             Integer.parseInt(cursor.getString(ID_KEY_VLM)),
+                             Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
+                             Integer.parseInt(cursor.getString(ID_KEY_PGS)),
+                             Integer.parseInt(cursor.getString(ID_KEY_PRC)),
+                             Integer.parseInt(cursor.getString(ID_KEY_VL)),
+                             Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
+                             Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
+                             Integer.parseInt(cursor.getString(ID_KEY_EDN)),
+                             cursor.getString(ID_KEY_ISBN),
+                             cursor.getString(ID_KEY_WEB));
+         }
+   
+         String sql = "SELECT f." + KEY_ID + ", bf." + KEY_TP_ID + ", f." + KEY_NM
+                     +" FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS + " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
+                     +" WHERE bf." + KEY_ID + " = " + iBookID;
+   
+         cursor = db.rawQuery(sql, null);
+   
+         Field oField;
+         ArrayList<Field> alFields = new ArrayList<>();
+         if(cursor.moveToFirst())
+         {
+            do
+            {
+               oField = new Field(Integer.parseInt(cursor.getString(ID_KEY_ID)),
+                                  Integer.parseInt(cursor.getString(ID_KEY_TP_ID)),
+                                  cursor.getString(ID_KEY_NM));
+   
+               alFields.add(oField);
+            } while (cursor.moveToNext());
+         }
+         oBook.alFields = alFields;
+   
+         return oBook;
       }
-      oBook.alFields = alFields;
-
-      return oBook;
+      
    }
 
    public boolean deleteBook(long iBookID)
    {
       boolean result = true;
 
-      db.beginTransaction();
-      try
+      if(Debug.ON)
       {
-         db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + iBookID, null);
-         db.delete(TABLE_BOOKS, KEY_ID + " = " + iBookID, null);
+         DummyContent.BOOKS_MAP.remove(iBookID);         
       }
-      catch (Exception e)
+      else
       {
-         Log.e(TAG, e.getMessage());
-         result = false;
-      }
-      finally
-      {
-         db.endTransaction();
-         shrink();
+         db.beginTransaction();
+         try
+         {
+            db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + iBookID, null);
+            db.delete(TABLE_BOOKS, KEY_ID + " = " + iBookID, null);
+         }
+         catch (Exception e)
+         {
+            Log.e(TAG, e.getMessage());
+            result = false;
+         }
+         finally
+         {
+            db.endTransaction();
+            shrink();
+         }
       }
 
       return result;
@@ -420,64 +514,76 @@ public class DBAdapter
 
    public boolean updateBook(Book oBook)
    {
-      ContentValues oValues;
-      boolean result = true;
-
-      db.beginTransaction();
-      try
+      
+      if(Debug.ON)
       {
-         for (Field oField : oBook.alFields)
+         DummyContent.BOOKS_MAP.remove(oBook.iID);
+         DummyContent.BOOKS_MAP.put(oBook.iID, oBook);
+         DummyContent.BOOKS.remove(oBook);
+         DummyContent.BOOKS.add(oBook);
+         return true;
+      }
+      else
+      {
+         ContentValues oValues;
+         boolean result = true;
+
+         db.beginTransaction();
+         try
          {
-            if (oField.iID == 0)
+            for (Field oField : oBook.alFields)
+            {
+               if (oField.iID == 0)
+               {
+                  oValues = new ContentValues();
+                  oValues.put(KEY_NM, oField.sValue);
+                  oField.iID = db.insert(TABLE_FIELDS, null, oValues);
+               }
+            }
+   
+            db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + oBook.iID, null);
+   
+            for (Field oField : oBook.alFields)
             {
                oValues = new ContentValues();
-               oValues.put(KEY_NM, oField.sValue);
-               oField.iID = db.insert(TABLE_FIELDS, null, oValues);
+               oValues.put(KEY_FLD_ID, oField.iID);
+               oValues.put(KEY_TP_ID, oField.iTypeID);
+               oValues.put(KEY_BK_ID, oBook.iID);
+               db.insert(TABLE_BOOK_FIELDS, null, oValues);
             }
-         }
-
-         db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + oBook.iID, null);
-
-         for (Field oField : oBook.alFields)
-         {
+   
             oValues = new ContentValues();
-            oValues.put(KEY_FLD_ID, oField.iID);
-            oValues.put(KEY_TP_ID, oField.iTypeID);
-            oValues.put(KEY_BK_ID, oBook.iID);
-            db.insert(TABLE_BOOK_FIELDS, null, oValues);
+            oValues.put(KEY_TTL, oBook.sTitle);
+            oValues.put(KEY_DSCR, oBook.sDescription);
+            oValues.put(KEY_VLM, oBook.iVolume);
+            oValues.put(KEY_PBL_DT, oBook.iPublicationDate);
+            oValues.put(KEY_PGS, oBook.iPages);
+            oValues.put(KEY_PRC, oBook.iPrice);
+            oValues.put(KEY_VL, oBook.iValue);
+            oValues.put(KEY_DUE_DT, oBook.iDueDate);
+            oValues.put(KEY_RD_DT, oBook.iReadDate);
+            oValues.put(KEY_EDN, oBook.iEdition);
+            oValues.put(KEY_ISBN, oBook.sISBN);
+            oValues.put(KEY_WEB, oBook.sWeb);
+            db.update(TABLE_PRESENCES,
+                      oValues,
+                      KEY_ID + " = ?" + oBook.iID,
+                      null);
+   
+            db.setTransactionSuccessful();
          }
-
-         oValues = new ContentValues();
-         oValues.put(KEY_TTL, oBook.sTitle);
-         oValues.put(KEY_DSCR, oBook.sDescription);
-         oValues.put(KEY_VLM, oBook.iVolume);
-         oValues.put(KEY_PBL_DT, oBook.iPublicationDate);
-         oValues.put(KEY_PGS, oBook.iPages);
-         oValues.put(KEY_PRC, oBook.iPrice);
-         oValues.put(KEY_VL, oBook.iValue);
-         oValues.put(KEY_DUE_DT, oBook.iDueDate);
-         oValues.put(KEY_RD_DT, oBook.iReadDate);
-         oValues.put(KEY_EDN, oBook.iEdition);
-         oValues.put(KEY_ISBN, oBook.sISBN);
-         oValues.put(KEY_WEB, oBook.sWeb);
-         db.update(TABLE_PRESENCES,
-                   oValues,
-                   KEY_ID + " = ?" + oBook.iID,
-                   null);
-
-         db.setTransactionSuccessful();
+         catch (Exception e)
+         {
+            Log.e(TAG, e.getMessage());
+            result = false;
+         }
+         finally
+         {
+            db.endTransaction();
+            shrink();
+         }
+         return result;
       }
-      catch (Exception e)
-      {
-         Log.e(TAG, e.getMessage());
-         result = false;
-      }
-      finally
-      {
-         db.endTransaction();
-         shrink();
-      }
-      return result;
    }
 
    public void shrink()

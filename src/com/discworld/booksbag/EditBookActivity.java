@@ -48,7 +48,7 @@ import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.EditTextUpdatable;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.MultiSpinner;
-import com.discworld.booksbag.dummy.DummyContent;
+//import com.discworld.booksbag.dummy.DummyContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +64,9 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
    private LinearLayout llAuthors;
    private EditText etAuthorFocused;
-   Button btnShowPopup;
-   DBAdapter oDbAdapter = null;
-   ArrayAdapter<String> adapter ;
+   private Button btnShowPopup;
+   private DBAdapter oDbAdapter = null;
+   private ArrayAdapter<String> adapter ;
 
    @Override
    protected void onCreate(Bundle savedInstanceState)
@@ -125,17 +125,21 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       etDescription = (EditText) findViewById(R.id.et_description);
       if(iBookID != 0)
       {
-         oBook = DummyContent.BOOKS_MAP.get(iBookID);
-         /* TODO Error!!! Fixi it!*/
-//         oBook = oDbAdapter.getBook(iBookID);
+//         oBook = DummyContent.BOOKS_MAP.get(iBookID);
+         oBook = oDbAdapter.getBook(iBookID);
          loadBook();
       }
       else
          oBook = new Book();
 
-      String tAuthors[] = new String[DummyContent.AUTHORS.size()];
-      for(int i = 0; i < DummyContent.AUTHORS.size(); i++)
-         tAuthors[i] = DummyContent.AUTHORS.get(i).sValue;
+      ArrayList<Field> alAuthors = oDbAdapter.getFieldValues(DBAdapter.FLD_AUTHOR);
+      String tAuthors[] = new String[alAuthors.size()];
+      for(int i = 0; i < alAuthors.size(); i++)
+         tAuthors[i] = alAuthors.get(i).sValue;
+      
+//      String tAuthors[] = new String[DummyContent.AUTHORS.size()];
+//      for(int i = 0; i < DummyContent.AUTHORS.size(); i++)
+//         tAuthors[i] = DummyContent.AUTHORS.get(i).sValue;
 
       adapter = new ArrayAdapter<String> (this,android.R.layout.select_dialog_item, tAuthors);  
       
@@ -182,7 +186,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //      setSupportActionBar(toolbar);
 
       btnShowPopup = (Button) findViewById(R.id.button1);
-      setButtonText(btnShowPopup, DummyContent.CATEGORIES);
+//      setButtonText(btnShowPopup, DummyContent.CATEGORIES);
+      setButtonText(btnShowPopup, oDbAdapter.getFieldValues(DBAdapter.FLD_CATEGORY));
 //      for(Field oField: DummyContent.CATEGORIES)
 //      {
 //         String sButtonText = "";
@@ -198,7 +203,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
         {
           // Display popup attached to the button as a position anchor
            
-          displayPopupWindow1(v, oBook.alFields, DummyContent.CATEGORIES);
+//          displayPopupWindow1(v, oBook.alFields, DummyContent.CATEGORIES);
+          displayPopupWindow1(v, oBook.alFields, oDbAdapter.getFieldValues(DBAdapter.FLD_CATEGORY));
         }
       });
    

@@ -30,13 +30,13 @@
       custom:color="@color/colorBlue" >
    </com.discworld.booksbag.Title>
 
-   <AutoCompleteTextView
+   <com.discworld.booksbag.dto.AutoCompleteTextViewUpdatable
       android:id="@+id/autoCompleteTextView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:ems="10"
       android:text="AutoCompleteTextView" >
 
-   </AutoCompleteTextView>
+   </com.discworld.booksbag.dto.AutoCompleteTextViewUpdatable>
 
 </LinearLayout>

@@ -31,6 +31,8 @@ import java.util.List;
 public class BookListActivity extends AppCompatActivity
 {
    public final static int SHOW_EDIT_BOOK = 101;
+   
+   private DBAdapter oDbAdapter = null;
 
    /**
     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -44,6 +46,8 @@ public class BookListActivity extends AppCompatActivity
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_book_list);
 
+      oDbAdapter = new DBAdapter(this);
+      
       Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
       setSupportActionBar(toolbar);
       toolbar.setTitle(getTitle());
@@ -81,7 +85,8 @@ public class BookListActivity extends AppCompatActivity
    private void setupRecyclerView(@NonNull RecyclerView recyclerView)
    {
 //      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
-      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.BOOKS));
+//      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.BOOKS));
+      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL)));
    }
 
    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>
@@ -164,5 +169,23 @@ public class BookListActivity extends AppCompatActivity
             return super.toString() + " '" + mContentView.getText() + "'";
          }
       }
+   }
+
+   @Override
+   protected void onPause()
+   {
+      oDbAdapter.close();
+
+      super.onPause();
+   }
+
+   @Override
+   protected void onResume()
+   {
+      super.onResume();
+
+      oDbAdapter.open();
+
+//      oBook = oDbAdapter.getBook(oBook.iID);
    }
 }

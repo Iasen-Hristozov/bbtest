@@ -160,7 +160,7 @@
          android:spinnerMode="dropdown" />
       
       
-      <com.discworld.booksbag.TitleAutoCompleteTextView
+      <com.discworld.booksbag.FieldAutoCompleteTextView
          android:id="@+id/titleAutoCompleteTextView1"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"

@@ -17,26 +17,26 @@ import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 
-public class TitleAutoCompleteTextView extends LinearLayout
+public class FieldAutoCompleteTextView extends LinearLayout
 {
    
    AutoCompleteTextView autoCompleteTextView;
    
-   public TitleAutoCompleteTextView(Context context)
+   public FieldAutoCompleteTextView(Context context)
    {
       super(context);
       // TODO Auto-generated constructor stub
    }
 
-   public TitleAutoCompleteTextView(Context context, AttributeSet attrs)
+   public FieldAutoCompleteTextView(Context context, AttributeSet attrs)
    {
       super(context, attrs);
-      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TitleAutoCompleteTextView, 0, 0);
-      String titleText = a.getString(R.styleable.TitleAutoCompleteTextView_text);
+      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldAutoCompleteTextView, 0, 0);
+      String titleText = a.getString(R.styleable.FieldAutoCompleteTextView_text);
       
-      int valueColor = a.getColor(R.styleable.TitleAutoCompleteTextView_color, android.R.color.black);
-      int textSize = a.getDimensionPixelOffset(R.styleable.TitleAutoCompleteTextView_textSize, 0);
-      int lineSize = a.getDimensionPixelOffset(R.styleable.TitleAutoCompleteTextView_lineSize, 1);
+      int valueColor = a.getColor(R.styleable.FieldAutoCompleteTextView_color, android.R.color.black);
+      int textSize = a.getDimensionPixelOffset(R.styleable.FieldAutoCompleteTextView_textSize, 0);
+      int lineSize = a.getDimensionPixelOffset(R.styleable.FieldAutoCompleteTextView_lineSize, 1);
       
       a.recycle();
 
@@ -44,7 +44,7 @@ public class TitleAutoCompleteTextView extends LinearLayout
       setGravity(Gravity.CENTER_VERTICAL);
 
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      inflater.inflate(R.layout.title_auto_complete_text_view, this, true);
+      inflater.inflate(R.layout.field_auto_complete_text_view, this, true);
 //      addView(inflater.inflate(R.layout.title, this));
       
       Title title = (Title)this.findViewById(R.id.title);

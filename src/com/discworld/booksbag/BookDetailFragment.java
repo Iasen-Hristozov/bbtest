@@ -34,6 +34,7 @@ public class BookDetailFragment extends Fragment
     */
 //   private DummyContent.DummyItem mItem;
    private Book mItem;
+   private DBAdapter oDbAdapter = null;
 
    /**
     * Mandatory empty constructor for the fragment manager to instantiate the
@@ -47,6 +48,8 @@ public class BookDetailFragment extends Fragment
    public void onCreate(Bundle savedInstanceState)
    {
       super.onCreate(savedInstanceState);
+      
+      oDbAdapter = new DBAdapter(getActivity());
 
       if (getArguments().containsKey(ARG_ITEM_ID))
       {
@@ -54,7 +57,8 @@ public class BookDetailFragment extends Fragment
          // arguments. In a real-world scenario, use a Loader
          // to load content from a content provider.
 //         mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-         mItem = DummyContent.BOOKS_MAP.get(getArguments().getLong(ARG_ITEM_ID));
+//         mItem = DummyContent.BOOKS_MAP.get(getArguments().getLong(ARG_ITEM_ID));
+         mItem = oDbAdapter.getBook(getArguments().getLong(ARG_ITEM_ID));
 
          Activity activity = this.getActivity();
          CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
@@ -64,6 +68,22 @@ public class BookDetailFragment extends Fragment
             appBarLayout.setTitle(mItem.sTitle);
          }
       }
+   }
+
+   @Override
+   public void onPause()
+   {
+      oDbAdapter.close();
+      
+      super.onPause();
+   }
+
+   @Override
+   public void onResume()
+   {
+      super.onResume();
+      
+      oDbAdapter.open();
    }
 
    @Override
@@ -80,7 +100,7 @@ public class BookDetailFragment extends Fragment
          LinearLayout llCategories = (LinearLayout) rootView.findViewById(R.id.ll_categories);
          String sName = "", sValue = "";
          
-         for(FieldType fieldType: DummyContent.FIELD_TYPES)
+         for(FieldType fieldType: DBAdapter.FIELD_TYPES)
          {
             if(fieldType.iID < 100)
             {
@@ -108,7 +128,7 @@ public class BookDetailFragment extends Fragment
             {
                switch(fieldType.iID)
                {
-                  case DummyContent.FLD_DESCRIPTION:
+                  case DBAdapter.FLD_DESCRIPTION:
                      if(!mItem.sDescription.trim().isEmpty())
                      {
                         sName = "Description:";
@@ -116,7 +136,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_VOLUME:
+                  case DBAdapter.FLD_VOLUME:
                      if(mItem.iVolume != 0)
                      {
                         sName = "Volume:";
@@ -124,7 +144,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_PUBLICATION_DATE:
+                  case DBAdapter.FLD_PUBLICATION_DATE:
                      if(mItem.iPublicationDate != 0)
                      {
                         sName = "Publication Date:";
@@ -132,7 +152,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_PAGES:
+                  case DBAdapter.FLD_PAGES:
                      if(mItem.iPages != 0)
                      {
                         sName = "Pages:";
@@ -140,7 +160,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_PRICE:
+                  case DBAdapter.FLD_PRICE:
                      if(mItem.iPrice != 0)
                      {
                         sName = "Price:";
@@ -148,7 +168,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_VALUE:
+                  case DBAdapter.FLD_VALUE:
                      if(mItem.iValue != 0)
                      {
                         sName = "Value:";
@@ -156,7 +176,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_DUE_DATE:
+                  case DBAdapter.FLD_DUE_DATE:
                      if(mItem.iDueDate != 0)
                      {
                         sName = "Due Date:";
@@ -164,7 +184,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_READ_DATE:
+                  case DBAdapter.FLD_READ_DATE:
                      if(mItem.iReadDate != 0)
                      {
                         sName = "Read Date:";
@@ -172,7 +192,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_EDITION:
+                  case DBAdapter.FLD_EDITION:
                      if(mItem.iEdition != 0)
                      {
                         sName = "Edition:";
@@ -180,7 +200,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_ISBN:
+                  case DBAdapter.FLD_ISBN:
                      if(!mItem.sISBN.trim().isEmpty())
                      {
                         sName = "ISBN:";
@@ -188,7 +208,7 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
-                  case DummyContent.FLD_WEB:
+                  case DBAdapter.FLD_WEB:
                      if(!mItem.sWeb.trim().isEmpty())
                      {
                         sName = "Web:";

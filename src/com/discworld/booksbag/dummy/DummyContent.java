@@ -18,35 +18,23 @@ import com.discworld.booksbag.dto.FieldType;
  */
 public class DummyContent
 {
-   public final static int FLD_DESCRIPTION = 100,
-                           FLD_VOLUME = 101,
-                           FLD_PUBLICATION_DATE = 102,
-                           FLD_PAGES = 103,
-                           FLD_PRICE = 104,
-                           FLD_VALUE = 105,
-                           FLD_DUE_DATE = 106,
-                           FLD_READ_DATE = 107,
-                           FLD_EDITION = 108,
-                           FLD_ISBN = 109,
-                           FLD_WEB = 110;                           
 
    /**
     * An array of sample (dummy) items.
     */
    public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
-   public static final List<Book> BOOKS = new ArrayList<Book>();
-   public static final List<Field> AUTHORS = new ArrayList<Field>();
-   public static final List<Field> SERIES = new ArrayList<Field>();
-   public static final List<Field> CATEGORIES = new ArrayList<Field>();
-   public static final List<Field> LANGUAGES = new ArrayList<Field>();
-   public static final List<Field> PUBLISHERS = new ArrayList<Field>();
-   public static final List<Field> PUBLISHING_LOCATIONS = new ArrayList<Field>();
-   public static final List<Field> STATUS = new ArrayList<Field>();
-   public static final List<Field> RATINGS = new ArrayList<Field>();
-   public static final List<Field> FORMATS = new ArrayList<Field>();
-   public static final List<Field> LOCATIONS = new ArrayList<Field>();
-   public static final List<Field> CONDITIONS = new ArrayList<Field>();
-   public static final List<FieldType> FIELD_TYPES = new ArrayList<>();
+   public static final ArrayList<Book> BOOKS = new ArrayList<Book>();
+   public static final ArrayList<Field> AUTHORS = new ArrayList<Field>();
+   public static final ArrayList<Field> SERIES = new ArrayList<Field>();
+   public static final ArrayList<Field> CATEGORIES = new ArrayList<Field>();
+   public static final ArrayList<Field> LANGUAGES = new ArrayList<Field>();
+   public static final ArrayList<Field> PUBLISHERS = new ArrayList<Field>();
+   public static final ArrayList<Field> PUBLISHING_LOCATIONS = new ArrayList<Field>();
+   public static final ArrayList<Field> STATUS = new ArrayList<Field>();
+   public static final ArrayList<Field> RATINGS = new ArrayList<Field>();
+   public static final ArrayList<Field> FORMATS = new ArrayList<Field>();
+   public static final ArrayList<Field> LOCATIONS = new ArrayList<Field>();
+   public static final ArrayList<Field> CONDITIONS = new ArrayList<Field>();
    
    /**
     * A map of sample (dummy) items, by ID.
@@ -137,28 +125,6 @@ public class DummyContent
       BOOKS.add(oBook);
       BOOKS_MAP.put(oBook.iID, oBook);
       
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_AUTHOR, "Authors"));
-      FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, "Description"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_SERIE, "Serie"));
-      FIELD_TYPES.add(new FieldType(FLD_VOLUME, "Volume"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_CATEGORY, "Category"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_LANGUAGE, "Language"));
-      FIELD_TYPES.add(new FieldType(FLD_PAGES, "Pages"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_PUBLISHER, "Publisher"));
-      FIELD_TYPES.add(new FieldType(FLD_PUBLICATION_DATE, "Publication Date"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_PUBLICATION_LOCATION, "Publication Location"));
-      FIELD_TYPES.add(new FieldType(FLD_EDITION, "Edition"));
-      FIELD_TYPES.add(new FieldType(FLD_PRICE, "Price"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_STATUS, "Status"));
-      FIELD_TYPES.add(new FieldType(FLD_VALUE, "Value"));
-      FIELD_TYPES.add(new FieldType(FLD_READ_DATE, "Read Date"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_RATING, "Rating"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_FORMAT, "Format"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_LOCATION, "Location"));
-      FIELD_TYPES.add(new FieldType(DBAdapter.FLD_CONDITION, "Condition"));
-      FIELD_TYPES.add(new FieldType(FLD_DUE_DATE, "Due Date"));
-      FIELD_TYPES.add(new FieldType(FLD_ISBN, "ISBN"));
-      FIELD_TYPES.add(new FieldType(FLD_WEB, "Web"));
       
    }
 
