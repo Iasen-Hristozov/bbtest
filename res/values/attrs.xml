@@ -6,11 +6,24 @@
    <attr name="textSize" format="dimension"/>
    <attr name="lineSize" format="dimension"/>
    </declare-styleable>
+   
    <declare-styleable name="FieldAutoCompleteTextView">
+      <attr name="title" format="string" />
+      <attr name="titleColor" format="color" />
+      <attr name="titleTextSize" format="dimension" />
+      <attr name="titleLineSize" format="dimension" />
       <attr name="text" format="string" />
-      <attr name="color" format="color" />
-      <attr name="textSize" format="dimension" />
-      <attr name="lineSize" format="dimension" />
+   </declare-styleable>
+   
+   <declare-styleable name="FieldEditTextUpdatableClearable">
+      <attr name="title" format="string" />
+      <attr name="titleColor" format="color" />
+      <attr name="titleTextSize" format="dimension" />
+      <attr name="titleLineSize" format="dimension" />
+      <attr name="android:text" />
+      <attr name="android:inputType" />
+      <attr name="android:contentDescription" />
+      <attr name="android:hint" />
    </declare-styleable>
    
 </resources>

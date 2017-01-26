@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
+import android.text.InputType;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
@@ -27,7 +28,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
@@ -46,9 +49,14 @@ import android.widget.TextView;
 import com.discworld.booksbag.dto.AutoCompleteTextViewUpdatable;
 import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.EditTextUpdatable;
+import com.discworld.booksbag.dto.EditTextUpdatable.OnUpdateListener;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.MultiSpinner;
 //import com.discworld.booksbag.dummy.DummyContent;
+
+
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +74,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
    private EditText etAuthorFocused;
    private Button btnShowPopup;
    private DBAdapter oDbAdapter = null;
-   private ArrayAdapter<String> adapter ;
+   private ArrayAdapter<String> adapter;
+   String tAuthors[];
 
    @Override
    protected void onCreate(Bundle savedInstanceState)
@@ -133,7 +142,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          oBook = new Book();
 
       ArrayList<Field> alAuthors = oDbAdapter.getFieldValues(DBAdapter.FLD_AUTHOR);
-      String tAuthors[] = new String[alAuthors.size()];
+      tAuthors = new String[alAuthors.size()];
       for(int i = 0; i < alAuthors.size(); i++)
          tAuthors[i] = alAuthors.get(i).sValue;
       
@@ -156,6 +165,20 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       initAuthors(llAuthors, oBook.alFields);
       
       addAuthor(llAuthors);
+      
+      final FieldEditTextUpdatableClearable fldTitle = new FieldEditTextUpdatableClearable(this);
+      fldTitle.setTitle("Title1");
+      fldTitle.setText(oBook.sTitle);
+      fldTitle.setHint("Title");
+      fldTitle.setUpdateListener(new OnUpdateListener()
+      {
+         @Override
+         public void onUpdate(EditText et)
+         {
+            oBook.sTitle = et.getText().toString();
+         }
+      });
+      llAuthors.addView(fldTitle);
 
       MultiSpinner ms   = (MultiSpinner) findViewById(R.id.multi_spinner);
       List<String> list = new ArrayList<String>();
@@ -276,6 +299,23 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       etAuthor.setThreshold(1);
       if(fldAuthor.iID != 0) // fldAuthor is not new 
          etAuthor.setText(fldAuthor.sValue);
+      etAuthor.setOnItemClickListener(new OnItemClickListener()
+      {
+
+         @Override
+         public void onItemClick(AdapterView<?> adapter, View view, int position, long rowId)
+         {
+            String selection = (String) adapter.getItemAtPosition(position);
+            int pos = -1;
+            for (int i = 0; i < tAuthors.length; i++) {
+                if (tAuthors[i].equals(selection)) {
+                    pos = i;
+                    break;
+                }
+            }
+            System.out.println("Position " + pos); //check it now in Logcat            
+         }
+      });
       vRow.setTag(fldAuthor);
       llAuthors.addView(vRow);
       if(llAuthors.getChildCount() == 1)

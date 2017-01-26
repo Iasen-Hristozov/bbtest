@@ -29,7 +29,7 @@ public class Title extends LinearLayout
          
          int valueColor = a.getColor(R.styleable.Title_color, android.R.color.black);
          int textSize = a.getDimensionPixelOffset(R.styleable.Title_textSize, 0);
-         int lineSize = a.getDimensionPixelOffset(R.styleable.Title_lineSize, 1);
+         int lineSize = a.getDimensionPixelOffset(R.styleable.Title_lineSize, 0);
          
          a.recycle();
 
@@ -48,6 +48,7 @@ public class Title extends LinearLayout
          title.setTextColor(valueColor);
          if(textSize > 0)
             title.setTextSize(textSize);
+//         int a  = title.getTextSize();
          
          line.setBackgroundColor(valueColor);
          android.view.ViewGroup.LayoutParams params = line.getLayoutParams();
@@ -71,6 +72,11 @@ public class Title extends LinearLayout
    {
       title.setText(text);
    }
+
+   public void setText(int resid)
+   {
+      title.setText(resid);
+   }
    
    public void setTextSize(int textSize)
    {
@@ -80,8 +86,11 @@ public class Title extends LinearLayout
    
    public void setColor(int valueColor)
    {
-      title.setTextColor(valueColor);
-      line.setBackgroundColor(valueColor);
+      if(valueColor > 0 )
+      {
+         title.setTextColor(valueColor);
+         line.setBackgroundColor(valueColor);
+      }
    }
    
    public void setLineSize(int lineSize)
@@ -94,10 +103,4 @@ public class Title extends LinearLayout
          line.setLayoutParams(params);
       }
    }
-   
-   private void init()
-   {
-      
-   }
-
 }

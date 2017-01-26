@@ -2,7 +2,10 @@ package com.discworld.booksbag.dto;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -14,7 +17,7 @@ public class EditTextUpdatable extends EditText
    
    private Context oContext;
 
-   OnEditorActionListener oEditorActionListener = new OnEditorActionListener()
+   private OnEditorActionListener onEditorActionListener = new OnEditorActionListener()
    {
       @Override
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
@@ -32,6 +35,22 @@ public class EditTextUpdatable extends EditText
             return true; 
          }
          return false;      
+      }
+   };
+   
+   private OnFocusChangeListener onFocusChangeListener = new OnFocusChangeListener()
+   {
+      @Override
+      public void onFocusChange(View v, boolean hasFocus)
+      {
+         if(!hasFocus)
+         {
+            onUpdateListener.onUpdate((EditText) v);
+         }
+//         else
+//         {
+//            ((EditText)v).setHint("");
+//         }
       }
    };
 
@@ -60,7 +79,9 @@ public class EditTextUpdatable extends EditText
    {
       oContext = context;
       
-      setOnEditorActionListener(oEditorActionListener);
+      setOnEditorActionListener(onEditorActionListener);
+      
+      setOnFocusChangeListener(onFocusChangeListener);      
    }
    
    @Override
@@ -77,6 +98,11 @@ public class EditTextUpdatable extends EditText
    public void setOnUpdateListener(OnUpdateListener onUpdateListener)
    {
       this.onUpdateListener = onUpdateListener;
+   }
+   
+   public OnUpdateListener getOnUpdateListener()
+   {
+      return onUpdateListener;
    }
 
    public interface OnUpdateListener

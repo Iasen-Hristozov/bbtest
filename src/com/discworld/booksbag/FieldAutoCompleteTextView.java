@@ -2,30 +2,23 @@ package com.discworld.booksbag;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.database.DataSetObserver;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListAdapter;
 
 public class FieldAutoCompleteTextView extends LinearLayout
 {
    
+   private Title oTitle;
    AutoCompleteTextView autoCompleteTextView;
    
    public FieldAutoCompleteTextView(Context context)
    {
       super(context);
-      // TODO Auto-generated constructor stub
    }
 
    public FieldAutoCompleteTextView(Context context, AttributeSet attrs)
@@ -34,9 +27,10 @@ public class FieldAutoCompleteTextView extends LinearLayout
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldAutoCompleteTextView, 0, 0);
       String titleText = a.getString(R.styleable.FieldAutoCompleteTextView_text);
       
-      int valueColor = a.getColor(R.styleable.FieldAutoCompleteTextView_color, android.R.color.black);
-      int textSize = a.getDimensionPixelOffset(R.styleable.FieldAutoCompleteTextView_textSize, 0);
-      int lineSize = a.getDimensionPixelOffset(R.styleable.FieldAutoCompleteTextView_lineSize, 1);
+      int titleValueColor = a.getColor(R.styleable.FieldAutoCompleteTextView_titleColor, 0);
+      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldAutoCompleteTextView_titleTextSize, 0);
+      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldAutoCompleteTextView_titleLineSize, 0);
+      String text = a.getString(R.styleable.FieldAutoCompleteTextView_text);
       
       a.recycle();
 
@@ -47,36 +41,39 @@ public class FieldAutoCompleteTextView extends LinearLayout
       inflater.inflate(R.layout.field_auto_complete_text_view, this, true);
 //      addView(inflater.inflate(R.layout.title, this));
       
-      Title title = (Title)this.findViewById(R.id.title);
-      title.setText(titleText);
-      title.setColor(valueColor);
-      title.setTextSize(textSize);
-      title.setLineSize(lineSize);
+      oTitle = (Title)this.findViewById(R.id.title);
+      oTitle.setText(titleText);
+      oTitle.setColor(titleValueColor);
+      oTitle.setTextSize(titleTextSize);
+      oTitle.setLineSize(titleLineSize);
       
       autoCompleteTextView = (AutoCompleteTextView) this.findViewById(R.id.autoCompleteTextView);
-      
-//      TextView title = (TextView)this.findViewById(R.id.tv_title);
-//      LinearLayout line = (LinearLayout)this.findViewById(R.id.ll_line);
-//      TextView title1 = (TextView) getChildAt(0);
-//      title.setText(titleText);
-//      title.setTextColor(valueColor);
-//      if(textSize > 0)
-//         title.setTextSize(textSize);
-      
-//      line.setBackgroundColor(valueColor);
-//      android.view.ViewGroup.LayoutParams params = line.getLayoutParams();
-//   // Changes the height and width to the specified *pixels*
-//      if(lineSize > 0)
-//      {
-//         params.height = lineSize;
-//         params.width = LayoutParams.MATCH_PARENT;
-//         line.setLayoutParams(params);
-//      }
-         
-      // mValue = getChildAt(1);
-      // mValue.setBackgroundColor(valueColor);
-      // mImage = (ImageView) getChildAt(2);
-//   }   
+      autoCompleteTextView.setText(text);
+   }
+   
+   public void setTitle(String title)
+   {
+      oTitle.setText(title);
+   }
+   
+   public void setTitleColor(int valueColor)
+   {
+      oTitle.setColor(valueColor);
+   }
+   
+   public void setTitleTextSize(int textSize)
+   {
+      oTitle.setTextSize(textSize);
+   }
+   
+   public void setLineSize(int lineSize)
+   {
+      oTitle.setTextSize(lineSize);
+   }
+   
+   public void setText(String text)
+   {
+      autoCompleteTextView.setText(text);
    }
    
    public void setAdapter(ArrayAdapter<?> adapter)

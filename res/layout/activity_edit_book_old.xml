@@ -63,14 +63,27 @@
          android:layout_height="wrap_content"
          android:src="@drawable/list_divide" />
 
-      <EditText
+      <com.discworld.booksbag.dto.EditTextUpdatableClearable
          android:id="@+id/et_title"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_gravity="center_horizontal"
          android:contentDescription="@string/et_title"
          android:hint="@string/et_title" />
-
+      
+      <com.discworld.booksbag.FieldEditTextUpdatableClearable
+         android:id="@+id/et_title1"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:contentDescription="@string/et_title"
+         android:hint="@string/et_title"
+         custom:title="Test1"
+         android:text="Test2"
+         custom:titleLineSize="2dp"
+         android:inputType="textMultiLine" />
+         
+      
       <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="wrap_content" >
