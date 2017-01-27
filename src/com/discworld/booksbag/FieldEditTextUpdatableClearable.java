@@ -1,13 +1,12 @@
 package com.discworld.booksbag;
 
-import com.discworld.booksbag.dto.EditTextUpdatable;
-import com.discworld.booksbag.dto.EditTextUpdatable.OnUpdateListener;
-import com.discworld.booksbag.dto.EditTextUpdatableClearable;
+import com.discworld.booksbag.dto.EditTextX;
+import com.discworld.booksbag.dto.EditTextX.OnUpdateListener;
+import com.discworld.booksbag.dto.EditTextX.Callback;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.Editable;
-import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,23 +15,23 @@ import android.widget.LinearLayout;
 public class FieldEditTextUpdatableClearable extends LinearLayout
 {
    private Title oTitle;
-   private EditTextUpdatableClearable editTextUpdatableClearable;
+   private EditTextX oEditTextX;
    
    public FieldEditTextUpdatableClearable(Context context)
    {
       super(context);
-      // TODO Auto-generated constructor stub
-      LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      inflater.inflate(R.layout.field_edit_text_updatable_clearable, this, true);
-      oTitle = (Title)this.findViewById(R.id.title);
-      editTextUpdatableClearable = (EditTextUpdatableClearable) this.findViewById(R.id.editTextUpdatableClearable);
-
+      
+      vInit();
    }
 
    public FieldEditTextUpdatableClearable(Context context, AttributeSet attrs)
    {
       super(context, attrs);
+
+      vInit();
+      
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldEditTextUpdatableClearable, 0, 0);
+      
       String title = a.getString(R.styleable.FieldEditTextUpdatableClearable_title);
       int titleValueColor = a.getColor(R.styleable.FieldEditTextUpdatableClearable_titleColor, 0);
       int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldEditTextUpdatableClearable_titleTextSize, 0);
@@ -47,22 +46,25 @@ public class FieldEditTextUpdatableClearable extends LinearLayout
       setOrientation(LinearLayout.VERTICAL);
       setGravity(Gravity.CENTER_VERTICAL);
 
-      LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      inflater.inflate(R.layout.field_edit_text_updatable_clearable, this, true);
-//      addView(inflater.inflate(R.layout.title, this));
-      
-      oTitle = (Title)this.findViewById(R.id.title);
       oTitle.setText(title);
       oTitle.setColor(titleValueColor);
       oTitle.setTextSize(titleTextSize);
       oTitle.setLineSize(titleLineSize);
       
-      editTextUpdatableClearable = (EditTextUpdatableClearable) this.findViewById(R.id.editTextUpdatableClearable);
-      editTextUpdatableClearable.setText(text);
+      oEditTextX.setText(text);
       if(inputType > 0)
-         editTextUpdatableClearable.setInputType(inputType);
-      editTextUpdatableClearable.setContentDescription(contentDescription);
-      editTextUpdatableClearable.setHint(hint);
+         oEditTextX.setInputType(inputType);
+      oEditTextX.setContentDescription(contentDescription);
+      oEditTextX.setHint(hint);
+   }
+   
+   void vInit()
+   {
+      LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      inflater.inflate(R.layout.field_edit_text_updatable_clearable, this, true);
+      
+      oTitle = (Title)this.findViewById(R.id.title);
+      oEditTextX = (EditTextX) this.findViewById(R.id.editTextUpdatableClearable);
    }
    
    public void setTitle(String title)
@@ -92,46 +94,46 @@ public class FieldEditTextUpdatableClearable extends LinearLayout
    
    public void setText(String text)
    {
-      editTextUpdatableClearable.setText(text);
+      oEditTextX.setText(text);
    }
 
    public void setText(int resid)
    {
-      editTextUpdatableClearable.setText(resid);
-   }
-   
-   public void setInputType(int type)
-   {
-      editTextUpdatableClearable.setInputType(type);;
-   }
-
-   public void setContentDescription(String contentDescription)
-   {
-      editTextUpdatableClearable.setContentDescription(contentDescription);
-   }
-   
-   public void setHint(String hint)
-   {
-      editTextUpdatableClearable.setHint(hint);
-   }
-   
-   public void setHint(int resid)
-   {
-      editTextUpdatableClearable.setHint(resid);
-   }
-   
-   public void setUpdateListener(OnUpdateListener onUpdateListener)
-   {
-      editTextUpdatableClearable.setOnUpdateListener(onUpdateListener);
-   }
-   
-   public void setCallback(EditTextUpdatableClearable.Callback callback)
-   {
-      editTextUpdatableClearable.setCallback(callback);
+      oEditTextX.setText(resid);
    }
    
    public Editable getText()
    {
-      return editTextUpdatableClearable.getText();
+      return oEditTextX.getText();
+   }
+
+   public void setInputType(int type)
+   {
+      oEditTextX.setInputType(type);;
+   }
+
+   public void setContentDescription(String contentDescription)
+   {
+      oEditTextX.setContentDescription(contentDescription);
+   }
+   
+   public void setHint(String hint)
+   {
+      oEditTextX.setHint(hint);
+   }
+   
+   public void setHint(int resid)
+   {
+      oEditTextX.setHint(resid);
+   }
+   
+   public void setUpdateListener(OnUpdateListener onUpdateListener)
+   {
+      oEditTextX.setOnUpdateListener(onUpdateListener);
+   }
+   
+   public void setCallback(Callback callback)
+   {
+      oEditTextX.setCallback(callback);
    }
 }

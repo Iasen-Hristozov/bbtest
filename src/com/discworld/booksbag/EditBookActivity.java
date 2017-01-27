@@ -46,13 +46,13 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.discworld.booksbag.dto.AutoCompleteTextViewUpdatable;
+import com.discworld.booksbag.dto.AutoCompleteTextViewX;
 import com.discworld.booksbag.dto.Book;
-import com.discworld.booksbag.dto.EditTextUpdatable;
-import com.discworld.booksbag.dto.EditTextUpdatable.OnUpdateListener;
+import com.discworld.booksbag.dto.EditTextX;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.MultiSpinner;
 //import com.discworld.booksbag.dummy.DummyContent;
+
 
 
 
@@ -166,11 +166,11 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       
       addAuthor(llAuthors);
       
-      final FieldEditTextUpdatableClearable fldTitle = new FieldEditTextUpdatableClearable(this);
-      fldTitle.setTitle("Title1");
+      FieldEditTextUpdatableClearable fldTitle = new FieldEditTextUpdatableClearable(this);
+      fldTitle.setTitle("Title");
       fldTitle.setText(oBook.sTitle);
       fldTitle.setHint("Title");
-      fldTitle.setUpdateListener(new OnUpdateListener()
+      fldTitle.setUpdateListener(new EditTextX.OnUpdateListener()
       {
          @Override
          public void onUpdate(EditText et)
@@ -180,6 +180,30 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       });
       llAuthors.addView(fldTitle);
 
+      FieldAutoCompleteTextView  fldLanguage = new FieldAutoCompleteTextView(this);
+      fldLanguage.setTitle("Language");
+      fldLanguage.setText(oBook.sTitle);
+      fldLanguage.setHint("Language");
+      fldLanguage.setUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
+      {
+         @Override
+         public void onUpdate(EditText et)
+         {
+//            oBook. = et.getText().toString();
+         }
+      });
+      
+      ArrayList<Field> alLanguages = oDbAdapter.getFieldValues(DBAdapter.FLD_LANGUAGE);
+      String tLanguages[] = new String[alLanguages.size()];
+      for(int i = 0; i < alLanguages.size(); i++)
+         tLanguages[i] = alLanguages.get(i).sValue;
+
+      ArrayAdapter<String> aaLanguages = new ArrayAdapter<String> (this,android.R.layout.select_dialog_item, tLanguages);  
+      fldLanguage.setThreshold(1);
+      fldLanguage.setAdapter(aaLanguages);
+      llAuthors.addView(fldLanguage);
+      
+      
       MultiSpinner ms   = (MultiSpinner) findViewById(R.id.multi_spinner);
       List<String> list = new ArrayList<String>();
       list.add("one");
@@ -268,8 +292,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
 //      final EditTextUpdatable etAuthor = (EditTextUpdatable)vRow.findViewById(R.id.et_author);
 //      etAuthor.setOnUpdateListener(new EditTextUpdatable.OnUpdateListener()
-      final AutoCompleteTextViewUpdatable etAuthor = (AutoCompleteTextViewUpdatable)vRow.findViewById(R.id.et_author);
-      etAuthor.setOnUpdateListener(new AutoCompleteTextViewUpdatable.OnUpdateListener()
+      final AutoCompleteTextViewX etAuthor = (AutoCompleteTextViewX)vRow.findViewById(R.id.et_author);
+      etAuthor.setOnUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
       {
          @Override
          public void onUpdate(EditText et)
@@ -278,23 +302,23 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
             ((Field) vRow.getTag()).sValue = et.getText().toString();
          }
       });
-      etAuthor.setOnFocusChangeListener(new View.OnFocusChangeListener()
-      {
-         @Override
-         public void onFocusChange(View v, boolean hasFocus)
-         {
-            if(!hasFocus)
-            {
-               updateAuthor((EditText)v);
-               etAuthorFocused = (EditText)v;
-            }
-            else
-            {
-//               ((EditText)v).setHint("");
-               etAuthorFocused = (EditText)v;
-            }
-         }
-      });
+//      etAuthor.setOnFocusChangeListener(new View.OnFocusChangeListener()
+//      {
+//         @Override
+//         public void onFocusChange(View v, boolean hasFocus)
+//         {
+//            if(!hasFocus)
+//            {
+//               updateAuthor((EditText)v);
+//               etAuthorFocused = (EditText)v;
+//            }
+//            else
+//            {
+////               ((EditText)v).setHint("");
+//               etAuthorFocused = (EditText)v;
+//            }
+//         }
+//      });
       etAuthor.setAdapter(adapter);
       etAuthor.setThreshold(1);
       if(fldAuthor.iID != 0) // fldAuthor is not new 

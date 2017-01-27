@@ -14,7 +14,7 @@
       custom:color="@color/colorBlue" >
    </com.discworld.booksbag.Title>
 
-   <com.discworld.booksbag.dto.EditTextUpdatableClearable
+   <com.discworld.booksbag.dto.EditTextX
       android:id="@+id/editTextUpdatableClearable"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

@@ -20,12 +20,12 @@ public class DBAdapter
 {
    private static final String TAG = "DB";
 	private static final String DATABASE_NAME = "books_bag.db";
+   private static final int DATABASE_VERSION = 1;
 
    private static final String TABLE_BOOKS = "books";
    private static final String TABLE_FIELDS = "fields";
    private static final String TABLE_BOOK_FIELDS = "book_fields";
 	private static final String TABLE_PRESENCES = "presences";
-	private static final int DATABASE_VERSION = 1;
 
    // Common column names
    private static final String KEY_ID = "_id";
@@ -140,6 +140,7 @@ public class DBAdapter
                            FLD_FORMAT = 9,
                            FLD_LOCATION = 10,
                            FLD_CONDITION = 11,
+                           FLD_TITLE = 99,
                            FLD_DESCRIPTION = 100,
                            FLD_VOLUME = 101,
                            FLD_PUBLICATION_DATE = 102,
@@ -162,8 +163,9 @@ public class DBAdapter
       private static final long serialVersionUID = 1397960005890445623L;
 
    {
+      add(new FieldType(FLD_TITLE, "Title", true, FieldType.TYPE_TEXT));
       add(new FieldType(FLD_AUTHOR, "Authors"));
-      add(new FieldType(FLD_DESCRIPTION, "Description"));
+      add(new FieldType(FLD_DESCRIPTION, "Description", true, FieldType.TYPE_TEXT_MULTILINE));
       add(new FieldType(FLD_SERIE, "Serie"));
       add(new FieldType(FLD_VOLUME, "Volume"));
       add(new FieldType(FLD_CATEGORY, "Category"));
@@ -619,5 +621,4 @@ public class DBAdapter
 			onCreate(_db);
 		}
 	}
-
 }
