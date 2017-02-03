@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -24,14 +25,14 @@ public class FieldAutoCompleteTextView extends LinearLayout
    {
       super(context);
       
-      vInit();
+      vInit(context);
    }
 
    public FieldAutoCompleteTextView(Context context, AttributeSet attrs)
    {
       super(context, attrs);
       
-      vInit();
+      vInit(context);
       
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldAutoCompleteTextView, 0, 0);
 
@@ -56,9 +57,9 @@ public class FieldAutoCompleteTextView extends LinearLayout
       oAutoCompleteTextViewX.setHint(hint);
    }
    
-   public void vInit()
+   public void vInit(Context context)
    {
-      LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       inflater.inflate(R.layout.field_auto_complete_text_view, this, true);
       
       oTitle = (Title)this.findViewById(R.id.title);
@@ -139,4 +140,10 @@ public class FieldAutoCompleteTextView extends LinearLayout
    {
       oAutoCompleteTextViewX.setOnItemSelectedListener(l);
    }
+
+   public void setOnItemClickListener(OnItemClickListener l)
+   {
+      oAutoCompleteTextViewX.setOnItemClickListener(l);
+   }
+   
 }

@@ -26,4 +26,11 @@ public class Field
       this.iTypeID = iTypeID;
       this.sValue = sValue;
    }
+
+   public void copy(Field f)
+   {
+      iID = f.iID;
+      iTypeID = f.iTypeID;
+      sValue = f.sValue;
+   }
 }

@@ -1,32 +1,28 @@
 package com.discworld.booksbag;
 
-import com.discworld.booksbag.dto.EditTextX;
-import com.discworld.booksbag.dto.EditTextX.OnUpdateListener;
-import com.discworld.booksbag.dto.EditTextX.Callback;
-
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.method.DigitsKeyListener;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
-public class FieldEditTextUpdatableClearable extends LinearLayout
+public class FieldSpinner extends LinearLayout
 {
    private Title oTitle;
-   private EditTextX oEditTextX;
+   private Spinner oSpinner;
    
-   public FieldEditTextUpdatableClearable(Context context)
+   public FieldSpinner(Context context)
    {
       super(context);
       
       vInit(context);
    }
 
-   public FieldEditTextUpdatableClearable(Context context, AttributeSet attrs)
+   public FieldSpinner(Context context, AttributeSet attrs)
    {
       super(context, attrs);
 
@@ -38,10 +34,7 @@ public class FieldEditTextUpdatableClearable extends LinearLayout
       int titleValueColor = a.getColor(R.styleable.FieldEditTextUpdatableClearable_titleColor, 0);
       int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldEditTextUpdatableClearable_titleTextSize, 0);
       int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldEditTextUpdatableClearable_titleLineSize, 0);
-      String text = a.getString(R.styleable.FieldEditTextUpdatableClearable_android_text);
-      int inputType = a.getInteger(R.styleable.FieldEditTextUpdatableClearable_android_inputType, 0);
       String contentDescription = a.getString(R.styleable.FieldEditTextUpdatableClearable_android_contentDescription);
-      String hint = a.getString(R.styleable.FieldEditTextUpdatableClearable_android_hint);
 
       a.recycle();
 
@@ -53,20 +46,16 @@ public class FieldEditTextUpdatableClearable extends LinearLayout
       oTitle.setTextSize(titleTextSize);
       oTitle.setLineSize(titleLineSize);
       
-      oEditTextX.setText(text);
-      if(inputType > 0)
-         oEditTextX.setInputType(inputType);
-      oEditTextX.setContentDescription(contentDescription);
-      oEditTextX.setHint(hint);
+      oSpinner.setContentDescription(contentDescription);
    }
    
    void vInit(Context context)
    {
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      inflater.inflate(R.layout.field_edit_text_updatable_clearable, this, true);
+      inflater.inflate(R.layout.field_spinner, this, true);
       
       oTitle = (Title)this.findViewById(R.id.title);
-      oEditTextX = (EditTextX) this.findViewById(R.id.editTextUpdatableClearable);
+      oSpinner = (Spinner) this.findViewById(R.id.spinner);
    }
    
    public void setTitle(String title)
@@ -93,55 +82,25 @@ public class FieldEditTextUpdatableClearable extends LinearLayout
    {
       oTitle.setTextSize(lineSize);
    }
-   
-   public void setText(String text)
-   {
-      oEditTextX.setText(text);
-   }
-
-   public void setText(int resid)
-   {
-      oEditTextX.setText(resid);
-   }
-   
-   public Editable getText()
-   {
-      return oEditTextX.getText();
-   }
-
-   public void setInputType(int type)
-   {
-      oEditTextX.setInputType(type);
-   }
-   
-   public void setDigits(String digits)
-   {
-      oEditTextX.setInputType(InputType.TYPE_CLASS_PHONE);
-      oEditTextX.setKeyListener(DigitsKeyListener.getInstance(digits));
-   }
 
    public void setContentDescription(String contentDescription)
    {
-      oEditTextX.setContentDescription(contentDescription);
+      oSpinner.setContentDescription(contentDescription);
    }
    
-   public void setHint(String hint)
+   public void setAdapter(ArrayAdapter<?> adapter)
    {
-      oEditTextX.setHint(hint);
+      oSpinner.setAdapter(adapter);
    }
    
-   public void setHint(int resid)
+   public void setOnItemSelectedListener(OnItemSelectedListener listener)
    {
-      oEditTextX.setHint(resid);
+      oSpinner.setOnItemSelectedListener(listener);
    }
-   
-   public void setUpdateListener(OnUpdateListener onUpdateListener)
+
+   public void setSelection(int position)
    {
-      oEditTextX.setOnUpdateListener(onUpdateListener);
-   }
-   
-   public void setCallback(Callback callback)
-   {
-      oEditTextX.setCallback(callback);
+      if(position >= 0)
+         oSpinner.setSelection(position);
    }
 }

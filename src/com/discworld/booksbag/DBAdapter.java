@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteDatabase;
@@ -156,42 +157,66 @@ public class DBAdapter
    public final static int ORD_TTL = 1,
                            ORD_AUT = 2;
 
-   public final static ArrayList<FieldType> FIELD_TYPES = new ArrayList<FieldType>()
-   {/**
-       * 
-       */
-      private static final long serialVersionUID = 1397960005890445623L;
-
-   {
-      add(new FieldType(FLD_TITLE, "Title", true, FieldType.TYPE_TEXT));
-      add(new FieldType(FLD_AUTHOR, "Authors"));
-      add(new FieldType(FLD_DESCRIPTION, "Description", true, FieldType.TYPE_TEXT_MULTILINE));
-      add(new FieldType(FLD_SERIE, "Serie"));
-      add(new FieldType(FLD_VOLUME, "Volume"));
-      add(new FieldType(FLD_CATEGORY, "Category"));
-      add(new FieldType(FLD_LANGUAGE, "Language"));
-      add(new FieldType(FLD_PAGES, "Pages"));
-      add(new FieldType(FLD_PUBLISHER, "Publisher"));
-      add(new FieldType(FLD_PUBLICATION_DATE, "Publication Date"));
-      add(new FieldType(FLD_PUBLICATION_LOCATION, "Publication Location"));
-      add(new FieldType(FLD_EDITION, "Edition"));
-      add(new FieldType(FLD_PRICE, "Price"));
-      add(new FieldType(FLD_STATUS, "Status"));
-      add(new FieldType(FLD_VALUE, "Value"));
-      add(new FieldType(FLD_READ_DATE, "Read Date"));
-      add(new FieldType(FLD_RATING, "Rating"));
-      add(new FieldType(FLD_FORMAT, "Format"));
-      add(new FieldType(FLD_LOCATION, "Location"));
-      add(new FieldType(FLD_CONDITION, "Condition"));
-      add(new FieldType(FLD_DUE_DATE, "Due Date"));
-      add(new FieldType(FLD_ISBN, "ISBN"));
-      add(new FieldType(FLD_WEB, "Web"));
-   }};
+   public final static ArrayList<FieldType> FIELD_TYPES = new ArrayList<FieldType>();
+//   {/**
+//       * 
+//       */
+//      private static final long serialVersionUID = 1397960005890445623L;
+//
+//   {
+//      add(new FieldType(FLD_TITLE, "Title", true, FieldType.TYPE_TEXT));
+//      add(new FieldType(FLD_AUTHOR, "Authors"));
+//      add(new FieldType(FLD_DESCRIPTION, "Description", true, FieldType.TYPE_TEXT_MULTILINE));
+//      add(new FieldType(FLD_SERIE, "Serie"));
+//      add(new FieldType(FLD_VOLUME, "Volume"));
+//      add(new FieldType(FLD_CATEGORY, "Category"));
+//      add(new FieldType(FLD_LANGUAGE, "Language"));
+//      add(new FieldType(FLD_PAGES, "Pages"));
+//      add(new FieldType(FLD_PUBLISHER, "Publisher"));
+//      add(new FieldType(FLD_PUBLICATION_DATE, "Publication Date"));
+//      add(new FieldType(FLD_PUBLICATION_LOCATION, "Publication Location"));
+//      add(new FieldType(FLD_EDITION, "Edition"));
+//      add(new FieldType(FLD_PRICE, "Price"));
+//      add(new FieldType(FLD_STATUS, "Status"));
+//      add(new FieldType(FLD_VALUE, "Value"));
+//      add(new FieldType(FLD_READ_DATE, "Read Date"));
+//      add(new FieldType(FLD_RATING, "Rating"));
+//      add(new FieldType(FLD_FORMAT, "Format"));
+//      add(new FieldType(FLD_LOCATION, "Location"));
+//      add(new FieldType(FLD_CONDITION, "Condition"));
+//      add(new FieldType(FLD_DUE_DATE, "Due Date"));
+//      add(new FieldType(FLD_ISBN, "ISBN"));
+//      add(new FieldType(FLD_WEB, "Web"));
+//   }};
    
 	public DBAdapter(Context _context)
 	{
 		this.context = _context;
 		dbHelper = new DBOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
+		Resources r = context.getResources();
+		FIELD_TYPES.add(new FieldType(FLD_TITLE, r.getString(R.string.fld_title), true, FieldType.TYPE_TEXT));
+		FIELD_TYPES.add(new FieldType(FLD_AUTHOR, r.getString(R.string.fld_author)));
+		FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, r.getString(R.string.fld_descrition), true, FieldType.TYPE_TEXT_MULTILINE));
+		FIELD_TYPES.add(new FieldType(FLD_SERIE, r.getString(R.string.fld_serie)));
+		FIELD_TYPES.add(new FieldType(FLD_VOLUME, r.getString(R.string.fld_volume)));
+		FIELD_TYPES.add(new FieldType(FLD_CATEGORY, r.getString(R.string.fld_category)));
+		FIELD_TYPES.add(new FieldType(FLD_LANGUAGE, r.getString(R.string.fld_language)));
+		FIELD_TYPES.add(new FieldType(FLD_PAGES, r.getString(R.string.fld_pages)));
+		FIELD_TYPES.add(new FieldType(FLD_PUBLISHER, r.getString(R.string.fld_publisher)));
+		FIELD_TYPES.add(new FieldType(FLD_PUBLICATION_DATE, r.getString(R.string.fld_publication_date)));
+		FIELD_TYPES.add(new FieldType(FLD_PUBLICATION_LOCATION, r.getString(R.string.fld_publication_location)));
+		FIELD_TYPES.add(new FieldType(FLD_EDITION, r.getString(R.string.fld_edition)));
+		FIELD_TYPES.add(new FieldType(FLD_PRICE, r.getString(R.string.fld_price)));
+		FIELD_TYPES.add(new FieldType(FLD_STATUS, r.getString(R.string.fld_status)));
+		FIELD_TYPES.add(new FieldType(FLD_VALUE, r.getString(R.string.fld_value)));
+		FIELD_TYPES.add(new FieldType(FLD_READ_DATE, r.getString(R.string.fld_read_date)));
+		FIELD_TYPES.add(new FieldType(FLD_RATING, r.getString(R.string.fld_rating)));
+		FIELD_TYPES.add(new FieldType(FLD_FORMAT, r.getString(R.string.fld_format)));
+		FIELD_TYPES.add(new FieldType(FLD_LOCATION, r.getString(R.string.fld_location)));
+		FIELD_TYPES.add(new FieldType(FLD_CONDITION, r.getString(R.string.fld_condition)));
+		FIELD_TYPES.add(new FieldType(FLD_DUE_DATE, r.getString(R.string.fld_due_date)));
+		FIELD_TYPES.add(new FieldType(FLD_ISBN, r.getString(R.string.fld_isbn)));
+		FIELD_TYPES.add(new FieldType(FLD_WEB, r.getString(R.string.fld_web)));
 	}
 
 	public void open() throws SQLiteException

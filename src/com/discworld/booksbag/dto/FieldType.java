@@ -8,7 +8,9 @@ public class FieldType
    public int iID = 0;
    public String sName;
    public boolean isVisible = true;
-   public int iType = 0;
+   public int iType = 0,
+              iInputType = 0;
+   public String sDigit ="";
 
    public final static int TYPE_TEXT = 1,
                            TYPE_TEXT_MULTILINE = 2,
@@ -25,7 +27,17 @@ public class FieldType
    
    public FieldType(int iID, String sName, boolean isVisible, int iType)
    {
+      this(iID, sName);
       this.isVisible = isVisible;
       this.iType = iType;
    }
+   
+   
+   public FieldType(int iID, String sName, boolean isVisible, String sDigit)
+   {
+      this(iID, sName);
+      this.isVisible = isVisible;
+      this.sDigit = sDigit;
+   }
+   
 }

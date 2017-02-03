@@ -10,11 +10,33 @@
    <string name="lbl_author">Author</string>
    <string name="lbl_description">Description</string>
    <string name="lbl_category">Category</string>
+   <string name="fld_title">Title</string>
+   <string name="fld_author">Author</string>
+   <string name="fld_descrition">Description</string>
+   <string name="fld_serie">Serie</string>
+   <string name="fld_volume">Volume</string>
+   <string name="fld_category">Category</string>
+   <string name="fld_language">Language</string>
+   <string name="fld_pages">Pages</string>
+   <string name="fld_publisher">Publisher</string>
+   <string name="fld_publication_date">Publication Date</string>
+   <string name="fld_publication_location">Publication Location</string>
+   <string name="fld_edition">Edition</string>
+   <string name="fld_price">Price</string>
+   <string name="fld_status">Status</string>
+   <string name="fld_value">Value</string>
+   <string name="fld_read_date">Read Date</string>
+   <string name="fld_rating">Rating</string>
+   <string name="fld_format">Format</string>
+   <string name="fld_location">Location</string>
+   <string name="fld_condition">Condition</string>
+   <string name="fld_due_date">Due Date</string>
+   <string name="fld_isbn">ISBN</string>
+   <string name="fld_web">Web Address</string>
    <string name="hnt_description">Description</string>
    <string name="title_activity_main">MainActivity</string>
    <string name="title_activity_edi_book1">EdiBook1Activity</string>
    <string name="done">DONE</string>
    <string name="cancel">Discard</string>
    <string name="add_new">Add new</string>
-
 </resources>
