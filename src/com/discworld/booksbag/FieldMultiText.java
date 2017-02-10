@@ -73,7 +73,6 @@ public class FieldMultiText extends LinearLayout
       oTitle.setColor(titleValueColor);
       oTitle.setTextSize(titleTextSize);
       oTitle.setLineSize(titleLineSize);
-      
    }
    
 //   void vInit(Context context, ArrayList<Field> alFields, int iType)
@@ -85,6 +84,7 @@ public class FieldMultiText extends LinearLayout
       this.alFields = alFields;
       this.context = context;
       this.oFieldType = oFieldType;
+      this.hint = oFieldType.sName;
       
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       inflater.inflate(R.layout.field_multi_text, this, true);
@@ -140,7 +140,7 @@ public class FieldMultiText extends LinearLayout
       });
 
       final AutoCompleteTextViewX etValue = (AutoCompleteTextViewX)vRow.findViewById(R.id.et_value);
-      etValue.setHint(oFieldType.sName);
+      etValue.setHint(hint);
 // RECONSIDER !!!!
 //      etValue.setOnUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
 //      {
