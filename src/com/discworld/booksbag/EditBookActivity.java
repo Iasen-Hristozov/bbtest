@@ -166,7 +166,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       
       initAuthors(llAuthors, oBook.alFields);
       
-      addAuthor(llAuthors);
+//      addAuthor(llAuthors);
       
       FieldEditTextUpdatableClearable fldTitle = new FieldEditTextUpdatableClearable(this);
       fldTitle.setTitle("Title");
@@ -206,6 +206,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       llAuthors.addView(fldLanguage);
       
       addTextField(llAuthors, DBAdapter.FLD_WEB, oBook.alFields.get(3));
+      addFieldMultiText(llAuthors, DBAdapter.FLD_AUTHOR);
       
       
       MultiSpinner ms   = (MultiSpinner) findViewById(R.id.multi_spinner);
@@ -935,7 +936,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
    private void addFieldMultiText(ViewGroup rootView, int iEnuType)
    {
       FieldType oFieldType = getFieldType(iEnuType);
-      final FieldMultiText oFieldMultiText = new FieldMultiText(this, oBook.alFields, iEnuType);
+      final FieldMultiText oFieldMultiText = new FieldMultiText(this, oBook.alFields, oFieldType);
       oFieldMultiText.setTitle(oFieldType.sName + "s");
       oFieldMultiText.setHint(oFieldType.sName);
 
@@ -944,8 +945,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       String tDictionaryValues[] = new String[alDictionaryFields.size()];
       for(int i = 0; i < alDictionaryFields.size(); i++)
          tDictionaryValues[i] = alDictionaryFields.get(i).sValue;
-//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tDictionaryValues);  
-      ArrayAdapter<Field> oArrayAdapter = new ArrayAdapter<Field> (this, android.R.layout.select_dialog_item, alDictionaryFields);
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tDictionaryValues);  
+//      ArrayAdapter<Field> oArrayAdapter = new ArrayAdapter<Field> (this, android.R.layout.select_dialog_item, alDictionaryFields);
       oFieldMultiText.setAdapter(oArrayAdapter);
       
       rootView.addView(oFieldMultiText);
@@ -956,7 +957,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
    {
       FieldType oFieldType = null;
       
-      for(int i = 0; i < DBAdapter.FIELD_TYPES.size() && (oFieldType == null || oFieldType.iType != iEnuFieldType); i++)
+      for(int i = 0; i < DBAdapter.FIELD_TYPES.size() && (oFieldType == null || oFieldType.iID != iEnuFieldType); i++)
          oFieldType = DBAdapter.FIELD_TYPES.get(i);
       
       return oFieldType;

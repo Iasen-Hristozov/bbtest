@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:layout_gravity="center_horizontal"
-        android:layout_toStartOf="@+id/ib_remove_author"
-        android:layout_toLeftOf="@+id/ib_remove_author"
+        android:layout_toStartOf="@+id/ib_remove_field"
+        android:layout_toLeftOf="@+id/ib_remove_field"
         android:layout_alignParentLeft="true"
         android:hint="@string/lbl_author"/>
     

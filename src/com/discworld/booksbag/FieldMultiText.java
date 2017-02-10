@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.discworld.booksbag.dto.AutoCompleteTextViewX;
 import com.discworld.booksbag.dto.Field;
+import com.discworld.booksbag.dto.FieldType;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,22 +32,28 @@ public class FieldMultiText extends LinearLayout
    private ArrayList<Field> alFields = null;
    private ArrayAdapter<?> adapter;
    private int iEnuType = 0;
-   private String tDictionaryFieldsValues[];
+//   private String tDictionaryFieldsValues[];
    private String hint = "";
    private String contentDescription = "";
+   private Context context;
+   private FieldType oFieldType;
    
-   public FieldMultiText(Context context, ArrayList<Field> alFields, int iEnuType)
+//   public FieldMultiText(Context context, ArrayList<Field> alFields, int iEnuType)
+   public FieldMultiText(Context context, ArrayList<Field> alFields, FieldType oFieldType)
    {
       super(context);
       
-      vInit(context, alFields, iEnuType);
+//      vInit(context, alFields, iEnuType);
+      vInit(context, alFields, oFieldType);
    }
 
-   public FieldMultiText(Context context, AttributeSet attrs, ArrayList<Field> alFields, int iEnuType)
+//   public FieldMultiText(Context context, AttributeSet attrs, ArrayList<Field> alFields, int iEnuType)
+   public FieldMultiText(Context context, AttributeSet attrs, ArrayList<Field> alFields, FieldType oFieldType)
    {
       super(context, attrs);
      
-      vInit(context, alFields, iEnuType);
+//      vInit(context, alFields, iEnuType);
+      vInit(context, alFields, oFieldType);
       
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldMultiText, 0, 0);
       
@@ -69,17 +76,24 @@ public class FieldMultiText extends LinearLayout
       
    }
    
-   void vInit(Context context, ArrayList<Field> alFields, int iType)
+//   void vInit(Context context, ArrayList<Field> alFields, int iType)
+   void vInit(Context context, ArrayList<Field> alFields, FieldType oFieldType)
    {
-      this.iEnuType = iType;
+      
+
+//      this.iEnuType = iType;
       this.alFields = alFields;
+      this.context = context;
+      this.oFieldType = oFieldType;
       
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      inflater.inflate(R.layout.field_spinner, this, true);
-      
+      inflater.inflate(R.layout.field_multi_text, this, true);
+
       oTitle = (Title)this.findViewById(R.id.title);
       
-      alFields = new ArrayList<>();
+      setTitle(oFieldType.sName + "s");
+      
+//      alFields = new ArrayList<>();
       
       llFields = (LinearLayout) findViewById(R.id.ll_fields);
       findViewById(R.id.ib_add_field).setOnClickListener(new View.OnClickListener()
@@ -90,14 +104,30 @@ public class FieldMultiText extends LinearLayout
             addField(llFields);
          }
       });
+
+      boolean hasFieldsOfType = false;
+      for(Field oField : alFields)
+      {
+         if(oField.iTypeID == oFieldType.iID)
+         {
+            addField(llFields, oField);
+            hasFieldsOfType = true;
+         }
+      }
+      if(!hasFieldsOfType)
+         addField(llFields);
    }
 
    private void addField(LinearLayout llFields)
    {
       Field oField = new Field(iEnuType);
       alFields.add(oField);
-      
-      LayoutInflater oInflater = LayoutInflater.from(getContext());
+      addField(llFields, oField);
+   }
+
+   private void addField(LinearLayout llFields, Field oField)
+   {
+      LayoutInflater oInflater = LayoutInflater.from(context);
       final View vRow = oInflater.inflate(R.layout.row_field, null);
       vRow.findViewById(R.id.ib_remove_field).setOnClickListener(new View.OnClickListener()
       {
@@ -110,7 +140,7 @@ public class FieldMultiText extends LinearLayout
       });
 
       final AutoCompleteTextViewX etValue = (AutoCompleteTextViewX)vRow.findViewById(R.id.et_value);
-      etValue.setHint(hint);
+      etValue.setHint(oFieldType.sName);
 // RECONSIDER !!!!
 //      etValue.setOnUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
 //      {
@@ -130,16 +160,20 @@ public class FieldMultiText extends LinearLayout
          @Override
          public void onItemClick(AdapterView<?> adapter, View view, int position, long rowId)
          {
-//            String selection = (String) adapter.getItemAtPosition(position);
-            Field selection = (Field) adapter.getItemAtPosition(position);
-            ((Field) vRow.getTag()).copy(selection);
-//            int pos = -1;
-//            for (int i = 0; i < adapter.getCount(); i++)
-//            {
-//               
-//               if(adapter.getItemAtPosition(i).equals(selection))
+            String selection = (String) adapter.getItemAtPosition(position);
+//            Field selection = (Field) adapter.getItemAtPosition(position);
+//            ((Field) vRow.getTag()).copy(selection);
+            int pos = -1;
+            for (int i = 0; i < adapter.getCount(); i++)
+            {
+               
+               if(adapter.getItemAtPosition(i).equals(selection))
+               {
 //                  ((Field) vRow.getTag()).copy(f);
-//            }
+                  etValue.setText(selection);
+                  pos = i;
+               }
+            }
 //            for (int i = 0; i < tDictionaryFieldsValues.length; i++) 
 //            {
 //               if (tDictionaryFieldsValues[i].equals(selection)) 
@@ -148,13 +182,13 @@ public class FieldMultiText extends LinearLayout
 //                  break;
 //               }
 //            }
-//            System.out.println("Position " + pos); //check it now in Logcat            
+            System.out.println("Position " + pos); //check it now in Logcat            
          }
       });
       vRow.setTag(oField);
       llFields.addView(vRow);
       if(llFields.getChildCount() == 1)
-         vRow.findViewById(R.id.ib_remove_author).setVisibility(View.INVISIBLE);
+         vRow.findViewById(R.id.ib_remove_field).setVisibility(View.INVISIBLE);
    }
    
    private void removeField(View vParent)
