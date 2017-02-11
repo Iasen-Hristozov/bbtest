@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.discworld.booksbag.dto.Book;
+import com.discworld.booksbag.dto.Date;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
 import com.discworld.booksbag.dummy.DummyContent;
@@ -164,7 +165,8 @@ public class BookDetailFragment extends Fragment
                      if(mItem.iPrice != 0)
                      {
                         sName = "Price:";
-                        sValue = String.valueOf(mItem.iPrice);
+                        String sPrice = String.format(getResources().getString(R.string.amn_vl), mItem.iPrice / 100, mItem.iPrice % 100);
+                        sValue = String.valueOf(sPrice);
                      }
                   break;
                   
@@ -172,7 +174,8 @@ public class BookDetailFragment extends Fragment
                      if(mItem.iValue != 0)
                      {
                         sName = "Value:";
-                        sValue = String.valueOf(mItem.iValue);
+                        String sBookValue = String.format(getResources().getString(R.string.amn_vl), mItem.iValue / 100, mItem.iValue % 100);
+                        sValue = String.valueOf(sBookValue);
                      }
                   break;
                   
@@ -180,7 +183,7 @@ public class BookDetailFragment extends Fragment
                      if(mItem.iDueDate != 0)
                      {
                         sName = "Due Date:";
-                        sValue = String.valueOf(mItem.iDueDate);
+                        sValue = String.valueOf(new Date(mItem.iDueDate).toString());
                      }
                   break;
                   
@@ -188,7 +191,7 @@ public class BookDetailFragment extends Fragment
                      if(mItem.iReadDate != 0)
                      {
                         sName = "Read Date:";
-                        sValue = String.valueOf(mItem.iReadDate);
+                        sValue = String.valueOf(new Date(mItem.iReadDate).toString());
                      }
                   break;
                   
