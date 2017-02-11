@@ -39,4 +39,5 @@
    <string name="done">DONE</string>
    <string name="cancel">Discard</string>
    <string name="add_new">Add new</string>
+   <string name="amn_vl">%1$01d,%2$02d</string>
 </resources>

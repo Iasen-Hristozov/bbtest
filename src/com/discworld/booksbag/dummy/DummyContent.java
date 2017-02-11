@@ -22,7 +22,7 @@ public class DummyContent
    /**
     * An array of sample (dummy) items.
     */
-   public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+   public static final ArrayList<DummyItem> ITEMS = new ArrayList<DummyItem>();
    public static final ArrayList<Book> BOOKS = new ArrayList<Book>();
    public static final ArrayList<Field> AUTHORS = new ArrayList<Field>();
    public static final ArrayList<Field> SERIES = new ArrayList<Field>();
@@ -35,6 +35,7 @@ public class DummyContent
    public static final ArrayList<Field> FORMATS = new ArrayList<Field>();
    public static final ArrayList<Field> LOCATIONS = new ArrayList<Field>();
    public static final ArrayList<Field> CONDITIONS = new ArrayList<Field>();
+   public static final ArrayList<Field> CURRENCIES = new ArrayList<Field>();
    
    /**
     * A map of sample (dummy) items, by ID.
@@ -93,6 +94,10 @@ public class DummyContent
       CONDITIONS.add(new Field(DBAdapter.FLD_CONDITION, 29, "Отлично"));
       CONDITIONS.add(new Field(DBAdapter.FLD_CONDITION, 30, "Много добро"));
       CONDITIONS.add(new Field(DBAdapter.FLD_CONDITION, 31, "Добро"));
+      
+      CURRENCIES.add(new Field(DBAdapter.FLD_CURRENCY, 32, "BGN"));
+      CURRENCIES.add(new Field(DBAdapter.FLD_CURRENCY, 33, "EUR"));
+      CURRENCIES.add(new Field(DBAdapter.FLD_CURRENCY, 34, "RBL"));
       
       Book oBook = new Book(1, "Трех мушкетера", "Приключения Атоса, Портоса, Арамиса и Д'Артаняна", 1, 1978, 360, 260, 1500, 0, 19850620, 3, "", "");
       oBook.alFields.add(new Field(DBAdapter.FLD_AUTHOR, 2, "Александър Дюма"));
