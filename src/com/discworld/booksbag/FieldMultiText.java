@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.discworld.booksbag.dto.AutoCompleteTextViewX;
+import com.discworld.booksbag.dto.AutoCompleteTextViewX.OnUpdateListener;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
 
@@ -120,7 +121,7 @@ public class FieldMultiText extends LinearLayout
 
    private void addField(LinearLayout llFields)
    {
-      Field oField = new Field(iEnuType);
+      Field oField = new Field(oFieldType.iID);
       alFields.add(oField);
       addField(llFields, oField);
    }
@@ -141,6 +142,7 @@ public class FieldMultiText extends LinearLayout
 
       final AutoCompleteTextViewX etValue = (AutoCompleteTextViewX)vRow.findViewById(R.id.et_value);
       etValue.setHint(hint);
+      etValue.setContentDescription(contentDescription);
 // RECONSIDER !!!!
 //      etValue.setOnUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
 //      {
@@ -160,8 +162,9 @@ public class FieldMultiText extends LinearLayout
          @Override
          public void onItemClick(AdapterView<?> adapter, View view, int position, long rowId)
          {
-            String selection = (String) adapter.getItemAtPosition(position);
-//            Field selection = (Field) adapter.getItemAtPosition(position);
+//            String selection = (String) adapter.getItemAtPosition(position);
+            Field selection = (Field) adapter.getItemAtPosition(position);
+            ((Field)vRow.getTag()).copy(selection);
 //            ((Field) vRow.getTag()).copy(selection);
             int pos = -1;
             for (int i = 0; i < adapter.getCount(); i++)
@@ -170,8 +173,8 @@ public class FieldMultiText extends LinearLayout
                if(adapter.getItemAtPosition(i).equals(selection))
                {
 //                  ((Field) vRow.getTag()).copy(f);
-                  etValue.setText(selection);
-                  pos = i;
+//                  etValue.setText(selection.sValue);
+//                  pos = i;
                }
             }
 //            for (int i = 0; i < tDictionaryFieldsValues.length; i++) 
@@ -183,6 +186,14 @@ public class FieldMultiText extends LinearLayout
 //               }
 //            }
             System.out.println("Position " + pos); //check it now in Logcat            
+         }
+      });
+      etValue.setOnUpdateListener(new OnUpdateListener()
+      {
+         @Override
+         public void onUpdate(EditText et)
+         {
+            ((Field)vRow.getTag()).sValue = et.getText().toString();
          }
       });
       vRow.setTag(oField);

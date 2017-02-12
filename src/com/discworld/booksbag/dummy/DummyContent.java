@@ -44,7 +44,7 @@ public class DummyContent
    public static final Map<Long, Book> BOOKS_MAP = new HashMap<Long, Book>();
 
    private static final int COUNT = 25;
-   private static final int BOOKS_COUNT = 3;
+//   private static final int BOOKS_COUNT = 3;
 
    static
    {

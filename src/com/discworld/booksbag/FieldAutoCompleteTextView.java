@@ -64,6 +64,7 @@ public class FieldAutoCompleteTextView extends LinearLayout
       
       oTitle = (Title)this.findViewById(R.id.title);
       oAutoCompleteTextViewX = (AutoCompleteTextViewX) this.findViewById(R.id.autoCompleteTextView);
+      oAutoCompleteTextViewX.setThreshold(1);
    }
    
    public void setTitle(String title)

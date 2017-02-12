@@ -63,8 +63,7 @@ public class AutoCompleteTextViewX extends AutoCompleteTextView
 //         }
       }
    };   
-   
-   
+      
    private TextWatcher textWatcher = new TextWatcher() 
    {
        @Override
