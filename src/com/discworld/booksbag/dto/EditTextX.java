@@ -63,7 +63,6 @@ public class EditTextX extends EditText
       }
    };   
    
-   
    private TextWatcher textWatcher = new TextWatcher() 
    {
        @Override

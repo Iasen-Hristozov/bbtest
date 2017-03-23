@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
    xmlns:custom="http://schemas.android.com/apk/res/com.discworld.booksbag"
+   android:id="@+id/ll_parent"
    android:layout_width="match_parent"
    android:layout_height="wrap_content"
    android:orientation="vertical">
@@ -13,11 +14,13 @@
       custom:color="@color/colorBlue" >
    </com.discworld.booksbag.Title>
 
-   <com.discworld.booksbag.dto.EditTextX
-      android:id="@+id/editTextX"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:inputType="text"
-      android:ems="10" />
-
+      <Button
+         android:id="@+id/spinner"
+         style="?android:attr/spinnerStyle"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:paddingLeft="14dip"
+         android:paddingStart="14dip"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         />
 </LinearLayout>

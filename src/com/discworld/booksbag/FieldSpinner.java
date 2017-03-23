@@ -28,13 +28,13 @@ public class FieldSpinner extends LinearLayout
 
       vInit(context);
       
-      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldEditTextUpdatableClearable, 0, 0);
+      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldSpinner, 0, 0);
       
-      String title = a.getString(R.styleable.FieldEditTextUpdatableClearable_title);
-      int titleValueColor = a.getColor(R.styleable.FieldEditTextUpdatableClearable_titleColor, 0);
-      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldEditTextUpdatableClearable_titleTextSize, 0);
-      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldEditTextUpdatableClearable_titleLineSize, 0);
-      String contentDescription = a.getString(R.styleable.FieldEditTextUpdatableClearable_android_contentDescription);
+      String title = a.getString(R.styleable.FieldSpinner_title);
+      int titleValueColor = a.getColor(R.styleable.FieldSpinner_titleColor, 0);
+      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldSpinner_titleTextSize, 0);
+      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldSpinner_titleLineSize, 0);
+      String contentDescription = a.getString(R.styleable.FieldSpinner_android_contentDescription);
 
       a.recycle();
 

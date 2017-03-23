@@ -49,6 +49,7 @@ import android.widget.TextView;
 
 import com.discworld.booksbag.dto.AutoCompleteTextViewX;
 import com.discworld.booksbag.dto.Book;
+import com.discworld.booksbag.dto.Changeable;
 import com.discworld.booksbag.dto.EditTextX;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
@@ -61,6 +62,10 @@ import com.discworld.booksbag.dto.MultiSpinner;
 
 
 
+import com.discworld.booksbag.dto.Price;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -206,9 +211,20 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       fldLanguage.setAdapter(aaLanguages);
       llAuthors.addView(fldLanguage);
       
+      String ts[] = {oBook.sTitle};
+      
+//      addTextField(llAuthors, DBAdapter.FLD_TITLE, ts);
+      addTextField(llAuthors, DBAdapter.FLD_TITLE, oBook.csTitle);
+      addTextField(llAuthors, DBAdapter.FLD_VOLUME, oBook.ciVolume);
       addTextField(llAuthors, DBAdapter.FLD_WEB, oBook.alFields.get(3));
       addAutocompleteField(llAuthors, oBook.alFields.get(4));
+//      addFieldSpinner(llAuthors, oBook.alFields.get(10));
+      addFieldSpinner(llAuthors, DBAdapter.FLD_CONDITION);
       addFieldMultiText(llAuthors, DBAdapter.FLD_AUTHOR);
+      addFieldMultiSpinner(llAuthors, DBAdapter.FLD_CATEGORY);
+//      addFieldValue(llAuthors, DBAdapter.FLD_PRICE);
+      addFieldValue(llAuthors, DBAdapter.FLD_PRICE, oBook.csPrice);
+      
       
       
       MultiSpinner ms   = (MultiSpinner) findViewById(R.id.multi_spinner);
@@ -737,7 +753,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       private List<String> lsFields;
       LayoutInflater inflater;
 
-      public CustomAdapter(Context context, int resource, int textViewResourceId, List objects)
+      public CustomAdapter(Context context, int resource, int textViewResourceId, List<String> objects)
       {
          this.context = context;
          this.lsFields = objects;
@@ -823,9 +839,10 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
    private void addTextField(ViewGroup rootView, int iEnuFieldType, final Field f)
    {
-      FieldType oFieldType = null;
-      for(int i = 0; i < DBAdapter.FIELD_TYPES.size() && (oFieldType == null || oFieldType.iType != iEnuFieldType); i++)
-         oFieldType = DBAdapter.FIELD_TYPES.get(i);
+      FieldType oFieldType = getFieldType(f.iTypeID);
+//      FieldType oFieldType = null;
+//      for(int i = 0; i < DBAdapter.FIELD_TYPES.size() && (oFieldType == null || oFieldType.iType != iEnuFieldType); i++)
+//         oFieldType = DBAdapter.FIELD_TYPES.get(i);
       
       final FieldEditTextUpdatableClearable oField = new FieldEditTextUpdatableClearable(this);
       oField.setTitle(oFieldType.sName);
@@ -851,7 +868,134 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       });
       rootView.addView(oField);      
    }
+   
+   private void addTextField(ViewGroup rootView, int iEnuType,  final String [] sValue)
+   {
+      FieldType oFieldType = getFieldType(iEnuType);
+      
+      final FieldEditTextUpdatableClearable oField = new FieldEditTextUpdatableClearable(this);
+      oField.setTitle(oFieldType.sName);
+//      oField.setText(sFieldValue);
+      oField.setText(sValue[0]);
+//      sValue[0] = "aaaa";
+      oField.setHint(oFieldType.sName);
+//      oField.setUpdateListener(new MyUpdateListener(sFieldValue));
+//      oField.setTag(sFieldValue);
+//      oField.setTag(f);
+      oField.setUpdateListener(new EditTextX.OnUpdateListener()
+      {
+         
+         @Override
+         public void onUpdate(EditText et)
+         {
+            sValue[0] = et.getText().toString();
+//            ((Field) oField.getTag()).sValue = et.getText().toString(); 
+//            String s = (String)oField.getTag();
+//            s = et.getText().toString();
+//            oField.setTag(s);
+////            ((String)oField.getTag()) = "aaa";
+////            s.
+         }
+      });
+      rootView.addView(oField);      
+   }
+   
+   private <T> void addTextField(ViewGroup rootView, int iEnuType,  final Changeable<T> cValue)
+   {
+      FieldType oFieldType = getFieldType(iEnuType);
+      
+      final FieldEditTextUpdatableClearable oField = new FieldEditTextUpdatableClearable(this);
+      oField.setTitle(oFieldType.sName);
+//      oField.setText(sFieldValue);
+      oField.setText(cValue.toString());
+//      sValue[0] = "aaaa";
+      oField.setHint(oFieldType.sName);
+      oField.setInputType(oFieldType.iInputType);
+//      oField.setUpdateListener(new MyUpdateListener(sFieldValue));
+//      oField.setTag(sFieldValue);
+//      oField.setTag(f);
+      final T a;
+      oField.setUpdateListener(new EditTextX.OnUpdateListener()
+      {
+         
+         @Override
+         public void onUpdate(EditText et)
+         {
+//            String s = "1";
+//            Integer ii = Integer.valueOf(s);
+            Class<?> c = cValue.getGenericType();
+            T t = null;
+//            Class<?> a = c.forName(className);
+//            Class.forName(c.getName()) a;
+            
+            Class<?> clazz;
+            Object object;
+            try
+            {
+               clazz = Class.forName(c.getName());
+               Constructor<?> ctor = clazz.getConstructor(String.class);
+//               Constructor<?> ctor = clazz.getDeclaredConstructor();
+               object = ctor.newInstance(et.getText().toString());
 
+            } catch(ClassNotFoundException 
+                    | NoSuchMethodException
+                    | SecurityException
+                    | InstantiationException
+                    | IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException e)
+            {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+               return;
+            } 
+            
+            cValue.value = (T) object;
+            
+            if(t instanceof Integer)
+            {
+               t = (T) Integer.valueOf(et.getText().toString());
+               cValue.value = t;
+            }
+            else if(t instanceof String)
+            {
+               t = (T) et.getText().toString();
+               cValue.value = t;
+               
+            }
+               
+////            c.
+//            if(c.getName().equals(Integer.class.getName()))
+//               cValue.value = (T) Integer.valueOf(et.getText().toString());
+//               cValue.set(Integer.valueOf(et.getText().toString()));
+//            else
+//               cValue.set(c.cast(et.getText().toString()));
+//            Class<?> classType;
+//            try
+//            {
+//               classType = Class.forName(c.getCanonicalName());
+//               classType.
+//            } catch(ClassNotFoundException e)
+//            {
+//               // TODO Auto-generated catch block
+//               e.printStackTrace();
+//            }
+////            cValue.value = et.getText().toString();
+//            c.cast(et.getText().toString());
+//            cValue.set(c.cast(et.getText().toString()));
+//            cValue.set(et.getText().toString());
+//            ((Field) oField.getTag()).sValue = et.getText().toString(); 
+//            String s = (String)oField.getTag();
+//            s = et.getText().toString();
+//            oField.setTag(s);
+////            ((String)oField.getTag()) = "aaa";
+////            s.
+         }
+      });
+      rootView.addView(oField);      
+   }
+
+   
    private void addAutocompleteField(ViewGroup rootView, final Field f)
    {
       FieldType oFieldType = getFieldType(f.iTypeID);
@@ -910,29 +1054,54 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
    private void addFieldSpinner(ViewGroup rootView, final Field f)
    {
       FieldType oFieldType = getFieldType(f.iTypeID);
+      addFieldSpinner(rootView, oFieldType);
+   }
+   
+   
+   private void addFieldSpinner(ViewGroup rootView, int iEnuType)
+   {
+      FieldType oFieldType = getFieldType(iEnuType);
+      addFieldSpinner(rootView, oFieldType);
+   }
+   
+   private void addFieldSpinner(ViewGroup rootView, FieldType oFieldType)
+   {
+      Field oField = null;
       int iSelected = -1;
-      
       final FieldSpinner oFieldSpinner = new FieldSpinner(this);
       oFieldSpinner.setTitle(oFieldType.sName);
       
-      final ArrayList<Field> alFields = oDbAdapter.getFieldValues(f.iTypeID);
-      String tFieldValues[] = new String[alFields.size()];
-      for(int i = 0; i < alFields.size(); i++)
+      for(Field fldTemp : oBook.alFields)
       {
-         tFieldValues[i] = alFields.get(i).sValue;
-         if(f != null && f.iID == alFields.get(i).iID)
+         if(fldTemp.iTypeID == oFieldType.iID)
+         {
+            oField = fldTemp;
+            break;
+         }
+      }
+
+      final ArrayList<Field> alFieldsValues = oDbAdapter.getFieldValues(oFieldType.iID);
+      String tFieldValues[] = new String[alFieldsValues.size()];
+      for(int i = 0; i < alFieldsValues.size(); i++)
+      {
+         tFieldValues[i] = alFieldsValues.get(i).sValue;
+         if(oField != null && oField.iID == alFieldsValues.get(i).iID)
             iSelected = i;
       }
 
-      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);  
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);  
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tFieldValues);
+//      ArrayAdapter oArrayAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.spinner_item);
       oFieldSpinner.setAdapter(oArrayAdapter);
       oFieldSpinner.setSelection(iSelected);
+      oFieldSpinner.setTag(oField);
       oFieldSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
       {
          @Override
          public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
          {
-            f.copy(alFields.get(pos));
+//            f.copy(alFieldsValues.get(pos));
+            ((Field) oFieldSpinner.getTag()).copy(alFieldsValues.get(pos));
          }
 
          @Override
@@ -950,6 +1119,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
    {
       FieldType oFieldType = getFieldType(iEnuType);
       final FieldMultiText oFieldMultiText = new FieldMultiText(this, oBook.alFields, oFieldType);
+      // TODO Fix it
       oFieldMultiText.setTitle(oFieldType.sName + "s");
       oFieldMultiText.setHint(oFieldType.sName);
 
@@ -976,6 +1146,259 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       rootView.addView(oFieldMultiText);
    }
    
+   private void addFieldMultiSpinner(ViewGroup rootView, int iEnuType)
+   {
+      FieldType oFieldType = getFieldType(iEnuType);
+      ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(iEnuType);
+      final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this, oBook.alFields, alFieldValues);
+      oFieldMultiSpinner.setTitle(oFieldType.sName + "s");
+      oFieldMultiSpinner.setHint(oFieldType.sName);
+      
+      rootView.addView(oFieldMultiSpinner);
+   }
+   
+//   private void addFieldValue(ViewGroup rootView, FieldType oFieldType)
+   private void addFieldValue(ViewGroup rootView, int iEnuType, final Changeable<String> csValue)
+   {
+      final FieldType oFieldType = getFieldType(iEnuType);
+      Field fldValue = null;
+      int iSelected = 0;
+      final FieldValue oFieldValue = new FieldValue(this);
+      oFieldValue.setTitle(oFieldType.sName);
+      
+//      for(Field fldTemp : oBook.alFields)
+//      {
+//         if(fldTemp.iTypeID == oFieldType.iID)
+//         {
+//            fldValue = fldTemp;
+//            break;
+//         }
+//      }
+      
+//      Price oPrice = fldValue != null ?  new Price(fldValue.sValue) : null;
+      Price oPrice = null;
+
+      oPrice = new Price(csValue.value);
+      
+//      switch(iEnuType)
+//      {
+//         case DBAdapter.FLD_PRICE:
+////            oFieldValue.setTag(oBook.sPrice);
+//            oPrice = new Price(oBook.sPrice); 
+//         break;
+//         
+//         case DBAdapter.FLD_VALUE:
+////            oFieldValue.setTag(oBook.sValue);
+//            oPrice = new Price(oBook.sValue);
+//         break;
+//      }
+      
+      final ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+      String tCurrencies[] = new String[alCurrencies.size()];
+      for(int i = 0; i < alCurrencies.size(); i++)
+      {
+         tCurrencies[i] = alCurrencies.get(i).sValue;
+         if(oPrice != null && oPrice.iCurrencyID == alCurrencies.get(i).iID)
+            iSelected = i;
+      }
+      
+
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);  
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tCurrencies);
+//      ArrayAdapter oArrayAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.spinner_item);
+      oFieldValue.setAdapter(oArrayAdapter);
+      oFieldValue.setSelection(iSelected);
+//      oFieldValue.setTag(fldValue);
+//      String a  = "1234";
+//              
+//      oFieldValue.setTag(a);
+//      
+//      a = "aaa";
+
+      oFieldValue.setValue(oPrice.iValue);
+      oFieldValue.setTag(oPrice);
+      oFieldValue.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+      {
+         @Override
+         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+         {
+//            f.copy(alFieldsValues.get(pos));
+            ((Price) oFieldValue.getTag()).iCurrencyID = alCurrencies.get(pos).iID;
+            csValue.value = ((Price) oFieldValue.getTag()).toString();
+         }
+
+         @Override
+         public void onNothingSelected(AdapterView<?> parent)
+         {
+            // TODO Auto-generated method stub
+            
+         }
+      });
+      
+      oFieldValue.setUpdateListener(new EditTextX.OnUpdateListener()
+      {
+         
+         @Override
+         public void onUpdate(EditText et)
+         {
+            String sValue = et.getText().toString();
+            sValue = sValue.replace(" ", "");
+            sValue = sValue.replace("-,", "-0,");
+            int iValue;
+            if(sValue.isEmpty() || sValue.matches("-|,|-,"))
+               iValue = 0;
+            else
+            {
+               String [] tsValue = sValue.split("\\" + DBAdapter.separator);
+//               String [] tsValue = sValue.split("\\.");
+                
+               iValue = (tsValue[0].isEmpty() ? 0 : Integer.valueOf(tsValue[0])*100) + (tsValue.length == 2 ? (sValue.contains("-") ? -1 : 1) * (tsValue[1].length() == 1 ? 10 : 1) * Integer.valueOf(tsValue[1]) : 0);
+            }
+            
+            ((Price) oFieldValue.getTag()).iValue = iValue;
+            csValue.value = ((Price) oFieldValue.getTag()).toString();
+//            switch(oFieldType.iID)
+//            {
+//               case DBAdapter.FLD_PRICE:
+////                oFieldValue.setTag(oBook.sPrice);
+//                  oBook.sPrice = ((Price) oFieldValue.getTag()).toString(); 
+//               break;
+//             
+//               case DBAdapter.FLD_VALUE:
+////                oFieldValue.setTag(oBook.sValue);
+//                  oBook.sValue = ((Price) oFieldValue.getTag()).toString(); 
+//               break;
+//            }
+         }
+      });      
+      
+      rootView.addView(oFieldValue);
+   }
+   
+   private void addFieldValue(ViewGroup rootView, int iEnuType)
+   {
+      final FieldType oFieldType = getFieldType(iEnuType);
+      Field fldValue = null;
+      int iSelected = 0;
+      final FieldValue oFieldValue = new FieldValue(this);
+      oFieldValue.setTitle(oFieldType.sName);
+      
+//      for(Field fldTemp : oBook.alFields)
+//      {
+//         if(fldTemp.iTypeID == oFieldType.iID)
+//         {
+//            fldValue = fldTemp;
+//            break;
+//         }
+//      }
+      
+//      Price oPrice = fldValue != null ?  new Price(fldValue.sValue) : null;
+      Price oPrice = null;
+
+      switch(iEnuType)
+      {
+         case DBAdapter.FLD_PRICE:
+//            oFieldValue.setTag(oBook.sPrice);
+            oPrice = new Price(oBook.sPrice); 
+         break;
+         
+         case DBAdapter.FLD_VALUE:
+//            oFieldValue.setTag(oBook.sValue);
+            oPrice = new Price(oBook.sValue);
+         break;
+      }
+      
+      final ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+      String tCurrencies[] = new String[alCurrencies.size()];
+      for(int i = 0; i < alCurrencies.size(); i++)
+      {
+         tCurrencies[i] = alCurrencies.get(i).sValue;
+         if(oPrice != null && oPrice.iCurrencyID == alCurrencies.get(i).iID)
+            iSelected = i;
+      }
+      
+
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);  
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tCurrencies);
+//      ArrayAdapter oArrayAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.spinner_item);
+      oFieldValue.setAdapter(oArrayAdapter);
+      oFieldValue.setSelection(iSelected);
+//      oFieldValue.setTag(fldValue);
+//      String a  = "1234";
+//              
+//      oFieldValue.setTag(a);
+//      
+//      a = "aaa";
+
+      oFieldValue.setValue(oPrice.iValue);
+      oFieldValue.setTag(oPrice);
+      oFieldValue.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+      {
+         @Override
+         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+         {
+//            f.copy(alFieldsValues.get(pos));
+            ((Price) oFieldValue.getTag()).iCurrencyID = alCurrencies.get(pos).iID;
+            switch(oFieldType.iID)
+            {
+               case DBAdapter.FLD_PRICE:
+//                oFieldValue.setTag(oBook.sPrice);
+                  oBook.sPrice = ((Price) oFieldValue.getTag()).toString(); 
+               break;
+             
+               case DBAdapter.FLD_VALUE:
+//                oFieldValue.setTag(oBook.sValue);
+                  oBook.sValue = ((Price) oFieldValue.getTag()).toString(); 
+               break;
+            }            
+         }
+
+         @Override
+         public void onNothingSelected(AdapterView<?> parent)
+         {
+            // TODO Auto-generated method stub
+            
+         }
+      });
+      
+      oFieldValue.setUpdateListener(new EditTextX.OnUpdateListener()
+      {
+         
+         @Override
+         public void onUpdate(EditText et)
+         {
+            String sValue = et.getText().toString();
+            sValue = sValue.replace(" ", "");
+            sValue = sValue.replace("-,", "-0,");
+            int iValue;
+            if(sValue.isEmpty() || sValue.matches("-|,|-,"))
+               iValue = 0;
+            else
+            {
+               String [] tsValue = sValue.split("\\" + DBAdapter.separator);
+//               String [] tsValue = sValue.split("\\.");
+                
+               iValue = (tsValue[0].isEmpty() ? 0 : Integer.valueOf(tsValue[0])*100) + (tsValue.length == 2 ? (sValue.contains("-") ? -1 : 1) * (tsValue[1].length() == 1 ? 10 : 1) * Integer.valueOf(tsValue[1]) : 0);
+            }
+            
+            ((Price) oFieldValue.getTag()).iValue = iValue;
+            switch(oFieldType.iID)
+            {
+               case DBAdapter.FLD_PRICE:
+//                oFieldValue.setTag(oBook.sPrice);
+                  oBook.sPrice = ((Price) oFieldValue.getTag()).toString(); 
+               break;
+             
+               case DBAdapter.FLD_VALUE:
+//                oFieldValue.setTag(oBook.sValue);
+                  oBook.sValue = ((Price) oFieldValue.getTag()).toString(); 
+               break;
+            }
+         }
+      });      
+      
+      rootView.addView(oFieldValue);
+   }   
    
    private FieldType getFieldType(int iEnuFieldType)
    {
@@ -1001,12 +1424,14 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       }
    }
    
-   private void setFieldVlue(String sField, String sValue)
+   private void setFieldValue(String sField, String sValue)
    {
       sField = sValue;
    }
+   
 
-   public class ArrayFieldsAdapter extends ArrayAdapter<Field> {
+   public class ArrayFieldsAdapter extends ArrayAdapter<Field> 
+   {
       private final String MY_DEBUG_TAG = "ArrayFieldsAdapter";
       private ArrayList<Field> items;
       private ArrayList<Field> itemsAll;

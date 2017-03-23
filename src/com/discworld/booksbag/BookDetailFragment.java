@@ -1,5 +1,8 @@
 package com.discworld.booksbag;
 
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.Date;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
+import com.discworld.booksbag.dto.Price;
 import com.discworld.booksbag.dummy.DummyContent;
 
 /**
@@ -161,20 +165,64 @@ public class BookDetailFragment extends Fragment
                      }
                   break;
                   
+//                  case DBAdapter.FLD_PRICE:
+//                     if(mItem.iPrice != 0)
+//                     {
+//                        sName = "Price:";
+//                        String sPrice = String.format(getResources().getString(R.string.amn_vl), mItem.iPrice / 100, mItem.iPrice % 100);
+//                        sValue = String.valueOf(sPrice);
+//                     }
+//                  break;
+
                   case DBAdapter.FLD_PRICE:
-                     if(mItem.iPrice != 0)
+                     if(!mItem.sPrice.trim().isEmpty())
                      {
                         sName = "Price:";
-                        String sPrice = String.format(getResources().getString(R.string.amn_vl), mItem.iPrice / 100, mItem.iPrice % 100);
+                        Price oPrice = new Price(mItem.sPrice);
+                        ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+                        Field fldCurrency = null;
+                        for(Field oField : alCurrencies)
+                           if(oField.iID == oPrice.iCurrencyID)
+                           {
+                              fldCurrency = oField;
+                              break;
+                           }
+                        char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+                        String sPrice = fldCurrency == null ? 
+                                          String.format(getResources().getString(R.string.amn_vl), oPrice.iValue / 100, DBAdapter.separator, oPrice.iValue % 100) :  
+                                          String.format(getResources().getString(R.string.amn_vl_crn), oPrice.iValue / 100, DBAdapter.separator, oPrice.iValue % 100, fldCurrency.sValue);
                         sValue = String.valueOf(sPrice);
                      }
                   break;
                   
+//                  case DBAdapter.FLD_VALUE:
+//                     if(mItem.iValue != 0)
+//                     {
+//                        sName = "Value:";
+//                        
+//                        String sBookValue = String.format(getResources().getString(R.string.amn_vl), mItem.iValue / 100, mItem.iValue % 100);
+//                        sValue = String.valueOf(sBookValue);
+//                     }
+//                  break;
+
                   case DBAdapter.FLD_VALUE:
-                     if(mItem.iValue != 0)
+                     if(!mItem.sValue.trim().isEmpty())
                      {
                         sName = "Value:";
-                        String sBookValue = String.format(getResources().getString(R.string.amn_vl), mItem.iValue / 100, mItem.iValue % 100);
+                        Price oBookValue = new Price(mItem.sValue);
+                        ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+                        Field fldCurrency = null;
+                        for(Field oField : alCurrencies)
+                           if(oField.iID == oBookValue.iCurrencyID)
+                           {
+                              fldCurrency = oField;
+                              break;
+                           }
+                        char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+                        String sBookValue = fldCurrency == null ? 
+                                 String.format(getResources().getString(R.string.amn_vl), oBookValue.iValue / 100, DBAdapter.separator, oBookValue.iValue % 100) :  
+                                 String.format(getResources().getString(R.string.amn_vl_crn), oBookValue.iValue / 100, DBAdapter.separator, oBookValue.iValue % 100, fldCurrency.sValue);
+
                         sValue = String.valueOf(sBookValue);
                      }
                   break;

@@ -1,5 +1,6 @@
 package com.discworld.booksbag;
 
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import android.content.ContentValues;
@@ -10,6 +11,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.text.InputType;
 import android.util.Log;
 
 import com.discworld.booksbag.dto.Book;
@@ -127,6 +129,8 @@ public class DBAdapter
 	private SQLiteDatabase db;
 	private final Context context;
 	private DBOpenHelper dbHelper;
+	
+	public final static char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
 
    public final static int FLD_AUTHOR = 1,
 //                            FLD_AUT2 = 2,
@@ -153,7 +157,9 @@ public class DBAdapter
                            FLD_READ_DATE = 107,
                            FLD_EDITION = 108,
                            FLD_ISBN = 109,
-                           FLD_WEB = 110;                           
+                           FLD_WEB = 110,
+                           FLD_PRICE_CURRENCY = 111,
+                           FLD_VALUE_CURRENCY = 112;                           
 
    public final static int ORD_TTL = 1,
                            ORD_AUT = 2;
@@ -195,11 +201,12 @@ public class DBAdapter
 		this.context = _context;
 		dbHelper = new DBOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
 		Resources r = context.getResources();
+		FIELD_TYPES.clear();
 		FIELD_TYPES.add(new FieldType(FLD_TITLE, r.getString(R.string.fld_title), true, FieldType.TYPE_TEXT));
 		FIELD_TYPES.add(new FieldType(FLD_AUTHOR, r.getString(R.string.fld_author)));
-		FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, r.getString(R.string.fld_descrition), true, FieldType.TYPE_TEXT_MULTILINE));
-		FIELD_TYPES.add(new FieldType(FLD_SERIE, r.getString(R.string.fld_serie)));
-		FIELD_TYPES.add(new FieldType(FLD_VOLUME, r.getString(R.string.fld_volume)));
+		FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, r.getString(R.string.fld_descrition), true, FieldType.TYPE_TEXT_MULTILINE).setMultiline(false));
+		FIELD_TYPES.add(new FieldType(FLD_SERIE, r.getString(R.string.fld_serie)).setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL));
+		FIELD_TYPES.add(new FieldType(FLD_VOLUME, r.getString(R.string.fld_volume)).setInputType(InputType.TYPE_CLASS_NUMBER));
 		FIELD_TYPES.add(new FieldType(FLD_CATEGORY, r.getString(R.string.fld_category)));
 		FIELD_TYPES.add(new FieldType(FLD_LANGUAGE, r.getString(R.string.fld_language)));
 		FIELD_TYPES.add(new FieldType(FLD_PAGES, r.getString(R.string.fld_pages)));
@@ -268,8 +275,10 @@ public class DBAdapter
                         Integer.parseInt(cursor.getString(ID_KEY_VLM)),
                         Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
                         Integer.parseInt(cursor.getString(ID_KEY_PGS)),
-                        Integer.parseInt(cursor.getString(ID_KEY_PRC)),
-                        Integer.parseInt(cursor.getString(ID_KEY_VL)),
+//                        Integer.parseInt(cursor.getString(ID_KEY_PRC)),
+//                        Integer.parseInt(cursor.getString(ID_KEY_VL)),
+                        cursor.getString(ID_KEY_PRC),
+                        cursor.getString(ID_KEY_VL),
                         Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
                         Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
                         Integer.parseInt(cursor.getString(ID_KEY_EDN)),
@@ -331,8 +340,10 @@ public class DBAdapter
          values.put(KEY_VLM, oBook.iVolume);
          values.put(KEY_PBL_DT, oBook.iPublicationDate);
          values.put(KEY_PGS, oBook.iPages);
-         values.put(KEY_PRC, oBook.iPrice);
-         values.put(KEY_VL, oBook.iValue);
+//         values.put(KEY_PRC, oBook.iPrice);
+//         values.put(KEY_VL, oBook.iValue);
+         values.put(KEY_PRC, oBook.sPrice);
+         values.put(KEY_VL, oBook.sValue);
          values.put(KEY_DUE_DT, oBook.iDueDate);
          values.put(KEY_RD_DT, oBook.iReadDate);
          values.put(KEY_EDN, oBook.iEdition);
@@ -394,6 +405,8 @@ public class DBAdapter
                return DummyContent.CATEGORIES;
             case FLD_CONDITION:
                return DummyContent.CONDITIONS;
+            case FLD_CURRENCY:
+               return DummyContent.CURRENCIES;
             case FLD_FORMAT:
                return DummyContent.FORMATS;
             case FLD_LANGUAGE:
@@ -474,8 +487,10 @@ public class DBAdapter
                              Integer.parseInt(cursor.getString(ID_KEY_VLM)),
                              Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
                              Integer.parseInt(cursor.getString(ID_KEY_PGS)),
-                             Integer.parseInt(cursor.getString(ID_KEY_PRC)),
-                             Integer.parseInt(cursor.getString(ID_KEY_VL)),
+//                             Integer.parseInt(cursor.getString(ID_KEY_PRC)),
+//                             Integer.parseInt(cursor.getString(ID_KEY_VL)),
+                             cursor.getString(ID_KEY_PRC),
+                             cursor.getString(ID_KEY_VL),
                              Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
                              Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
                              Integer.parseInt(cursor.getString(ID_KEY_EDN)),
@@ -586,8 +601,10 @@ public class DBAdapter
             oValues.put(KEY_VLM, oBook.iVolume);
             oValues.put(KEY_PBL_DT, oBook.iPublicationDate);
             oValues.put(KEY_PGS, oBook.iPages);
-            oValues.put(KEY_PRC, oBook.iPrice);
-            oValues.put(KEY_VL, oBook.iValue);
+//            oValues.put(KEY_PRC, oBook.iPrice);
+//            oValues.put(KEY_VL, oBook.iValue);
+            oValues.put(KEY_PRC, oBook.sPrice);
+            oValues.put(KEY_VL, oBook.sValue);
             oValues.put(KEY_DUE_DT, oBook.iDueDate);
             oValues.put(KEY_RD_DT, oBook.iReadDate);
             oValues.put(KEY_EDN, oBook.iEdition);

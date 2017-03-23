@@ -22,8 +22,8 @@ public class Book
               iRatingID,
               iFormatID,
               iLocationID,
-              iPrice = 0,
-              iValue = 0,
+//              iPrice = 0,
+//              iValue = 0,
               iConditionID,
               iDueDate,
               iReadDate,
@@ -31,10 +31,17 @@ public class Book
 
    public long iID = 0;
    
+   public Changeable<String> csTitle,
+                             csPrice;
+   
+   public Changeable<Integer> ciVolume;
+   
    public String sTitle,
                  sDescription,
                  sISBN,
-                 sWeb;
+                 sWeb,
+                 sPrice,
+                 sValue;
    
    public ArrayList<Field> alFields = new ArrayList<>();
 
@@ -62,8 +69,10 @@ public class Book
                int iVolume,
                int iPublicationDate,
                int iPages,
-               int iPrice,
-               int iValue,
+//               int iPrice,
+//               int iValue,
+               String sPrice,
+               String sValue,
                int iDueDate,
                int iReadDate,
                int iEdition,
@@ -71,13 +80,19 @@ public class Book
                String sWeb)
    {
       this.iID = iID;
+      this.csTitle = new Changeable<String>(sTitle);
+//      this.csTitle.value = sTitle;
       this.sTitle = sTitle;
       this.sDescription = sDescription;
       this.iVolume = iVolume;
+      ciVolume = new Changeable<Integer>(iVolume);
       this.iPublicationDate = iPublicationDate;
       this.iPages = iPages;
-      this.iPrice = iPrice;
-      this.iValue = iValue;
+//      this.iPrice = iPrice;
+//      this.iValue = iValue;
+      this.sPrice = sPrice;
+      csPrice = new Changeable<String>(sPrice);
+      this.sValue = sValue;
       this.iDueDate = iDueDate;
       this.iReadDate = iReadDate;
       this.iEdition = iEdition;
