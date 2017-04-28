@@ -32,7 +32,11 @@ public class Book
    public long iID = 0;
    
    public Changeable<String> csTitle,
-                             csPrice;
+                             csPrice,
+                             csValue;
+   
+   public Changeable<Integer> ciReadDate,
+                              ciDueDate;
    
    public Changeable<Integer> ciVolume;
    
@@ -93,8 +97,11 @@ public class Book
       this.sPrice = sPrice;
       csPrice = new Changeable<String>(sPrice);
       this.sValue = sValue;
+      csValue = new Changeable<String>(sValue);
       this.iDueDate = iDueDate;
       this.iReadDate = iReadDate;
+      ciReadDate = new Changeable<Integer>(iReadDate);
+      ciDueDate = new Changeable<Integer>(iDueDate);
       this.iEdition = iEdition;
       this.sISBN = sISBN;
       this.sWeb = sWeb;

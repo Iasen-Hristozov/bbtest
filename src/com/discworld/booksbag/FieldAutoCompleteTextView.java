@@ -1,8 +1,13 @@
 package com.discworld.booksbag;
 
+import java.util.ArrayList;
+
+import com.discworld.booksbag.ArrayFieldsAdapter;
 import com.discworld.booksbag.dto.AutoCompleteTextViewX;
+import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.AutoCompleteTextViewX.OnUpdateListener;
 import com.discworld.booksbag.dto.AutoCompleteTextViewX.Callback;
+
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,29 +15,33 @@ import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 public class FieldAutoCompleteTextView extends LinearLayout
 {
    
    private Title oTitle;
-   AutoCompleteTextViewX oAutoCompleteTextViewX;
+   private AutoCompleteTextViewX oAutoCompleteTextViewX;
+   private OnUpdateListener onUpdateListener;
    
-   public FieldAutoCompleteTextView(Context context)
+   public FieldAutoCompleteTextView(Context context, Field oField, ArrayList<Field> alFieldValues)
    {
       super(context);
       
-      vInit(context);
+      vInit(context, oField, alFieldValues);
    }
 
-   public FieldAutoCompleteTextView(Context context, AttributeSet attrs)
+   public FieldAutoCompleteTextView(Context context, AttributeSet attrs, Field oField, ArrayList<Field> alFieldValues)
    {
       super(context, attrs);
       
-      vInit(context);
+      vInit(context, oField, alFieldValues);
       
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldAutoCompleteTextView, 0, 0);
 
@@ -57,7 +66,7 @@ public class FieldAutoCompleteTextView extends LinearLayout
       oAutoCompleteTextViewX.setHint(hint);
    }
    
-   public void vInit(Context context)
+   public void vInit(Context context, Field oField, final ArrayList<Field> alFieldValues)
    {
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       inflater.inflate(R.layout.field_auto_complete_text_view, this, true);
@@ -65,6 +74,53 @@ public class FieldAutoCompleteTextView extends LinearLayout
       oTitle = (Title)this.findViewById(R.id.title);
       oAutoCompleteTextViewX = (AutoCompleteTextViewX) this.findViewById(R.id.autoCompleteTextView);
       oAutoCompleteTextViewX.setThreshold(1);
+      
+      if(oField != null && !oField.sValue.isEmpty())
+         oAutoCompleteTextViewX.setText(oField.sValue);
+//      oFieldAutoCompleteTextView.setTag(f);
+
+      int iSelected;
+      final String tFieldValues[] = new String[alFieldValues.size()];
+      for(int i = 0; i < alFieldValues.size(); i++)
+      {
+         tFieldValues[i] = alFieldValues.get(i).sValue;
+         if(oField != null && oField.iID == alFieldValues.get(i).iID)
+            iSelected = i;
+      }
+
+//    ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);
+      ArrayFieldsAdapter oArrayAdapter = new ArrayFieldsAdapter(context, android.R.layout.select_dialog_item, alFieldValues);
+      oAutoCompleteTextViewX.setAdapter(oArrayAdapter);
+      oAutoCompleteTextViewX.setOnItemClickListener(new OnItemClickListener()
+      {
+         @Override
+         public void onItemClick(AdapterView<?> adapter, View view, int position, long rowId)
+         {
+//            Field fldSelected = (Field)adapter.getItemAtPosition(position);
+//            ((Field)oFieldAutoCompleteTextView.getTag()).copy(fldSelected);
+            onUpdateListener.onUpdate(FieldAutoCompleteTextView.this, position);
+//            String selection = (String) adapter.getItemAtPosition(position);
+////            int pos = -1;
+//            for (int i = 0, pos = -1; i < tAuthors.length && pos == -1; i++) 
+//            {
+//               if (tFieldValues[i].equals(selection)) 
+//               {
+//                  pos = i;
+//                  ((Field)oFieldAutoCompleteTextView.getTag()).copy(alFields.get(pos));
+//               }
+//            }
+         }
+      });
+      
+      oAutoCompleteTextViewX.setOnUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
+      {
+         @Override
+         public void onUpdate(EditText et)
+         {
+//            ((Field)oFieldAutoCompleteTextView.getTag()).sValue = et.getText().toString();
+            onUpdateListener.onUpdate(et);
+         }
+      });
    }
    
    public void setTitle(String title)
@@ -127,9 +183,14 @@ public class FieldAutoCompleteTextView extends LinearLayout
       oAutoCompleteTextViewX.setAdapter(adapter);
    }
    
-   public void setUpdateListener(OnUpdateListener onUpdateListener)
+   public void setUpdateListener(AutoCompleteTextViewX.OnUpdateListener onUpdateListener)
    {
       oAutoCompleteTextViewX.setOnUpdateListener(onUpdateListener);
+   }
+   
+   public void setUpdateListener(OnUpdateListener onUpdateListener)
+   {
+      this.onUpdateListener = onUpdateListener;
    }
    
    public void setCallback(Callback callback)
@@ -146,5 +207,10 @@ public class FieldAutoCompleteTextView extends LinearLayout
    {
       oAutoCompleteTextViewX.setOnItemClickListener(l);
    }
-   
+ 
+   public interface OnUpdateListener
+   {
+      public void onUpdate(FieldAutoCompleteTextView oFieldAutoCompleteTextView, int position);
+      public void onUpdate(EditText et);
+   }
 }

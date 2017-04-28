@@ -53,7 +53,7 @@
       <attr name="android:hint" />
    </declare-styleable>
    
-   <declare-styleable name="FieldValue">
+   <declare-styleable name="FieldMoney">
       <attr name="title" format="string" />
       <attr name="titleColor" format="color" />
       <attr name="titleTextSize" format="dimension" />
@@ -61,4 +61,14 @@
       <attr name="android:contentDescription" />
       <attr name="android:hint" />
    </declare-styleable>
+   
+   <declare-styleable name="FieldDate">
+      <attr name="title" format="string" />
+      <attr name="titleColor" format="color" />
+      <attr name="titleTextSize" format="dimension" />
+      <attr name="titleLineSize" format="dimension" />
+      <attr name="android:contentDescription" />
+      <attr name="android:hint" />
+   </declare-styleable>
+   
 </resources>

@@ -30,9 +30,6 @@ public class FieldMultiSpinner extends LinearLayout
    private Button btnSpinner;
    private ArrayList<Field> alFields = null;
    private ArrayList<Field> alFieldValues = null;
-//   private FieldType oFieldType;
-//   private ArrayAdapter<?> adapter;
-//   private int iEnuType = 0;
    private String hint = "";
    private String contentDescription = "";
    private Context context;
@@ -204,7 +201,6 @@ public class FieldMultiSpinner extends LinearLayout
       
    }
 
-   
    public void setTitle(String title)
    {
       oTitle.setText(title);

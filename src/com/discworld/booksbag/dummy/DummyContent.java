@@ -108,7 +108,7 @@ public class DummyContent
                             "260|34",                                            // Price
                             "1500|32",                                           // Value
                             0,                                                   // Due Date
-                            19850620,                                            // Read date
+                            0,                                            // Read date
                             3,                                                   // Edition
                             "",                                                  // ISBN
                             "");                                                 // Web

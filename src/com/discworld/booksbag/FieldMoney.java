@@ -1,11 +1,12 @@
 package com.discworld.booksbag;
 
-import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.discworld.booksbag.dto.EditTextX;
-import com.discworld.booksbag.dto.EditTextX.OnUpdateListener;
+import com.discworld.booksbag.dto.Field;
+import com.discworld.booksbag.dto.Price;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,38 +15,47 @@ import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-public class FieldValue extends LinearLayout
+public class FieldMoney extends LinearLayout
 {
    private Title oTitle;
    private Spinner oSpinner;
-   private EditTextX oEditTextX; 
+   private EditTextX oEditTextX;
+   private Price oPrice;
+   private ArrayList<Field> alCurrencies;
+   private OnUpdateListener onUpdateListener;
+   private int iSelected;
    
-   public FieldValue(Context context)
+   
+   public FieldMoney(Context context, Price price, ArrayList<Field> alCurrencies)
    {
       super(context);
       
-      vInit(context);
+      vInit(context, price, alCurrencies);
    }
-
-   public FieldValue(Context context, AttributeSet attrs)
+   
+   
+   public FieldMoney(Context context, AttributeSet attrs, Price price, ArrayList<Field> alCurrencies)
    {
       super(context, attrs);
 
-      vInit(context);
+      vInit(context, price, alCurrencies);
       
-      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldValue, 0, 0);
+      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldMoney, 0, 0);
       
-      String title = a.getString(R.styleable.FieldValue_title);
-      int titleValueColor = a.getColor(R.styleable.FieldValue_titleColor, 0);
-      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldValue_titleTextSize, 0);
-      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldValue_titleLineSize, 0);
-      String contentDescription = a.getString(R.styleable.FieldValue_android_contentDescription);
-      String hint = a.getString(R.styleable.FieldValue_android_hint);
+      String title = a.getString(R.styleable.FieldMoney_title);
+      int titleValueColor = a.getColor(R.styleable.FieldMoney_titleColor, 0);
+      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldMoney_titleTextSize, 0);
+      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldMoney_titleLineSize, 0);
+      String contentDescription = a.getString(R.styleable.FieldMoney_android_contentDescription);
+      String hint = a.getString(R.styleable.FieldMoney_android_hint);
 
       a.recycle();
 
@@ -61,15 +71,71 @@ public class FieldValue extends LinearLayout
       oEditTextX.setHint(hint);
    }
    
-   void vInit(Context context)
+   void vInit(Context context, Price price, ArrayList<Field> alCurrencies)
    {
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      inflater.inflate(R.layout.field_value, this, true);
+      inflater.inflate(R.layout.field_money, this, true);
+      
+      oPrice = price;
+      this.alCurrencies = alCurrencies;
       
       oTitle = (Title)this.findViewById(R.id.title);
       oSpinner = (Spinner) this.findViewById(R.id.spinner);
       oEditTextX = (EditTextX) this.findViewById(R.id.editTextX);
       oEditTextX.setFilters(new InputFilter[] {new DecimalDigitsInputFilter()});
+      oEditTextX.setOnUpdateListener(new EditTextX.OnUpdateListener()
+      {
+         @Override
+         public void onUpdate(EditText et)
+         {
+            String sValue = et.getText().toString();
+            sValue = sValue.replace(" ", "");
+            sValue = sValue.replace("-,", "-0,");
+            int iValue;
+            if(sValue.isEmpty() || sValue.matches("-|,|-,"))
+               iValue = 0;
+            else
+            {
+               String [] tsValue = sValue.split("\\" + DBAdapter.separator);
+//               String [] tsValue = sValue.split("\\.");
+                
+               iValue = (tsValue[0].isEmpty() ? 0 : Integer.valueOf(tsValue[0])*100) + (tsValue.length == 2 ? (sValue.contains("-") ? -1 : 1) * (tsValue[1].length() == 1 ? 10 : 1) * Integer.valueOf(tsValue[1]) : 0);
+            }
+            oPrice.iValue = iValue;
+            onUpdateListener.onUpdate(FieldMoney.this);
+         }
+      });
+
+      setValue(oPrice.iValue);
+      
+      String tCurrencies[] = new String[this.alCurrencies.size()];
+      for(int i = 0; i < alCurrencies.size(); i++)
+      {
+         tCurrencies[i] = alCurrencies.get(i).sValue;
+         if(oPrice != null && oPrice.iCurrencyID == alCurrencies.get(i).iID)
+            iSelected = i;
+      }
+      
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (context, R.layout.spinner_item, tCurrencies);
+      oSpinner.setAdapter(oArrayAdapter);
+      oSpinner.setSelection(iSelected);
+
+      oSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+      {
+         @Override
+         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+         {
+            oPrice.iCurrencyID = FieldMoney.this.alCurrencies.get(pos).iID;
+            onUpdateListener.onUpdate(FieldMoney.this);
+         }
+
+         @Override
+         public void onNothingSelected(AdapterView<?> parent)
+         {
+            // TODO Auto-generated method stub
+            
+         }
+      });      
    }
    
    public void setTitle(String title)
@@ -112,6 +178,16 @@ public class FieldValue extends LinearLayout
       oEditTextX.setHint(hint);
    }
    
+   public Price getPrice()
+   {
+      return oPrice;
+   }
+
+   public void setPrice(Price oPrice)
+   {
+      this.oPrice = oPrice;
+   }
+
    public void setAdapter(ArrayAdapter<?> adapter)
    {
       oSpinner.setAdapter(adapter);
@@ -128,9 +204,16 @@ public class FieldValue extends LinearLayout
          oSpinner.setSelection(position);
    }
    
+   public interface OnUpdateListener
+   {
+      public void onUpdate(FieldMoney oFieldMoney);
+   }
+   
    public void setUpdateListener(OnUpdateListener onUpdateListener)
    {
-      oEditTextX.setOnUpdateListener(onUpdateListener);
+//      oEditTextX.setOnUpdateListener(onUpdateListener);
+      this.onUpdateListener = onUpdateListener;
+      
    }
    
    private class DecimalDigitsInputFilter implements InputFilter 
