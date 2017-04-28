@@ -1,12 +1,9 @@
 package com.discworld.booksbag;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.discworld.booksbag.dto.EditTextX;
-import com.discworld.booksbag.dto.Field;
-import com.discworld.booksbag.dto.Price;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,11 +12,8 @@ import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -28,25 +22,24 @@ public class FieldMoney extends LinearLayout
    private Title oTitle;
    private Spinner oSpinner;
    private EditTextX oEditTextX;
-   private Price oPrice;
-   private ArrayList<Field> alCurrencies;
-   private OnUpdateListener onUpdateListener;
-   private int iSelected;
+//   private Price oPrice = new Price();
+//   private ArrayList<Field> alCurrencies;
+//   private OnUpdateListener onUpdateListener;
+//   private int iSelected = 0;
    
-   
-   public FieldMoney(Context context, Price price, ArrayList<Field> alCurrencies)
+  
+   public FieldMoney(Context context)
    {
       super(context);
       
-      vInit(context, price, alCurrencies);
+      vInit(context);
    }
-   
-   
-   public FieldMoney(Context context, AttributeSet attrs, Price price, ArrayList<Field> alCurrencies)
+
+   public FieldMoney(Context context, AttributeSet attrs)
    {
       super(context, attrs);
 
-      vInit(context, price, alCurrencies);
+      vInit(context);
       
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldMoney, 0, 0);
       
@@ -71,71 +64,68 @@ public class FieldMoney extends LinearLayout
       oEditTextX.setHint(hint);
    }
    
-   void vInit(Context context, Price price, ArrayList<Field> alCurrencies)
+   void vInit(Context context)
    {
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       inflater.inflate(R.layout.field_money, this, true);
-      
-      oPrice = price;
-      this.alCurrencies = alCurrencies;
       
       oTitle = (Title)this.findViewById(R.id.title);
       oSpinner = (Spinner) this.findViewById(R.id.spinner);
       oEditTextX = (EditTextX) this.findViewById(R.id.editTextX);
       oEditTextX.setFilters(new InputFilter[] {new DecimalDigitsInputFilter()});
-      oEditTextX.setOnUpdateListener(new EditTextX.OnUpdateListener()
-      {
-         @Override
-         public void onUpdate(EditText et)
-         {
-            String sValue = et.getText().toString();
-            sValue = sValue.replace(" ", "");
-            sValue = sValue.replace("-,", "-0,");
-            int iValue;
-            if(sValue.isEmpty() || sValue.matches("-|,|-,"))
-               iValue = 0;
-            else
-            {
-               String [] tsValue = sValue.split("\\" + DBAdapter.separator);
-//               String [] tsValue = sValue.split("\\.");
-                
-               iValue = (tsValue[0].isEmpty() ? 0 : Integer.valueOf(tsValue[0])*100) + (tsValue.length == 2 ? (sValue.contains("-") ? -1 : 1) * (tsValue[1].length() == 1 ? 10 : 1) * Integer.valueOf(tsValue[1]) : 0);
-            }
-            oPrice.iValue = iValue;
-            onUpdateListener.onUpdate(FieldMoney.this);
-         }
-      });
-
-      setValue(oPrice.iValue);
-      
-      String tCurrencies[] = new String[this.alCurrencies.size()];
-      for(int i = 0; i < alCurrencies.size(); i++)
-      {
-         tCurrencies[i] = alCurrencies.get(i).sValue;
-         if(oPrice != null && oPrice.iCurrencyID == alCurrencies.get(i).iID)
-            iSelected = i;
-      }
-      
-      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (context, R.layout.spinner_item, tCurrencies);
-      oSpinner.setAdapter(oArrayAdapter);
-      oSpinner.setSelection(iSelected);
-
-      oSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-      {
-         @Override
-         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-         {
-            oPrice.iCurrencyID = FieldMoney.this.alCurrencies.get(pos).iID;
-            onUpdateListener.onUpdate(FieldMoney.this);
-         }
-
-         @Override
-         public void onNothingSelected(AdapterView<?> parent)
-         {
-            // TODO Auto-generated method stub
-            
-         }
-      });      
+//      oEditTextX.setOnUpdateListener(new EditTextX.OnUpdateListener()
+//      {
+//         @Override
+//         public void onUpdate(EditText et)
+//         {
+//            String sValue = et.getText().toString();
+//            sValue = sValue.replace(" ", "");
+//            sValue = sValue.replace("-,", "-0,");
+//            int iValue;
+//            if(sValue.isEmpty() || sValue.matches("-|,|-,"))
+//               iValue = 0;
+//            else
+//            {
+//               String [] tsValue = sValue.split("\\" + DBAdapter.separator);
+////               String [] tsValue = sValue.split("\\.");
+//                
+//               iValue = (tsValue[0].isEmpty() ? 0 : Integer.valueOf(tsValue[0])*100) + (tsValue.length == 2 ? (sValue.contains("-") ? -1 : 1) * (tsValue[1].length() == 1 ? 10 : 1) * Integer.valueOf(tsValue[1]) : 0);
+//            }
+//            oPrice.iValue = iValue;
+//            onUpdateListener.onUpdate(FieldMoney.this);
+//         }
+//      });
+//
+//      setValue(oPrice.iValue);
+//      
+//      String tCurrencies[] = new String[this.alCurrencies.size()];
+//      for(int i = 0; i < alCurrencies.size(); i++)
+//      {
+//         tCurrencies[i] = alCurrencies.get(i).sValue;
+//         if(oPrice != null && oPrice.iCurrencyID == alCurrencies.get(i).iID)
+//            iSelected = i;
+//      }
+//      
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (context, R.layout.spinner_item, tCurrencies);
+//      oSpinner.setAdapter(oArrayAdapter);
+//      oSpinner.setSelection(iSelected);
+//
+//      oSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+//      {
+//         @Override
+//         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+//         {
+//            oPrice.iCurrencyID = FieldMoney.this.alCurrencies.get(pos).iID;
+//            onUpdateListener.onUpdate(FieldMoney.this);
+//         }
+//
+//         @Override
+//         public void onNothingSelected(AdapterView<?> parent)
+//         {
+//            // TODO Auto-generated method stub
+//            
+//         }
+//      });      
    }
    
    public void setTitle(String title)
@@ -178,15 +168,16 @@ public class FieldMoney extends LinearLayout
       oEditTextX.setHint(hint);
    }
    
-   public Price getPrice()
-   {
-      return oPrice;
-   }
-
-   public void setPrice(Price oPrice)
-   {
-      this.oPrice = oPrice;
-   }
+//   public Price getPrice()
+//   {
+//      return oPrice;
+//   }
+//
+//   public void setPrice(Price oPrice)
+//   {
+//      this.oPrice = oPrice;
+//      setValue(oPrice.iValue);
+//   }
 
    public void setAdapter(ArrayAdapter<?> adapter)
    {
@@ -209,12 +200,12 @@ public class FieldMoney extends LinearLayout
       public void onUpdate(FieldMoney oFieldMoney);
    }
    
-   public void setUpdateListener(OnUpdateListener onUpdateListener)
-   {
-//      oEditTextX.setOnUpdateListener(onUpdateListener);
-      this.onUpdateListener = onUpdateListener;
-      
-   }
+//   public void setUpdateListener(OnUpdateListener onUpdateListener)
+//   {
+////      oEditTextX.setOnUpdateListener(onUpdateListener);
+//      this.onUpdateListener = onUpdateListener;
+//      
+//   }
    
    private class DecimalDigitsInputFilter implements InputFilter 
    {
@@ -249,5 +240,10 @@ public class FieldMoney extends LinearLayout
          
          return "";
       }
+   }
+
+   public void setUpdateListener(EditTextX.OnUpdateListener onUpdateListener)
+   {
+      oEditTextX.setOnUpdateListener(onUpdateListener);
    }   
 }

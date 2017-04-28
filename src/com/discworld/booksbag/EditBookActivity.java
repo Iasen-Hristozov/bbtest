@@ -240,7 +240,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
             break;
             
             case FieldType.TYPE_TEXT_AUTOCOMPLETE:
-               addAutocompleteField(llAuthors, oFieldType);
+//               addAutocompleteField(llAuthors, oFieldType);
             break;
             
             case FieldType.TYPE_SPINNER:
@@ -1262,119 +1262,96 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this, oBook.alFields, alFieldValues);
       oFieldMultiSpinner.setTitle(oFieldType.sName + "s");
       oFieldMultiSpinner.setHint(oFieldType.sName);
+      oFieldMultiSpinner.set
       
       rootView.addView(oFieldMultiSpinner);
    }
    
    
    
-//   private void addFieldValue(ViewGroup rootView, FieldType oFieldType)
+   @SuppressWarnings("unchecked")
    private void addFieldMoney(ViewGroup rootView, FieldType oFieldType)
    {
-//      Field fldValue = null;
-//      int iSelected = 0;
-      Price oPrice = null;
-      FieldMoney oFieldMoney = null;
+      int iSelected = 0;
 
       final ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+      
+      final FieldMoney oFieldMoney = new FieldMoney(this);
       
       switch(oFieldType.iID)
       {
          case DBAdapter.FLD_PRICE:
-            oPrice = new Price(oBook.csPrice.value);
-            oFieldMoney = new FieldMoney(this, oPrice, alCurrencies);
             oFieldMoney.setTag(oBook.csPrice);
          break;
          
          case DBAdapter.FLD_VALUE:
-            oPrice = new Price(oBook.csValue.value);
-            oFieldMoney = new FieldMoney(this, oPrice, alCurrencies);
-            oFieldMoney.setTag(oBook.csPrice);
+            oFieldMoney.setTag(oBook.csValue);
          break;
          
          default:
             return;
       }
+      
+      final Price oPrice = new Price(((Changeable<String>) oFieldMoney.getTag()).value);
 
       oFieldMoney.setTitle(oFieldType.sName);
       oFieldMoney.setHint(oFieldType.sName);
+      oFieldMoney.setValue(oPrice.iValue);
 
-//      String tCurrencies[] = new String[alCurrencies.size()];
-//      for(int i = 0; i < alCurrencies.size(); i++)
-//      {
-//         tCurrencies[i] = alCurrencies.get(i).sValue;
-//         if(oPrice != null && oPrice.iCurrencyID == alCurrencies.get(i).iID)
-//            iSelected = i;
-//      }
-//      
-//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tCurrencies);
-//      oFieldValue.setAdapter(oArrayAdapter);
-//      oFieldValue.setSelection(iSelected);
-//
-//      oFieldValue.setValue(oPrice.iValue);
-//      oFieldValue.setTag(oPrice);
-//      oFieldValue.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-//      {
-//         @Override
-//         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-//         {
-////            f.copy(alFieldsValues.get(pos));
-//            ((Price) oFieldValue.getTag()).iCurrencyID = alCurrencies.get(pos).iID;
-//            csMoney.value = ((Price) oFieldValue.getTag()).toString();
-//         }
-//
-//         @Override
-//         public void onNothingSelected(AdapterView<?> parent)
-//         {
-//            // TODO Auto-generated method stub
-//            
-//         }
-//      });
-//      
-//      oFieldValue.setUpdateListener(new EditTextX.OnUpdateListener()
-//      {
-//         
-//         @Override
-//         public void onUpdate(EditText et)
-//         {
-//            String sValue = et.getText().toString();
-//            sValue = sValue.replace(" ", "");
-//            sValue = sValue.replace("-,", "-0,");
-//            int iValue;
-//            if(sValue.isEmpty() || sValue.matches("-|,|-,"))
-//               iValue = 0;
-//            else
-//            {
-//               String [] tsValue = sValue.split("\\" + DBAdapter.separator);
-////               String [] tsValue = sValue.split("\\.");
-//                
-//               iValue = (tsValue[0].isEmpty() ? 0 : Integer.valueOf(tsValue[0])*100) + (tsValue.length == 2 ? (sValue.contains("-") ? -1 : 1) * (tsValue[1].length() == 1 ? 10 : 1) * Integer.valueOf(tsValue[1]) : 0);
-//            }
-//            
-//            ((Price) oFieldValue.getTag()).iValue = iValue;
-//            csMoney.value = ((Price) oFieldValue.getTag()).toString();
-////            switch(oFieldType.iID)
-////            {
-////               case DBAdapter.FLD_PRICE:
-//////                oFieldValue.setTag(oBook.sPrice);
-////                  oBook.sPrice = ((Price) oFieldValue.getTag()).toString(); 
-////               break;
-////             
-////               case DBAdapter.FLD_VALUE:
-//////                oFieldValue.setTag(oBook.sValue);
-////                  oBook.sValue = ((Price) oFieldValue.getTag()).toString(); 
-////               break;
-////            }
-//         }
-//      });
-      oFieldMoney.setUpdateListener(new FieldMoney.OnUpdateListener()
+      String tCurrencies[] = new String[alCurrencies.size()];
+      for(int i = 0; i < alCurrencies.size(); i++)
+      {
+         tCurrencies[i] = alCurrencies.get(i).sValue;
+         if(oPrice != null && oPrice.iCurrencyID == alCurrencies.get(i).iID)
+            iSelected = i;
+      }
+      
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tCurrencies);
+      oFieldMoney.setAdapter(oArrayAdapter);
+      oFieldMoney.setSelection(iSelected);
+
+      oFieldMoney.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+      {
+         @Override
+         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+         {
+            oPrice.iCurrencyID = alCurrencies.get(pos).iID;
+            ((Changeable<String>) oFieldMoney.getTag()).value = oPrice.toString();
+            int a =1;
+         }
+
+         @Override
+         public void onNothingSelected(AdapterView<?> parent)
+         {
+            // TODO Auto-generated method stub
+            
+         }
+      });
+      
+      oFieldMoney.setUpdateListener(new EditTextX.OnUpdateListener()
       {
          
          @Override
-         public void onUpdate(FieldMoney oFieldMoney)
+         public void onUpdate(EditText et)
          {
-            ((Changeable<String>) oFieldMoney.getTag()).value = oFieldMoney.getPrice().toString();
+            String sValue = et.getText().toString();
+            sValue = sValue.replace(" ", "");
+            sValue = sValue.replace("-,", "-0,");
+            int iValue;
+            if(sValue.isEmpty() || sValue.matches("-|,|-,"))
+               iValue = 0;
+            else
+            {
+               String [] tsValue = sValue.split("\\" + DBAdapter.separator);
+//               String [] tsValue = sValue.split("\\.");
+                
+               iValue = (tsValue[0].isEmpty() ? 0 : Integer.valueOf(tsValue[0])*100) + (tsValue.length == 2 ? (sValue.contains("-") ? -1 : 1) * (tsValue[1].length() == 1 ? 10 : 1) * Integer.valueOf(tsValue[1]) : 0);
+            }
             
+            oPrice.iValue = iValue;
+            ((Changeable<String>) oFieldMoney.getTag()).value = oPrice.toString();
+            
+            int a = 1;
          }
       });
       
@@ -1635,9 +1612,10 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       
       Date date = new Date(ciDate.value); 
       
-      final FieldDate oField = new FieldDate(this, date);
+      final FieldDate oField = new FieldDate(this);
       oField.setTitle(oFieldType.sName);
       oField.setHint(oFieldType.sName);
+      oField.setDate(date);
       oField.setTag(ciDate);
       oField.setUpdateListener(new FieldDate.OnUpdateListener()
       {
@@ -1667,22 +1645,25 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       {
          case DBAdapter.FLD_READ_DATE:
             date = new Date(oBook.ciReadDate.value);
-            oFieldDate = new FieldDate(this, date);
+            oFieldDate = new FieldDate(this);
             oFieldDate.setTag(oBook.ciReadDate);
          break;
          
          case DBAdapter.FLD_DUE_DATE:
             date = new Date(oBook.ciDueDate.value);
-            oFieldDate = new FieldDate(this, date);
+            oFieldDate = new FieldDate(this);
             oFieldDate.setTag(oBook.ciDueDate);
             
          break;
+         
+         default:
+            return;
             
       }
       
-      
       oFieldDate.setTitle(oFieldType.sName);
       oFieldDate.setHint(oFieldType.sName);
+      oFieldDate.setDate(date);
       
       oFieldDate.setUpdateListener(new FieldDate.OnUpdateListener()
       {

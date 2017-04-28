@@ -18,32 +18,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 public class FieldDate extends LinearLayout
 {
    private Title oTitle;
    private Button btnSpinner;
-   private Date date = null;
+   private Date date = new Date(0);
    private String hint = "";
    private String contentDescription = "";
-   private Context context = null;
    private OnUpdateListener onUpdateListener = null;
    
-   public FieldDate(Context context, Date date)
+   public FieldDate(Context context)
    {
       super(context);
       
 //      vInit(context, alFields, oFieldType);
-      vInit(context, date);
+      vInit(context);
    }
    
-   public FieldDate(Context context, AttributeSet attrs, Date date)
+   public FieldDate(Context context, AttributeSet attrs)
    {
       super(context, attrs);
 
-      vInit(context, date);
+      vInit(context);
       
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldDate, 0, 0);
       
@@ -67,18 +65,14 @@ public class FieldDate extends LinearLayout
       btnSpinner.setContentDescription(contentDescription);
    }
    
-   void vInit(Context context, Date date)
+   void vInit(Context context)
    {
-      this.context = context;
-      this.date = date;
-      
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       inflater.inflate(R.layout.field_date, this, true);
       
       oTitle = (Title)this.findViewById(R.id.title);
       btnSpinner = (Button) this.findViewById(R.id.spinner);
       
-      setButtonText(btnSpinner, date);
       final Activity activity = (Activity) context;
       btnSpinner.setOnClickListener(new OnClickListener() 
       {
@@ -150,6 +144,7 @@ public class FieldDate extends LinearLayout
    public void setDate(Date date)
    {
       this.date = date;
+      setButtonText(btnSpinner, date);
    }
 
    private class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener

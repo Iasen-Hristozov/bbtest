@@ -159,15 +159,15 @@
          android:layout_height="wrap_content"
          android:src="@drawable/list_divide" />
 
-      <com.discworld.booksbag.FieldAutoCompleteTextView
-         android:id="@+id/titleAutoCompleteTextView1"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         custom:color="@color/colorBlue"
-         custom:lineSize="1dp"
-         custom:text="ttttaa" >
+<!--       <com.discworld.booksbag.FieldAutoCompleteTextView -->
+<!--          android:id="@+id/titleAutoCompleteTextView1" -->
+<!--          android:layout_width="match_parent" -->
+<!--          android:layout_height="wrap_content" -->
+<!--          custom:color="@color/colorBlue" -->
+<!--          custom:lineSize="1dp" -->
+<!--          custom:text="ttttaa" > -->
 
-      </com.discworld.booksbag.FieldAutoCompleteTextView>
+<!--       </com.discworld.booksbag.FieldAutoCompleteTextView> -->
 
       <com.discworld.booksbag.dto.MultiSpinner
          android:id="@+id/multi_spinner"

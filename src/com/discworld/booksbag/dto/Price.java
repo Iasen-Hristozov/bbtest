@@ -2,8 +2,11 @@ package com.discworld.booksbag.dto;
 
 public class Price
 {
-   public int iValue;
-   public long iCurrencyID;
+   public int iValue = 0;
+   public long iCurrencyID = 0;
+   
+   public Price()
+   {}
    
    public Price(String sPrice)
    {
