@@ -22,6 +22,14 @@ public class FieldSpinner extends LinearLayout
    private Spinner oSpinner;
 //   private ArrayList<Field> alFieldValues = null;
    private OnUpdateListener onUpdateListener = null;
+
+   public FieldSpinner(Context context)
+   {
+      super(context);
+      
+      vInit(context);
+   }
+
    
    public FieldSpinner(Context context, ArrayList<Field> alFieldValues)
    {
@@ -30,6 +38,32 @@ public class FieldSpinner extends LinearLayout
       vInit(context, alFieldValues);
    }
 
+   public FieldSpinner(Context context, AttributeSet attrs)
+   {
+      super(context, attrs);
+
+      vInit(context);
+      
+      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldSpinner, 0, 0);
+      
+      String title = a.getString(R.styleable.FieldSpinner_title);
+      int titleValueColor = a.getColor(R.styleable.FieldSpinner_titleColor, 0);
+      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldSpinner_titleTextSize, 0);
+      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldSpinner_titleLineSize, 0);
+      String contentDescription = a.getString(R.styleable.FieldSpinner_android_contentDescription);
+
+      a.recycle();
+
+      setOrientation(LinearLayout.VERTICAL);
+      setGravity(Gravity.CENTER_VERTICAL);
+
+      oTitle.setText(title);
+      oTitle.setColor(titleValueColor);
+      oTitle.setTextSize(titleTextSize);
+      oTitle.setLineSize(titleLineSize);
+      
+      oSpinner.setContentDescription(contentDescription);
+   }
    
    public FieldSpinner(Context context, AttributeSet attrs, ArrayList<Field> alFieldValues)
    {
@@ -56,6 +90,53 @@ public class FieldSpinner extends LinearLayout
       oTitle.setLineSize(titleLineSize);
       
       oSpinner.setContentDescription(contentDescription);
+   }
+
+   void vInit(Context context)
+   {
+      LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      inflater.inflate(R.layout.field_spinner, this, true);
+      
+      oTitle = (Title)this.findViewById(R.id.title);
+      oSpinner = (Spinner) this.findViewById(R.id.spinner);
+//      this.alFieldValues = alFieldValues;
+      
+      
+//      Field oField = null;
+//      int iSelected = -1;
+//      
+//      String tFieldValues[] = new String[alFieldValues.size()];
+//      for(int i = 0; i < alFieldValues.size(); i++)
+//      {
+//         tFieldValues[i] = alFieldValues.get(i).sValue;
+//         if(oField != null && oField.iID == alFieldValues.get(i).iID)
+//            iSelected = i;
+//      }
+//
+////      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);  
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (context, R.layout.spinner_item, tFieldValues);
+////      ArrayAdapter oArrayAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.spinner_item);
+//      oSpinner.setAdapter(oArrayAdapter);
+//      oSpinner.setSelection(iSelected);
+//      oSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+//      {
+//         @Override
+//         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+//         {
+////            f.copy(alFieldsValues.get(pos));
+////            ((Field) oFieldSpinner.getTag()).copy(alFieldsValues.get(pos));
+//            if(onUpdateListener != null)
+//               onUpdateListener.onUpdate(FieldSpinner.this, pos);
+//            
+//         }
+//
+//         @Override
+//         public void onNothingSelected(AdapterView<?> parent)
+//         {
+//            // TODO Auto-generated method stub
+//            
+//         }
+//      });      
    }
    
    void vInit(Context context, ArrayList<Field> alFieldValues)

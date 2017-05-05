@@ -1,13 +1,15 @@
 package com.discworld.booksbag.dto;
 
+import com.discworld.booksbag.FieldMultiText.Item;
+
 /**
  * Created by Iasen on 12.7.2016 г..
  */
-public class Field
+public class Field implements Item
 {
    public int iTypeID;
    public long iID = 0;
-   public String sValue;
+   public String sValue = "";
 
    public Field(int iTypeID)
    {
@@ -32,5 +34,23 @@ public class Field
       iID = f.iID;
       iTypeID = f.iTypeID;
       sValue = f.sValue;
+   }
+
+   @Override
+   public String toString()
+   {
+      return sValue;
+   }
+
+   @Override
+   public String getValue()
+   {
+      return sValue;
+   }
+
+   @Override
+   public int getId()
+   {
+      return (int)iID;
    }
 }

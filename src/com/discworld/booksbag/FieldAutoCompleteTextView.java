@@ -29,6 +29,13 @@ public class FieldAutoCompleteTextView extends LinearLayout
    private Title oTitle;
    private AutoCompleteTextViewX oAutoCompleteTextViewX;
    private OnUpdateListener onUpdateListener;
+
+   public FieldAutoCompleteTextView(Context context)
+   {
+      super(context);
+      
+      vInit(context);
+   }
    
    public FieldAutoCompleteTextView(Context context, Field oField, ArrayList<Field> alFieldValues)
    {
@@ -37,6 +44,35 @@ public class FieldAutoCompleteTextView extends LinearLayout
       vInit(context, oField, alFieldValues);
    }
 
+   public FieldAutoCompleteTextView(Context context, AttributeSet attrs)
+   {
+      super(context, attrs);
+      
+      vInit(context);
+      
+      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldAutoCompleteTextView, 0, 0);
+
+      String titleText = a.getString(R.styleable.FieldAutoCompleteTextView_title);
+      int titleValueColor = a.getColor(R.styleable.FieldAutoCompleteTextView_titleColor, 0);
+      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldAutoCompleteTextView_titleTextSize, 0);
+      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldAutoCompleteTextView_titleLineSize, 0);
+      String text = a.getString(R.styleable.FieldAutoCompleteTextView_android_text);
+      String hint = a.getString(R.styleable.FieldAutoCompleteTextView_android_hint);
+      
+      a.recycle();
+
+      setOrientation(LinearLayout.VERTICAL);
+      setGravity(Gravity.CENTER_VERTICAL);
+
+      oTitle.setText(titleText);
+      oTitle.setColor(titleValueColor);
+      oTitle.setTextSize(titleTextSize);
+      oTitle.setLineSize(titleLineSize);
+      
+      oAutoCompleteTextViewX.setText(text);
+      oAutoCompleteTextViewX.setHint(hint);
+   }
+   
    public FieldAutoCompleteTextView(Context context, AttributeSet attrs, Field oField, ArrayList<Field> alFieldValues)
    {
       super(context, attrs);
@@ -65,6 +101,26 @@ public class FieldAutoCompleteTextView extends LinearLayout
       oAutoCompleteTextViewX.setText(text);
       oAutoCompleteTextViewX.setHint(hint);
    }
+   
+   public void vInit(Context context)
+   {
+      LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      inflater.inflate(R.layout.field_auto_complete_text_view, this, true);
+      
+      oTitle = (Title)this.findViewById(R.id.title);
+      oAutoCompleteTextViewX = (AutoCompleteTextViewX) this.findViewById(R.id.autoCompleteTextView);
+      oAutoCompleteTextViewX.setThreshold(1);
+      
+      oAutoCompleteTextViewX.setOnUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
+      {
+         @Override
+         public void onUpdate(EditText et)
+         {
+//            ((Field)oFieldAutoCompleteTextView.getTag()).sValue = et.getText().toString();
+            onUpdateListener.onUpdate(et);
+         }
+      });
+   }   
    
    public void vInit(Context context, Field oField, final ArrayList<Field> alFieldValues)
    {

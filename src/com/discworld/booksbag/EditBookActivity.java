@@ -47,6 +47,7 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.discworld.booksbag.FieldMultiSpinner.Item;
 import com.discworld.booksbag.dto.AutoCompleteTextViewX;
 import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.Changeable;
@@ -55,14 +56,6 @@ import com.discworld.booksbag.dto.EditTextX;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
 import com.discworld.booksbag.dto.MultiSpinner;
-//import com.discworld.booksbag.dummy.DummyContent;
-
-
-
-
-
-
-
 import com.discworld.booksbag.dto.Price;
 
 import java.lang.reflect.Constructor;
@@ -221,7 +214,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //      addAutocompleteField(llAuthors, oBook.alFields.get(4));
 //      addFieldSpinner(llAuthors, oBook.alFields.get(10));
       addFieldSpinner(llAuthors, DBAdapter.FLD_CONDITION);
-      addFieldMultiText(llAuthors, DBAdapter.FLD_AUTHOR);
+//      addFieldMultiText(llAuthors, DBAdapter.FLD_AUTHOR);
       addFieldMultiSpinner(llAuthors, DBAdapter.FLD_CATEGORY);
 //      addFieldValue(llAuthors, DBAdapter.FLD_PRICE);
 //      addFieldMoney(llAuthors, DBAdapter.FLD_PRICE, oBook.csPrice);
@@ -236,11 +229,11 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
             break;
             
             case FieldType.TYPE_MULTIFIELD:
-//               addFieldMultiText(llAuthors, oFieldType);
+               addFieldMultiText(llAuthors, oFieldType);
             break;
             
             case FieldType.TYPE_TEXT_AUTOCOMPLETE:
-//               addAutocompleteField(llAuthors, oFieldType);
+               addAutocompleteField(llAuthors, oFieldType);
             break;
             
             case FieldType.TYPE_SPINNER:
@@ -1086,43 +1079,120 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //      rootView.addView(oFieldAutoCompleteTextView);
 //   }
    
-   private void addAutocompleteField(ViewGroup rootView, FieldType oFieldType)
-   {
-      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
-      
-      Field oField = new Field(oFieldType.iID);
-      for(int i = 0; oField == null || i < oBook.alFields.size(); i++)
-         if(oFieldType.iID == oBook.alFields.get(i).iTypeID)
-            oField.copy(oBook.alFields.get(i));
+ private void addAutocompleteField(ViewGroup rootView, final FieldType oFieldType)
+ {
+    final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
 
-      final FieldAutoCompleteTextView oFieldAutoCompleteTextView = new FieldAutoCompleteTextView(this, oField, alFieldValues);
-      oFieldAutoCompleteTextView.setTitle(oFieldType.sName);
-      oFieldAutoCompleteTextView.setHint(oFieldType.sName);
-      
-      if(oField.iID != 0)
-         oFieldAutoCompleteTextView.setText(oField.sValue);
-      oFieldAutoCompleteTextView.setTag(oField);
+    Field oField = new Field(oFieldType.iID);
+    for(int i = 0; oField == null || i < oBook.alFields.size(); i++)
+       if(oFieldType.iID == oBook.alFields.get(i).iTypeID)
+          oField = oBook.alFields.get(i);
+    
+    final FieldAutoCompleteTextView oFieldAutoCompleteTextView = new FieldAutoCompleteTextView(this);
+    oFieldAutoCompleteTextView.setTitle(oFieldType.sName);
+    oFieldAutoCompleteTextView.setHint(oFieldType.sName);
+    if(!oField.sValue.isEmpty())
+       oFieldAutoCompleteTextView.setText(oField.sValue);
+    oFieldAutoCompleteTextView.setTag(oField);
 
-      oFieldAutoCompleteTextView.setOnItemClickListener(new OnItemClickListener()
-      {
-         @Override
-         public void onItemClick(AdapterView<?> adapter, View view, int position, long rowId)
-         {
-            Field fldSelected = (Field)adapter.getItemAtPosition(position);
-            ((Field)oFieldAutoCompleteTextView.getTag()).copy(fldSelected);
-         }
-      });
-      oFieldAutoCompleteTextView.setUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
-      {
-         @Override
-         public void onUpdate(EditText et)
-         {
-            ((Field)oFieldAutoCompleteTextView.getTag()).sValue = et.getText().toString();
-         }
-      });
-      
-      rootView.addView(oFieldAutoCompleteTextView);
-   }   
+//    int iSelected = -1;
+  
+//    final String tFieldValues[] = new String[alFieldValues.size()];
+//    for(int i = 0; i < alFieldValues.size(); i++)
+//    {
+//       tFieldValues[i] = alFieldValues.get(i).sValue;
+//       if(oField.iID == alFieldValues.get(i).iID)
+//          iSelected = i;
+//    }
+//    if(iSelected != -1)
+//       oFieldAutoCompleteTextView.setText(oField.sValue);
+
+    
+//  ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);
+    ArrayFieldsAdapter oArrayAdapter = new ArrayFieldsAdapter(this, android.R.layout.select_dialog_item, alFieldValues);
+    oFieldAutoCompleteTextView.setAdapter(oArrayAdapter);
+    oFieldAutoCompleteTextView.setOnItemClickListener(new OnItemClickListener()
+    {
+       @Override
+       public void onItemClick(AdapterView<?> adapter, View view, int position, long rowId)
+       {
+          Field fldSelected = (Field)adapter.getItemAtPosition(position);
+          ((Field)oFieldAutoCompleteTextView.getTag()).copy(fldSelected);
+//          String selection = (String) adapter.getItemAtPosition(position);
+////          int pos = -1;
+//          for (int i = 0, pos = -1; i < tAuthors.length && pos == -1; i++) 
+//          {
+//             if (tFieldValues[i].equals(selection)) 
+//             {
+//                pos = i;
+//                ((Field)oFieldAutoCompleteTextView.getTag()).copy(alFields.get(pos));
+//             }
+//          }
+       }
+    });
+    oFieldAutoCompleteTextView.setUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
+    {
+       @Override
+       public void onUpdate(EditText et)
+       {
+          boolean isFound = false;
+          for(Field oField : alFieldValues)
+          {
+             if(et.getText().toString().equalsIgnoreCase(((Field)oFieldAutoCompleteTextView.getTag()).sValue))
+             {
+                isFound = true;
+                ((Field)oFieldAutoCompleteTextView.getTag()).copy(oField);
+             }
+          }
+          if(!isFound)
+          {
+             Field oNewFieldValue = new Field(oFieldType.iID, et.getText().toString());
+             alFieldValues.add(oNewFieldValue);
+             oBook.alFields.add(oNewFieldValue);
+          }
+       }
+    });
+    
+    rootView.addView(oFieldAutoCompleteTextView);
+ }   
+   
+//   private void addAutocompleteField(ViewGroup rootView, FieldType oFieldType)
+//   {
+//      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
+//      
+//      Field oField = new Field(oFieldType.iID);
+//      for(int i = 0; oField == null || i < oBook.alFields.size(); i++)
+//         if(oFieldType.iID == oBook.alFields.get(i).iTypeID)
+//            oField.copy(oBook.alFields.get(i));
+//
+//      final FieldAutoCompleteTextView oFieldAutoCompleteTextView = new FieldAutoCompleteTextView(this, oField, alFieldValues);
+//      oFieldAutoCompleteTextView.setTitle(oFieldType.sName);
+//      oFieldAutoCompleteTextView.setHint(oFieldType.sName);
+//      
+//      if(oField.iID != 0)
+//         oFieldAutoCompleteTextView.setText(oField.sValue);
+//      oFieldAutoCompleteTextView.setTag(oField);
+//
+//      oFieldAutoCompleteTextView.setOnItemClickListener(new OnItemClickListener()
+//      {
+//         @Override
+//         public void onItemClick(AdapterView<?> adapter, View view, int position, long rowId)
+//         {
+//            Field fldSelected = (Field)adapter.getItemAtPosition(position);
+//            ((Field)oFieldAutoCompleteTextView.getTag()).copy(fldSelected);
+//         }
+//      });
+//      oFieldAutoCompleteTextView.setUpdateListener(new AutoCompleteTextViewX.OnUpdateListener()
+//      {
+//         @Override
+//         public void onUpdate(EditText et)
+//         {
+//            ((Field)oFieldAutoCompleteTextView.getTag()).sValue = et.getText().toString();
+//         }
+//      });
+//      
+//      rootView.addView(oFieldAutoCompleteTextView);
+//   }   
    
    private void addFieldSpinner(ViewGroup rootView, final Field f)
    {
@@ -1139,10 +1209,12 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
    private void addFieldSpinner(ViewGroup rootView, FieldType oFieldType)
    {
       Field oField = null;
-
+      int iSelected = -1;
+      
       final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
 
-      final FieldSpinner oFieldSpinner = new FieldSpinner(this, alFieldValues);
+//      final FieldSpinner oFieldSpinner = new FieldSpinner(this, alFieldValues);
+      final FieldSpinner oFieldSpinner = new FieldSpinner(this);
       oFieldSpinner.setTitle(oFieldType.sName);
       
       for(int i = 0; oField == null || i < oBook.alFields.size() && oField.iTypeID != oFieldType.iID; i++)
@@ -1157,17 +1229,17 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //         }
 //      }
       
-      oFieldSpinner.setTag(oField);
-      oFieldSpinner.setOnUpdateListerener(new FieldSpinner.OnUpdateListener()
-      {
-         
-         @Override
-         public void onUpdate(FieldSpinner oFieldSpinner, int pos)
-         {
-            ((Field) oFieldSpinner.getTag()).copy(alFieldValues.get(pos));
-         }
-      });
-      
+//      oFieldSpinner.setTag(oField);
+//      oFieldSpinner.setOnUpdateListerener(new FieldSpinner.OnUpdateListener()
+//      {
+//         
+//         @Override
+//         public void onUpdate(FieldSpinner oFieldSpinner, int pos)
+//         {
+//            ((Field) oFieldSpinner.getTag()).copy(alFieldValues.get(pos));
+//         }
+//      });
+//      
 //      Field oField = null;
 //      int iSelected = -1;
 //      final FieldSpinner oFieldSpinner = new FieldSpinner(this);
@@ -1183,50 +1255,51 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //      }
 //
 //      final ArrayList<Field> alFieldsValues = oDbAdapter.getFieldValues(oFieldType.iID);
-//      String tFieldValues[] = new String[alFieldsValues.size()];
-//      for(int i = 0; i < alFieldsValues.size(); i++)
-//      {
-//         tFieldValues[i] = alFieldsValues.get(i).sValue;
-//         if(oField != null && oField.iID == alFieldsValues.get(i).iID)
-//            iSelected = i;
-//      }
-//
-////      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);  
-//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tFieldValues);
-////      ArrayAdapter oArrayAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.spinner_item);
-//      oFieldSpinner.setAdapter(oArrayAdapter);
-//      oFieldSpinner.setSelection(iSelected);
-//      oFieldSpinner.setTag(oField);
-//      oFieldSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-//      {
-//         @Override
-//         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-//         {
-////            f.copy(alFieldsValues.get(pos));
-//            ((Field) oFieldSpinner.getTag()).copy(alFieldsValues.get(pos));
-//         }
-//
-//         @Override
-//         public void onNothingSelected(AdapterView<?> parent)
-//         {
-//            // TODO Auto-generated method stub
-//            
-//         }
-//      });
+      String tFieldValues[] = new String[alFieldValues.size()];
+      for(int i = 0; i < alFieldValues.size(); i++)
+      {
+         tFieldValues[i] = alFieldValues.get(i).sValue;
+         if(oField != null && oField.iID == alFieldValues.get(i).iID)
+            iSelected = i;
+      }
+
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);  
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tFieldValues);
+//      ArrayAdapter oArrayAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.spinner_item);
+      oFieldSpinner.setAdapter(oArrayAdapter);
+      oFieldSpinner.setSelection(iSelected);
+      oFieldSpinner.setTag(oField);
+      oFieldSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+      {
+         @Override
+         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+         {
+//            f.copy(alFieldsValues.get(pos));
+            ((Field) oFieldSpinner.getTag()).copy(alFieldValues.get(pos));
+         }
+
+         @Override
+         public void onNothingSelected(AdapterView<?> parent)
+         {
+            // TODO Auto-generated method stub
+            
+         }
+      });
       
       rootView.addView(oFieldSpinner);
    }
 
-   private void addFieldMultiText(ViewGroup rootView, int iEnuType)
+   private void addFieldMultiText(ViewGroup rootView, final FieldType oFieldType)
    {
-      FieldType oFieldType = getFieldType(iEnuType);
-      final FieldMultiText oFieldMultiText = new FieldMultiText(this, oBook.alFields, oFieldType);
+//      final FieldMultiText oFieldMultiText = new FieldMultiText(this, oBook.alFields, oFieldType);
+      final FieldMultiText oFieldMultiText = new FieldMultiText(this);
       // TODO Fix it
       oFieldMultiText.setTitle(oFieldType.sName + "s");
       oFieldMultiText.setHint(oFieldType.sName);
 
       // Set adapter
-      final ArrayList<Field> alDictionaryFields = oDbAdapter.getFieldValues(iEnuType);
+      final ArrayList<Field> alDictionaryFields = oDbAdapter.getFieldValues(oFieldType.iID);
+      final ArrayList<? extends Item> alDictionaryFields1 = oDbAdapter.getFieldValues(oFieldType.iID);
       String tDictionaryValues[] = new String[alDictionaryFields.size()];
       for(int i = 0; i < alDictionaryFields.size(); i++)
          tDictionaryValues[i] = alDictionaryFields.get(i).sValue;
@@ -1242,8 +1315,30 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //            return view;
 //         }
 //      };
-    ArrayFieldsAdapter oArrayAdapter = new ArrayFieldsAdapter (this, android.R.layout.select_dialog_item, alDictionaryFields);
+      ArrayFieldsAdapter oArrayAdapter = new ArrayFieldsAdapter (this, android.R.layout.select_dialog_item, alDictionaryFields);
+      ArrayItemsAdapter oArrayAdapter1 = new ArrayItemsAdapter (this, android.R.layout.select_dialog_item, alDictionaryFields1);
+      
       oFieldMultiText.setAdapter(oArrayAdapter);
+      oFieldMultiText.setItems2(oBook.alFields);
+      oFieldMultiText.setItems(oBook.alFields);
+      
+//      oFieldMultiText.setItems(oBook.alFields);
+      oFieldMultiText.setOnAddRemoveListener(new FieldMultiText.OnAddRemoveFieldListener()
+      {
+         
+         @Override
+         public void onFieldRemove(Object object)
+         {
+            oBook.alFields.remove(object);
+         }
+         
+         @Override
+         public void onFieldNewAdd(View vRow)
+         {
+            vRow.setTag(new Field(oFieldType.iID));
+            
+         }
+      });
       
       rootView.addView(oFieldMultiText);
    }
@@ -1256,18 +1351,52 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       
    }
    
-   private void addFieldMultiSpinner(ViewGroup rootView, FieldType oFieldType)
+   private void addFieldMultiSpinner(ViewGroup rootView, final FieldType oFieldType)
    {
-      ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
-      final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this, oBook.alFields, alFieldValues);
+      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
+//      final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this, oBook.alFields, alFieldValues);
+      final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this);
       oFieldMultiSpinner.setTitle(oFieldType.sName + "s");
       oFieldMultiSpinner.setHint(oFieldType.sName);
-      oFieldMultiSpinner.set
+      
+      ArrayList<Item> alItems = new ArrayList<>();
+      for(Field oFieldValue : alFieldValues)
+      {
+         Item item = new Item(oFieldValue.sValue);
+         item.setSelected(oBook.alFields.contains(oFieldValue));
+         alItems.add(item);
+      }
+      
+      oFieldMultiSpinner.setItems(alItems);
+      oFieldMultiSpinner.setOnUpdateListener(new FieldMultiSpinner.OnUpdateListener()
+      {
+         @Override
+         public void onUpdate(Item item)
+         {
+            boolean isFound = false;
+            for(Field oFieldValue : alFieldValues)
+            {
+               if(oFieldValue.sValue.equalsIgnoreCase(item.getTitle()))
+               {
+                  isFound = true;
+                  if(item.isSelected())
+                     oBook.alFields.add(oFieldValue);
+                  else
+                     oBook.alFields.remove(oFieldValue);
+                  break;
+               }
+            }
+            if(!isFound)
+            {
+               Field oNewFieldValue = new Field(oFieldType.iID, item.getTitle());
+               alFieldValues.add(oNewFieldValue);
+               oBook.alFields.add(oNewFieldValue);
+            }
+         }
+      });
       
       rootView.addView(oFieldMultiSpinner);
    }
-   
-   
    
    @SuppressWarnings("unchecked")
    private void addFieldMoney(ViewGroup rootView, FieldType oFieldType)
@@ -1811,4 +1940,6 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
             return true;
       return false;
    }
+
+   
 }

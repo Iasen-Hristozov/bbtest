@@ -35,6 +35,8 @@ public class FieldMultiSpinner extends LinearLayout
    private Context            context;
    private ArrayList<Integer> alSelectedNdx      = null;
    private ArrayList<String>  alValues           = null;
+   private ArrayList<Item>    alItems            = new ArrayList<FieldMultiSpinner.Item>(); 
+   private OnUpdateListener   onUpdateListener   = null;
 
    public FieldMultiSpinner(Context context)
    {
@@ -119,13 +121,15 @@ public class FieldMultiSpinner extends LinearLayout
       oTitle = (Title) this.findViewById(R.id.title);
       btnSpinner = (Button) this.findViewById(R.id.spinner);
       
-      setButtonText(btnSpinner, alValues, alSelectedNdx);
+//      setButtonText(btnSpinner, alValues, alSelectedNdx);
+      setButtonText2(btnSpinner, alItems);
       btnSpinner.setOnClickListener(new OnClickListener()
       {
          @Override
          public void onClick(View v)
          {
-            displayPopupWindow(v, alValues, alSelectedNdx);
+//            displayPopupWindow(v, alValues, alSelectedNdx);
+            displayPopupWindow2(v, alItems);
          }
       });
    }
@@ -151,7 +155,8 @@ public class FieldMultiSpinner extends LinearLayout
          @Override
          public void onClick(View v)
          {
-            displayPopupWindow(v, alFields, alFieldValues);
+//            displayPopupWindow(v, alFields, alFieldValues);
+            displayPopupWindow2(v, alItems);
          }
       });
    }
@@ -173,15 +178,14 @@ public class FieldMultiSpinner extends LinearLayout
          oButton.setTextColor(Color.GRAY);
       }
    }
-
-   private void setButtonText(Button oButton, ArrayList<String> alValues, ArrayList<Integer> alSelectedNdx)
+   
+   private void setButtonText2(Button oButton, ArrayList<Item> alItems)
    {
       String sButtonText = "";
-      
-      for(int i = 0; i < alValues.size(); i++)
-         if(alSelectedNdx.contains(i))
-            sButtonText += (sButtonText.isEmpty() ? "" : ", ") + alValues.get(i);
-      
+      for(Item item : alItems)
+         if(item.isSelected())
+            sButtonText += (sButtonText.isEmpty() ? "" : ", ") + item.getTitle();
+
       if(!sButtonText.isEmpty())
       {
          oButton.setText(sButtonText);
@@ -192,27 +196,123 @@ public class FieldMultiSpinner extends LinearLayout
          oButton.setTextColor(Color.GRAY);
       }
    }
-   
-   
-   protected void displayPopupWindow(View anchorView, ArrayList<String> alValues, ArrayList<Integer> alSelectedNdx)
+
+//   private void setButtonText(Button oButton, ArrayList<String> alValues, ArrayList<Integer> alSelectedNdx)
+//   {
+//      String sButtonText = "";
+//      
+//      for(int i = 0; i < alValues.size(); i++)
+//         if(alSelectedNdx.contains(i))
+//            sButtonText += (sButtonText.isEmpty() ? "" : ", ") + alValues.get(i);
+//      
+//      if(!sButtonText.isEmpty())
+//      {
+//         oButton.setText(sButtonText);
+//         oButton.setTextColor(Color.BLACK);
+//      } else
+//      {
+//         oButton.setText(hint);
+//         oButton.setTextColor(Color.GRAY);
+//      }
+//   }
+//   
+//   
+//   protected void displayPopupWindow(View anchorView, ArrayList<String> alValues, ArrayList<Integer> alSelectedNdx)
+//   {
+//      final PopupMenu popupMenu = new PopupMenu(context, anchorView);
+//      initPopupMenu(popupMenu, alValues, alSelectedNdx);
+//      
+//      popupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener()
+//      {
+//         @Override
+//         public boolean onMenuItemClick(MenuItem menuItem)
+//         {
+//            if(menuItem.getItemId() < alFieldValues.size())
+//            {
+//               menuItem.setChecked(!menuItem.isChecked());
+//               if(menuItem.isChecked())
+//                  alFields.add(alFieldValues.get(menuItem.getItemId()));
+//               else
+//                  alFields.remove(alFieldValues.get(menuItem.getItemId()));
+//
+//               setButtonText((Button) btnSpinner, alFieldValues);
+//
+//               popupMenu.show();
+//            } else
+//            {
+//               AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//               builder.setTitle(R.string.add_new);
+//               final EditText etNewValue = new EditText(context);
+//               builder.setView(etNewValue);
+//               builder.setPositiveButton(android.R.string.ok,
+//                        new DialogInterface.OnClickListener()
+//                        {
+//                           public void onClick(DialogInterface dialog, int id)
+//                           {
+//                              String sNewValue = etNewValue.getText()
+//                                       .toString();
+//                              Field oField = new Field(iFieldType, sNewValue);
+//                              alFieldValues.add(oField);
+//                              alFields.add(oField);
+//                              setButtonText((Button) btnSpinner, alFieldValues);
+//                              initPopupMenu(popupMenu, alFields, alFieldValues);
+//
+//                              InputMethodManager imm = (InputMethodManager) context
+//                                       .getSystemService(Activity.INPUT_METHOD_SERVICE);
+//                              imm.toggleSoftInput(
+//                                       InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//                              dialog.cancel();
+//                              popupMenu.show();
+//                           }
+//                        });
+//
+//               builder.setNegativeButton(android.R.string.cancel,
+//                        new DialogInterface.OnClickListener()
+//                        {
+//                           public void onClick(DialogInterface dialog, int id)
+//                           {
+//                              InputMethodManager imm = (InputMethodManager) context
+//                                       .getSystemService(Activity.INPUT_METHOD_SERVICE);
+//                              imm.toggleSoftInput(
+//                                       InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//                              dialog.cancel();
+//                              popupMenu.show();
+//                           }
+//                        });
+//
+//               builder.show();
+//
+//            }
+//            return true;
+//         }
+//      });
+//
+//      popupMenu.show();      
+//   }
+
+
+
+   private void displayPopupWindow2(final View anchorView, final ArrayList<Item> alItems)
    {
+      if(alItems == null)
+         return;
       final PopupMenu popupMenu = new PopupMenu(context, anchorView);
-      initPopupMenu(popupMenu, alValues, alSelectedNdx);
-      
+      initPopupMenu2(popupMenu, alItems);
+
       popupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener()
       {
          @Override
          public boolean onMenuItemClick(MenuItem menuItem)
          {
-            if(menuItem.getItemId() < alFieldValues.size())
+//            if(menuItem.getItemId() < alItems.size())
+            if(menuItem.getOrder() < alItems.size())
             {
                menuItem.setChecked(!menuItem.isChecked());
-               if(menuItem.isChecked())
-                  alFields.add(alFieldValues.get(menuItem.getItemId()));
-               else
-                  alFields.remove(alFieldValues.get(menuItem.getItemId()));
+               Item item = alItems.get(menuItem.getOrder());
+               item.setSelected(menuItem.isChecked()); 
 
-               setButtonText((Button) anchorView, alFieldValues);
+               setButtonText2((Button) anchorView, alItems);
+               onUpdateListener.onUpdate(item);
 
                popupMenu.show();
             } else
@@ -226,18 +326,18 @@ public class FieldMultiSpinner extends LinearLayout
                         {
                            public void onClick(DialogInterface dialog, int id)
                            {
-                              String sNewValue = etNewValue.getText()
-                                       .toString();
-                              Field oField = new Field(iFieldType, sNewValue);
-                              alFieldValues.add(oField);
-                              alFields.add(oField);
-                              setButtonText((Button) anchorView, alFieldValues);
-                              initPopupMenu(popupMenu, alFields, alFieldValues);
+                              String sNewValue = etNewValue.getText().toString();
+                              Item item = new Item(sNewValue);
+                              item.setId(alItems.size());
+                              item.setSelected(true);
+                              alItems.add(item);
+                              setButtonText2((Button) anchorView, alItems);
+                              onUpdateListener.onUpdate(item);
+                              popupMenu.dismiss();
+                              initPopupMenu2(popupMenu, alItems);
 
-                              InputMethodManager imm = (InputMethodManager) context
-                                       .getSystemService(Activity.INPUT_METHOD_SERVICE);
-                              imm.toggleSoftInput(
-                                       InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                              InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                              imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                               dialog.cancel();
                               popupMenu.show();
                            }
@@ -248,85 +348,8 @@ public class FieldMultiSpinner extends LinearLayout
                         {
                            public void onClick(DialogInterface dialog, int id)
                            {
-                              InputMethodManager imm = (InputMethodManager) context
-                                       .getSystemService(Activity.INPUT_METHOD_SERVICE);
-                              imm.toggleSoftInput(
-                                       InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                              dialog.cancel();
-                              popupMenu.show();
-                           }
-                        });
-
-               builder.show();
-
-            }
-            return true;
-         }
-      });
-
-      popupMenu.show();      
-   }
-
-   private void displayPopupWindow1(final View anchorView, final ArrayList<Field> alFields, final ArrayList<Field> alFieldValues)
-   {
-      final PopupMenu popupMenu = new PopupMenu(context, anchorView);
-      initPopupMenu(popupMenu, alFields, alFieldValues);
-
-      popupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener()
-      {
-         final int iFieldType = alFieldValues.get(0).iTypeID;
-
-         @Override
-         public boolean onMenuItemClick(MenuItem menuItem)
-         {
-            if(menuItem.getItemId() < alFieldValues.size())
-            {
-               menuItem.setChecked(!menuItem.isChecked());
-               if(menuItem.isChecked())
-                  alFields.add(alFieldValues.get(menuItem.getItemId()));
-               else
-                  alFields.remove(alFieldValues.get(menuItem.getItemId()));
-
-               setButtonText((Button) anchorView, alFieldValues);
-
-               popupMenu.show();
-            } else
-            {
-               AlertDialog.Builder builder = new AlertDialog.Builder(context);
-               builder.setTitle(R.string.add_new);
-               final EditText etNewValue = new EditText(context);
-               builder.setView(etNewValue);
-               builder.setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener()
-                        {
-                           public void onClick(DialogInterface dialog, int id)
-                           {
-                              String sNewValue = etNewValue.getText()
-                                       .toString();
-                              Field oField = new Field(iFieldType, sNewValue);
-                              alFieldValues.add(oField);
-                              alFields.add(oField);
-                              setButtonText((Button) anchorView, alFieldValues);
-                              initPopupMenu(popupMenu, alFields, alFieldValues);
-
-                              InputMethodManager imm = (InputMethodManager) context
-                                       .getSystemService(Activity.INPUT_METHOD_SERVICE);
-                              imm.toggleSoftInput(
-                                       InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                              dialog.cancel();
-                              popupMenu.show();
-                           }
-                        });
-
-               builder.setNegativeButton(android.R.string.cancel,
-                        new DialogInterface.OnClickListener()
-                        {
-                           public void onClick(DialogInterface dialog, int id)
-                           {
-                              InputMethodManager imm = (InputMethodManager) context
-                                       .getSystemService(Activity.INPUT_METHOD_SERVICE);
-                              imm.toggleSoftInput(
-                                       InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                              InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                              imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                               dialog.cancel();
                               popupMenu.show();
                            }
@@ -342,6 +365,80 @@ public class FieldMultiSpinner extends LinearLayout
       popupMenu.show();
    }
 
+//   private void displayPopupWindow1(final View anchorView, final ArrayList<Field> alFields, final ArrayList<Field> alFieldValues)
+//   {
+//      final PopupMenu popupMenu = new PopupMenu(context, anchorView);
+//      initPopupMenu(popupMenu, alFields, alFieldValues);
+//
+//      popupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener()
+//      {
+//         final int iFieldType = alFieldValues.get(0).iTypeID;
+//
+//         @Override
+//         public boolean onMenuItemClick(MenuItem menuItem)
+//         {
+//            if(menuItem.getItemId() < alFieldValues.size())
+//            {
+//               menuItem.setChecked(!menuItem.isChecked());
+//               if(menuItem.isChecked())
+//                  alFields.add(alFieldValues.get(menuItem.getItemId()));
+//               else
+//                  alFields.remove(alFieldValues.get(menuItem.getItemId()));
+//
+//               setButtonText((Button) anchorView, alFieldValues);
+//
+//               popupMenu.show();
+//            } else
+//            {
+//               AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//               builder.setTitle(R.string.add_new);
+//               final EditText etNewValue = new EditText(context);
+//               builder.setView(etNewValue);
+//               builder.setPositiveButton(android.R.string.ok,
+//                        new DialogInterface.OnClickListener()
+//                        {
+//                           public void onClick(DialogInterface dialog, int id)
+//                           {
+//                              String sNewValue = etNewValue.getText().toString();
+//                              Field oField = new Field(iFieldType, sNewValue);
+//                              alFieldValues.add(oField);
+//                              alFields.add(oField);
+//                              setButtonText((Button) anchorView, alFieldValues);
+//                              initPopupMenu(popupMenu, alFields, alFieldValues);
+//
+//                              InputMethodManager imm = (InputMethodManager) context
+//                                       .getSystemService(Activity.INPUT_METHOD_SERVICE);
+//                              imm.toggleSoftInput(
+//                                       InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//                              dialog.cancel();
+//                              popupMenu.show();
+//                           }
+//                        });
+//
+//               builder.setNegativeButton(android.R.string.cancel,
+//                        new DialogInterface.OnClickListener()
+//                        {
+//                           public void onClick(DialogInterface dialog, int id)
+//                           {
+//                              InputMethodManager imm = (InputMethodManager) context
+//                                       .getSystemService(Activity.INPUT_METHOD_SERVICE);
+//                              imm.toggleSoftInput(
+//                                       InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//                              dialog.cancel();
+//                              popupMenu.show();
+//                           }
+//                        });
+//
+//               builder.show();
+//
+//            }
+//            return true;
+//         }
+//      });
+//
+//      popupMenu.show();
+//   }   
+//   
    private void initPopupMenu1(PopupMenu popupMenu, final ArrayList<Field> alFields, final List<Field> alFieldValues)
    {
       popupMenu.getMenu().clear();
@@ -368,6 +465,21 @@ public class FieldMultiSpinner extends LinearLayout
       popupMenu.getMenu().add(Menu.NONE, alValues.size(), 0, "<add>");
    }
    
+   private void initPopupMenu2(PopupMenu popupMenu, final ArrayList<Item> alItems)
+   {
+      popupMenu.getMenu().clear();
+      
+      for(int i = 0; i < alItems.size(); i++)
+      {
+         popupMenu.getMenu().add(Menu.NONE, 0, i, alItems.get(i).getTitle())
+         .setCheckable(true)
+         .setChecked(alItems.get(i).isSelected());
+         
+      }
+      popupMenu.getMenu().add(Menu.NONE, 0, alItems.size(), "<add>");
+   }
+   
+
    
    public void setTitle(String title)
    {
@@ -402,6 +514,75 @@ public class FieldMultiSpinner extends LinearLayout
    public void setHint(String hint)
    {
       this.hint = hint;
-      setButtonText(btnSpinner, alFieldValues);
+//      setButtonText(btnSpinner, alFieldValues);
+      setButtonText2(btnSpinner, alItems);
+   }
+
+   public void setItems(ArrayList<Item> alItems)
+   {
+      this.alItems = alItems;
+      setButtonText2(btnSpinner, alItems);
+   }
+   
+   public void setOnUpdateListener(OnUpdateListener onUpdateListener)
+   {
+      this.onUpdateListener = onUpdateListener;
+   }
+
+   public static class Item 
+   {
+      private String title = "";
+      private boolean selected = false;
+      private long id = -1;
+      
+      public Item()
+      {
+         
+      }
+      
+      public Item(String title)
+      {
+         this.title = title;
+      }
+      
+      public Item(long id, String title)
+      {
+         this.id = id;
+      }
+
+      public String getTitle()
+      {
+         return title;
+      }
+
+      public void setTitle(String title)
+      {
+         this.title = title;
+      }
+
+      public boolean isSelected()
+      {
+         return selected;
+      }
+
+      public void setSelected(boolean selected)
+      {
+         this.selected = selected;
+      }
+
+      public long getId()
+      {
+         return id;
+      }
+
+      public void setId(long id)
+      {
+         this.id = id;
+      }
+   }
+   
+   public interface OnUpdateListener
+   {
+      public void onUpdate(Item item);
    }
 }
