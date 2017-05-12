@@ -205,7 +205,7 @@ public class DBAdapter
 		FIELD_TYPES.add(new FieldType(FLD_TITLE, r.getString(R.string.fld_title), FieldType.TYPE_TEXT).setVisibility(true));
 		FIELD_TYPES.add(new FieldType(FLD_AUTHOR, r.getString(R.string.fld_author), FieldType.TYPE_MULTIFIELD).setVisibility(true));
 //		FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, r.getString(R.string.fld_descrition), true, FieldType.TYPE_TEXT_MULTILINE).setMultiline(false));
-		FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, r.getString(R.string.fld_descrition), FieldType.TYPE_TEXT).setMultiline(true).setVisibility(false));
+		FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, r.getString(R.string.fld_descrition), FieldType.TYPE_TEXT).setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_MULTI_LINE).setMultiline(false).setVisibility(false));
 		FIELD_TYPES.add(new FieldType(FLD_SERIE, r.getString(R.string.fld_serie), FieldType.TYPE_TEXT_AUTOCOMPLETE));
 		FIELD_TYPES.add(new FieldType(FLD_VOLUME, r.getString(R.string.fld_volume), FieldType.TYPE_TEXT).setInputType(InputType.TYPE_CLASS_NUMBER));
 		FIELD_TYPES.add(new FieldType(FLD_CATEGORY, r.getString(R.string.fld_category), FieldType.TYPE_MULTI_SPINNER));

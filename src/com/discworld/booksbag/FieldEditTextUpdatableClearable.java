@@ -12,6 +12,7 @@ import android.text.method.DigitsKeyListener;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 
 public class FieldEditTextUpdatableClearable extends LinearLayout
@@ -111,9 +112,17 @@ public class FieldEditTextUpdatableClearable extends LinearLayout
 
    public void setInputType(int type)
    {
-      oEditTextX.setInputType(type);
+      if(type > 0)
+         oEditTextX.setInputType(type);
    }
    
+   public void setMultiline()
+   {
+      oEditTextX.setSingleLine(false);
+      oEditTextX.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);   
+      
+   }
+
    public void setDigits(String digits)
    {
       oEditTextX.setInputType(InputType.TYPE_CLASS_PHONE);

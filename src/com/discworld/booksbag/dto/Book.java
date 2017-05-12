@@ -32,13 +32,19 @@ public class Book
    public long iID = 0;
    
    public Changeable<String> csTitle,
+                             csDescription,
                              csPrice,
-                             csValue;
+                             csValue,
+                             csISBN,
+                             csWeb;
+;
    
-   public Changeable<Integer> ciReadDate,
+   public Changeable<Integer> ciVolume,
+                              ciPages,
+                              ciPublicationDate,
+                              ciEdition,
+                              ciReadDate,
                               ciDueDate;
-   
-   public Changeable<Integer> ciVolume;
    
    public String sTitle,
                  sDescription,
@@ -88,10 +94,12 @@ public class Book
 //      this.csTitle.value = sTitle;
       this.sTitle = sTitle;
       this.sDescription = sDescription;
+      csDescription = new Changeable<String>(sDescription);
       this.iVolume = iVolume;
       ciVolume = new Changeable<Integer>(iVolume);
       this.iPublicationDate = iPublicationDate;
       this.iPages = iPages;
+      ciPages = new Changeable<Integer>(iPages);
 //      this.iPrice = iPrice;
 //      this.iValue = iValue;
       this.sPrice = sPrice;
@@ -103,7 +111,10 @@ public class Book
       ciReadDate = new Changeable<Integer>(iReadDate);
       ciDueDate = new Changeable<Integer>(iDueDate);
       this.iEdition = iEdition;
+      ciEdition = new Changeable<Integer>(iEdition);
       this.sISBN = sISBN;
+      csISBN = new Changeable<String>(sISBN);
       this.sWeb = sWeb;
+      csWeb = new Changeable<String>(sWeb);
    }
 }

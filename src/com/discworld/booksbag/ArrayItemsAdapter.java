@@ -1,6 +1,7 @@
 package com.discworld.booksbag;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.content.Context;
 import android.view.View;
@@ -19,7 +20,8 @@ public class ArrayItemsAdapter extends ArrayAdapter<Item>
    private ArrayList<Item> suggestions;
    private int viewResourceId;
 
-   public ArrayItemsAdapter(Context context, int viewResourceId, ArrayList<? extends com.discworld.booksbag.FieldMultiSpinner.Item> alDictionaryFields1) {
+   public ArrayItemsAdapter(Context context, int viewResourceId, ArrayList<Item> alDictionaryFields1) 
+   {
        super(context, viewResourceId, alDictionaryFields1);
        this.items = alDictionaryFields1;
        this.itemsAll = (ArrayList<Item>) alDictionaryFields1.clone();
@@ -59,7 +61,7 @@ public class ArrayItemsAdapter extends ArrayAdapter<Item>
             suggestions.clear();
             for (Item oField : itemsAll) 
             {
-               if(oField.getValue().toLowerCase().startsWith(constraint.toString().toLowerCase()))
+               if(oField.getValue().toLowerCase(Locale.getDefault()).startsWith(constraint.toString().toLowerCase()))
                {
                   suggestions.add(oField);
                }

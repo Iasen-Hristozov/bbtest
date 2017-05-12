@@ -42,15 +42,17 @@ public class Field implements Item
       return sValue;
    }
 
+
    @Override
    public String getValue()
    {
       return sValue;
    }
 
-   @Override
-   public int getId()
-   {
-      return (int)iID;
-   }
+
+//   @Override
+//   public void copy(Object o)
+//   {
+//      copy((Field) o);
+//   }
 }

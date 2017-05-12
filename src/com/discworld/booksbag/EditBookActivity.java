@@ -208,9 +208,9 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       String ts[] = {oBook.sTitle};
       
 //      addTextField(llAuthors, DBAdapter.FLD_TITLE, ts);
-      addTextField(llAuthors, DBAdapter.FLD_TITLE, oBook.csTitle);
-      addTextField(llAuthors, DBAdapter.FLD_VOLUME, oBook.ciVolume);
-      addTextField(llAuthors, DBAdapter.FLD_WEB, oBook.alFields.get(3));
+      addFieldText(llAuthors, DBAdapter.FLD_TITLE, oBook.csTitle);
+      addFieldText(llAuthors, DBAdapter.FLD_VOLUME, oBook.ciVolume);
+      addFieldText(llAuthors, DBAdapter.FLD_WEB, oBook.alFields.get(3));
 //      addAutocompleteField(llAuthors, oBook.alFields.get(4));
 //      addFieldSpinner(llAuthors, oBook.alFields.get(10));
       addFieldSpinner(llAuthors, DBAdapter.FLD_CONDITION);
@@ -225,7 +225,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          switch(oFieldType.iType)
          {
             case FieldType.TYPE_TEXT:
-               
+               addFieldText(llAuthors, oFieldType);
             break;
             
             case FieldType.TYPE_MULTIFIELD:
@@ -866,7 +866,62 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       }
    }
 
-   private void addTextField(ViewGroup rootView, int iEnuFieldType, final Field f)
+   private <T> void addFieldText(LinearLayout rootView, FieldType oFieldType)
+   {
+//      final FieldEditTextUpdatableClearable oField = new FieldEditTextUpdatableClearable(this);
+//      final Changeable<T> cValue; 
+      
+      switch(oFieldType.iID)
+      {
+         case DBAdapter.FLD_TITLE:
+//            oField.setTag(oBook.csTitle);
+//            cValue = (Changeable<T>) oBook.csTitle;
+            addFieldText(rootView, oFieldType, oBook.csTitle);
+         break;
+         
+         
+         case DBAdapter.FLD_DESCRIPTION:
+//            oField.setTag(oBook.csDescription);
+//            cValue = oBook.csDescription;
+            addFieldText(rootView, oFieldType, oBook.csDescription);
+         break;
+
+         case DBAdapter.FLD_VOLUME:
+//            oField.setTag(oBook.ciVolume);
+//            cValue = oBook.ciVolume;
+            addFieldText(rootView, oFieldType, oBook.ciVolume);
+         break;
+
+         case DBAdapter.FLD_PAGES:
+//            oField.setTag(oBook.ciPages);
+//            cValue = oBook.ciPages;
+            addFieldText(rootView, oFieldType, oBook.ciPages);
+         break;
+         
+         case DBAdapter.FLD_EDITION:
+//            oField.setTag(oBook.ciEdition);
+//            cValue = oBook.ciEdition;
+            addFieldText(rootView, oFieldType, oBook.ciEdition);
+         break;
+
+         case DBAdapter.FLD_ISBN:
+//            oField.setTag(oBook.csISBN);
+//            cValue = oBook.csISBN;
+            addFieldText(rootView, oFieldType, oBook.csISBN);
+         break;
+         
+         case DBAdapter.FLD_WEB:
+//            oField.setTag(oBook.csWeb);
+//            cValue = oBook.csWeb;
+            addFieldText(rootView, oFieldType, oBook.csWeb);
+         break;
+         
+         default:
+            return;
+      }
+   }
+
+   private void addFieldText(ViewGroup rootView, int iEnuFieldType, final Field f)
    {
       FieldType oFieldType = getFieldType(f.iTypeID);
 //      FieldType oFieldType = null;
@@ -898,7 +953,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       rootView.addView(oField);      
    }
    
-   private void addTextField(ViewGroup rootView, int iEnuType,  final String [] sValue)
+   private void addFieldText(ViewGroup rootView, int iEnuType,  final String [] sValue)
    {
       FieldType oFieldType = getFieldType(iEnuType);
       
@@ -929,10 +984,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       rootView.addView(oField);      
    }
    
-   private <T> void addTextField(ViewGroup rootView, int iEnuType,  final Changeable<T> cValue)
+   private <T> void addFieldText(ViewGroup rootView, FieldType oFieldType,  final Changeable<T> cValue)
    {
-      FieldType oFieldType = getFieldType(iEnuType);
-      
       final FieldEditTextUpdatableClearable oField = new FieldEditTextUpdatableClearable(this);
       oField.setTitle(oFieldType.sName);
 //      oField.setText(sFieldValue);
@@ -940,6 +993,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //      sValue[0] = "aaaa";
       oField.setHint(oFieldType.sName);
       oField.setInputType(oFieldType.iInputType);
+      if(oFieldType.isMultiline)
+         oField.setMultiline();
 //      oField.setUpdateListener(new MyUpdateListener(sFieldValue));
 //      oField.setTag(sFieldValue);
 //      oField.setTag(f);
@@ -993,35 +1048,15 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
                
             }
                
-////            c.
-//            if(c.getName().equals(Integer.class.getName()))
-//               cValue.value = (T) Integer.valueOf(et.getText().toString());
-//               cValue.set(Integer.valueOf(et.getText().toString()));
-//            else
-//               cValue.set(c.cast(et.getText().toString()));
-//            Class<?> classType;
-//            try
-//            {
-//               classType = Class.forName(c.getCanonicalName());
-//               classType.
-//            } catch(ClassNotFoundException e)
-//            {
-//               // TODO Auto-generated catch block
-//               e.printStackTrace();
-//            }
-////            cValue.value = et.getText().toString();
-//            c.cast(et.getText().toString());
-//            cValue.set(c.cast(et.getText().toString()));
-//            cValue.set(et.getText().toString());
-//            ((Field) oField.getTag()).sValue = et.getText().toString(); 
-//            String s = (String)oField.getTag();
-//            s = et.getText().toString();
-//            oField.setTag(s);
-////            ((String)oField.getTag()) = "aaa";
-////            s.
          }
       });
       rootView.addView(oField);      
+   }   
+   
+   private <T> void addFieldText(ViewGroup rootView, int iEnuType,  final Changeable<T> cValue)
+   {
+      FieldType oFieldType = getFieldType(iEnuType);
+      addFieldText(rootView, oFieldType,  cValue);
    }
    
 //   private void addAutocompleteField(ViewGroup rootView, final Field f)
@@ -1291,52 +1326,76 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 
    private void addFieldMultiText(ViewGroup rootView, final FieldType oFieldType)
    {
-//      final FieldMultiText oFieldMultiText = new FieldMultiText(this, oBook.alFields, oFieldType);
       final FieldMultiText oFieldMultiText = new FieldMultiText(this);
       // TODO Fix it
       oFieldMultiText.setTitle(oFieldType.sName + "s");
       oFieldMultiText.setHint(oFieldType.sName);
 
       // Set adapter
-      final ArrayList<Field> alDictionaryFields = oDbAdapter.getFieldValues(oFieldType.iID);
-      final ArrayList<? extends Item> alDictionaryFields1 = oDbAdapter.getFieldValues(oFieldType.iID);
-      String tDictionaryValues[] = new String[alDictionaryFields.size()];
-      for(int i = 0; i < alDictionaryFields.size(); i++)
-         tDictionaryValues[i] = alDictionaryFields.get(i).sValue;
+      final ArrayList<Field> alFieldsValues = oDbAdapter.getFieldValues(oFieldType.iID);
+      final ArrayList<FieldMultiText.Item> alItemsValues = new ArrayList<FieldMultiText.Item>();
+      for(FieldMultiText.Item field: alFieldsValues)
+         alItemsValues.add(field);
+
+//      String tDictionaryValues[] = new String[alFieldsValues.size()];
+//      for(int i = 0; i < alFieldsValues.size(); i++)
+//         tDictionaryValues[i] = alFieldsValues.get(i).sValue;
 //      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tDictionaryValues);  
-//      ArrayAdapter<Field> oArrayAdapter = new ArrayAdapter<Field> (this, android.R.layout.select_dialog_item, alDictionaryFields)
-//      {
-//         @Override
-//         public View getView(int position, View convertView, ViewGroup parent) 
-//         {
-//            TextView view = (TextView) super.getView(position, convertView, parent);
-//            // Replace text with my own
-//            view.setText(getItem(position).sValue);
-//            return view;
-//         }
-//      };
-      ArrayFieldsAdapter oArrayAdapter = new ArrayFieldsAdapter (this, android.R.layout.select_dialog_item, alDictionaryFields);
-      ArrayItemsAdapter oArrayAdapter1 = new ArrayItemsAdapter (this, android.R.layout.select_dialog_item, alDictionaryFields1);
+      final ArrayItemsAdapter oArrayAdapter1 = new ArrayItemsAdapter(this, android.R.layout.select_dialog_item, alItemsValues);
       
-      oFieldMultiText.setAdapter(oArrayAdapter);
-      oFieldMultiText.setItems2(oBook.alFields);
-      oFieldMultiText.setItems(oBook.alFields);
+      oFieldMultiText.setItems(oArrayAdapter1, oBook.alFields);
       
-//      oFieldMultiText.setItems(oBook.alFields);
       oFieldMultiText.setOnAddRemoveListener(new FieldMultiText.OnAddRemoveFieldListener()
       {
          
          @Override
-         public void onFieldRemove(Object object)
+         public void onFieldRemove(View view)
          {
-            oBook.alFields.remove(object);
+            oBook.alFields.remove((Field) view.getTag());
          }
          
          @Override
-         public void onFieldNewAdd(View vRow)
+         public void onAddNewField(View view)
          {
-            vRow.setTag(new Field(oFieldType.iID));
-            
+            Field fldNew = new Field(oFieldType.iID);
+            oBook.alFields.add(fldNew);
+            view.setTag(fldNew);
+         }
+
+//         @Override
+//         public void onFieldUpdated(EditText et)
+//         {
+//            ((Field )et.getTag()).sValue = et.getText().toString();
+//         }
+         
+         @Override
+         public void onFieldUpdated(View view, String value)
+         {
+            boolean isExists = false;
+            for(Field field: alFieldsValues)
+            {
+               if(field.getValue().equalsIgnoreCase(value))
+               {
+                  ((Field )view.getTag()).copy(field);
+                  isExists = true;
+               }
+            }
+            if(!isExists)
+               ((Field )view.getTag()).sValue = value;
+         }
+         
+
+         @Override
+         public void onItemSelect(ArrayAdapter<?> adapter, View view, int position)
+         {
+            ((Field) view.getTag()).copy(alFieldsValues.get(position));
+         }
+
+         @Override
+         public void onItemSelect(View view, FieldMultiText.Item selection)
+         {
+            if(selection instanceof Field)
+               ((Field) view.getTag()).copy((Field)selection);
          }
       });
       
@@ -1446,14 +1505,11 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          {
             oPrice.iCurrencyID = alCurrencies.get(pos).iID;
             ((Changeable<String>) oFieldMoney.getTag()).value = oPrice.toString();
-            int a =1;
          }
 
          @Override
          public void onNothingSelected(AdapterView<?> parent)
          {
-            // TODO Auto-generated method stub
-            
          }
       });
       
@@ -1480,7 +1536,6 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
             oPrice.iValue = iValue;
             ((Changeable<String>) oFieldMoney.getTag()).value = oPrice.toString();
             
-            int a = 1;
          }
       });
       
