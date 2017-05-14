@@ -22,11 +22,6 @@ public class FieldType
                             TYPE_MULTI_SPINNER = 6,
                             TYPE_DATE = 7;
    
-//   public FieldType(int iID, String sName)
-//   {
-//      this.iID = iID;
-//      this.sName = sName;
-//   }
    
    public FieldType(int iID, String sName, boolean isVisible, byte iType)
    {
@@ -44,32 +39,10 @@ public class FieldType
 //      this(iID, sName);
       this.iType = iType;
    }
-   
-//   public FieldType(int iID, String sName, boolean isVisible, byte iType, int iInputType)
-//   {
-//      this(iID, sName);
-//      this.isVisible = isVisible;
-//      this.iType = iType;
-//      this.iInputType = iInputType;
-//   }
-   
-//   public FieldType(int iID, String sName, boolean isVisible, String sDigit)
-//   {
-//      this(iID, sName);
-//      this.isVisible = isVisible;
-//      this.sDigit = sDigit;
-//   }
 
    public FieldType setVisibility(boolean isVisible)
    {
       this.isVisible = isVisible;
-      return this;
-   }
-
-   
-   public FieldType setMultiline(boolean isMultiline)
-   {
-      this.isMultiline = isMultiline;
       return this;
    }
    
