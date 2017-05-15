@@ -4,6 +4,9 @@
    <string name="app_name">BooksBag</string>
    <string name="hello_world">Hello world!</string>
    <string name="action_settings">Settings</string>
+   <string name="action_exp_db">Export DB</string>
+   <string name="action_imp_db">Import DB</string>
+   <string name="prf_xpr_db_scs">DB is successfully exported</string>
    <string name="title_book_detail">Book Detail</string>
    <string name="et_title">Title</string>
    <string name="lbl_authors">Authors</string>
@@ -41,4 +44,5 @@
    <string name="add_new">Add new</string>
    <string name="amn_vl">%1$01d%2$c%3$02d</string>
    <string name="amn_vl_crn">%1$01d%2$c%3$02d %4$s</string>
+   <string name="btn_add_field">Add another field</string>
 </resources>

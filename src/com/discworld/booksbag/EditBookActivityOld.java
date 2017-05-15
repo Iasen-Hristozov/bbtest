@@ -70,10 +70,8 @@ public class EditBookActivityOld extends AppCompatActivity implements MultiSpinn
    private Book oBook;
    private EditText etTitle,
                     etDescription;
-   private ImageButton ibAddAuthor;
 
    private LinearLayout llAuthors;
-   private EditText etAuthorFocused;
    private Button btnShowPopup;
    private DBAdapter oDbAdapter = null;
    private ArrayAdapter<String> adapter;
@@ -993,8 +991,8 @@ public class EditBookActivityOld extends AppCompatActivity implements MultiSpinn
 //      sValue[0] = "aaaa";
       oField.setHint(oFieldType.sName);
       oField.setInputType(oFieldType.iInputType);
-      if(oFieldType.isMultiline)
-         oField.setMultiline();
+//      if(oFieldType.isMultiline)
+//         oField.setMultiline();
 //      oField.setUpdateListener(new MyUpdateListener(sFieldValue));
 //      oField.setTag(sFieldValue);
 //      oField.setTag(f);

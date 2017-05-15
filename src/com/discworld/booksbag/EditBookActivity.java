@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.LinearLayout;
@@ -26,23 +29,27 @@ import com.discworld.booksbag.dto.Date;
 import com.discworld.booksbag.dto.EditTextX;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
-import com.discworld.booksbag.dto.MultiSpinner;
 import com.discworld.booksbag.dto.Price;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
-public class EditBookActivity extends AppCompatActivity implements MultiSpinner.multispinnerListener
+public class EditBookActivity extends AppCompatActivity 
 {
    public final static String BOOK_ID = "book_id";
 
    private Book oBook;
    private EditText etTitle,
                     etDescription;
-
    private LinearLayout llFields;
    private DBAdapter oDbAdapter = null;
+   private PopupMenu pmHiddenFields = null;
+   private Button btnAddField = null;
+   
+   HashMap<MenuItem, View> hmHiddenFileds = new HashMap<MenuItem, View>();
 
    @Override
    protected void onCreate(Bundle savedInstanceState)
@@ -101,6 +108,32 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       else
          oBook = new Book();
       
+      btnAddField = (Button) findViewById(R.id.btn_add_field);
+      btnAddField.setOnClickListener(new View.OnClickListener()
+      {
+         
+         @Override
+         public void onClick(View v)
+         {
+            pmHiddenFields.show();
+         }
+      });
+      
+      pmHiddenFields = new PopupMenu(this, btnAddField);
+      pmHiddenFields.setOnMenuItemClickListener(new OnMenuItemClickListener()
+      {
+         
+         @Override
+         public boolean onMenuItemClick(MenuItem menuItem)
+         {
+//            ((View) menuItem.getActionView().getTag()).setVisibility(View.VISIBLE);
+            hmHiddenFileds.get(menuItem).setVisibility(View.VISIBLE);
+            pmHiddenFields.getMenu().removeItem(menuItem.getItemId());
+
+            return false;
+         }
+      });
+      
       llFields = (LinearLayout) findViewById(R.id.ll_fields);
       
       for(FieldType oFieldType: DBAdapter.FIELD_TYPES)
@@ -155,12 +188,6 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       oDbAdapter.open();
 
 //      oBook = oDbAdapter.getBook(oBook.iID);
-   }
-
-   @Override
-   public void onItemschecked(boolean[] checked)
-   {
-
    }
 
    // BEGIN_INCLUDE (handle_cancel)
@@ -262,8 +289,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       oField.setText(cValue.toString());
       oField.setHint(oFieldType.sName);
       oField.setInputType(oFieldType.iInputType);
-      if(oFieldType.isMultiline)
-         oField.setMultiline();
+//      if(oFieldType.isMultiline)
+//         oField.setMultiline();
       oField.setUpdateListener(new EditTextX.OnUpdateListener()
       {
          
@@ -306,13 +333,12 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
                cValue.value = t;
                
             }
-               
          }
       });
-      rootView.addView(oField);      
+      rootView.addView(oField);
+      if(!oFieldType.isVisible && cValue.isEmpty())
+         hideField(oField, oFieldType.sName);
    }   
-   
-
    
    private void addAutocompleteField(ViewGroup rootView, final FieldType oFieldType)
    {
@@ -322,7 +348,6 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       for(int i = 0; oField == null || i < oBook.alFields.size(); i++)
          if(oFieldType.iID == oBook.alFields.get(i).iTypeID)
             oField = oBook.alFields.get(i);
-    
       final FieldAutoCompleteTextView oFieldAutoCompleteTextView = new FieldAutoCompleteTextView(this);
       oFieldAutoCompleteTextView.setTitle(oFieldType.sName);
       oFieldAutoCompleteTextView.setHint(oFieldType.sName);
@@ -364,6 +389,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       });
     
       rootView.addView(oFieldAutoCompleteTextView);
+      if(!oFieldType.isVisible && oField.sValue.trim().isEmpty())
+         hideField(oFieldAutoCompleteTextView, oFieldType.sName);
    }   
    
    private void addFieldSpinner(ViewGroup rootView, FieldType oFieldType)
@@ -379,42 +406,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       
       for(int i = 0; oField == null || i < oBook.alFields.size() && oField.iTypeID != oFieldType.iID; i++)
          oField = oBook.alFields.get(i);
-      
-//      for(Field fldTemp : oBook.alFields)
-//      {
-//         if(fldTemp.iTypeID == oFieldType.iID)
-//         {
-//            oField = fldTemp;
-//            break;
-//         }
-//      }
-      
-//      oFieldSpinner.setTag(oField);
-//      oFieldSpinner.setOnUpdateListerener(new FieldSpinner.OnUpdateListener()
-//      {
-//         
-//         @Override
-//         public void onUpdate(FieldSpinner oFieldSpinner, int pos)
-//         {
-//            ((Field) oFieldSpinner.getTag()).copy(alFieldValues.get(pos));
-//         }
-//      });
-//      
-//      Field oField = null;
-//      int iSelected = -1;
-//      final FieldSpinner oFieldSpinner = new FieldSpinner(this);
-//      oFieldSpinner.setTitle(oFieldType.sName);
-//      
-//      for(Field fldTemp : oBook.alFields)
-//      {
-//         if(fldTemp.iTypeID == oFieldType.iID)
-//         {
-//            oField = fldTemp;
-//            break;
-//         }
-//      }
-//
-//      final ArrayList<Field> alFieldsValues = oDbAdapter.getFieldValues(oFieldType.iID);
+
       String tFieldValues[] = new String[alFieldValues.size()];
       for(int i = 0; i < alFieldValues.size(); i++)
       {
@@ -434,7 +426,6 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
          @Override
          public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
          {
-//            f.copy(alFieldsValues.get(pos));
             ((Field) oFieldSpinner.getTag()).copy(alFieldValues.get(pos));
          }
 
@@ -447,6 +438,8 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       });
       
       rootView.addView(oFieldSpinner);
+      if(!oFieldType.isVisible && oField == null)
+         hideField(oFieldSpinner, oFieldType.sName);
    }
 
    private void addFieldMultiText(ViewGroup rootView, final FieldType oFieldType)
@@ -466,9 +459,9 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
 //      for(int i = 0; i < alFieldsValues.size(); i++)
 //         tDictionaryValues[i] = alFieldsValues.get(i).sValue;
 //      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tDictionaryValues);  
-      final ArrayItemsAdapter oArrayAdapter1 = new ArrayItemsAdapter(this, android.R.layout.select_dialog_item, alItemsValues);
+      final ArrayItemsAdapter oArrayAdapter = new ArrayItemsAdapter(this, android.R.layout.select_dialog_item, alItemsValues);
       
-      oFieldMultiText.setItems(oArrayAdapter1, oBook.alFields);
+      oFieldMultiText.setItems(oArrayAdapter, oBook.alFields);
       
       oFieldMultiText.setOnAddRemoveListener(new FieldMultiText.OnAddRemoveFieldListener()
       {
@@ -525,6 +518,9 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       });
       
       rootView.addView(oFieldMultiText);
+      
+      if(!oFieldType.isVisible && !hasFieldsOfType(oFieldType.iID))
+         hideField(oFieldMultiText, oFieldType.sName);
    }
    
    private void addFieldMultiSpinner(ViewGroup rootView, final FieldType oFieldType)
@@ -571,6 +567,10 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       });
       
       rootView.addView(oFieldMultiSpinner);
+      
+      if(!oFieldType.isVisible && !hasFieldsOfType(oFieldType.iID))
+         hideField(oFieldMultiSpinner, oFieldType.sName);
+      
    }
    
    @SuppressWarnings("unchecked")
@@ -656,6 +656,10 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       });
       
       rootView.addView(oFieldMoney);
+      
+      if(!oFieldType.isVisible && ((Changeable<?>) oFieldMoney.getTag()).isEmpty())
+         hideField(oFieldMoney, oFieldType.sName);
+         
    }
    
    private void addFieldDate(ViewGroup rootView, FieldType oFieldType)
@@ -701,7 +705,11 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
             ((Changeable<Integer>) oFieldDate.getTag()).value = oFieldDate.getDate().toInt();
          }
       });
-      rootView.addView(oFieldDate);      
+      rootView.addView(oFieldDate);
+      
+      if(!oFieldType.isVisible && ((Changeable<?>) oFieldDate.getTag()).isEmpty())
+         hideField(oFieldDate, oFieldType.sName);
+      
    }
    
    public class ArrayFieldsAdapter extends ArrayAdapter<Field> 
@@ -753,7 +761,7 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
                suggestions.clear();
                for (Field oField : itemsAll) 
                {
-                  if(oField.sValue.toLowerCase().startsWith(constraint.toString().toLowerCase()))
+                  if(oField.sValue.toLowerCase(Locale.getDefault()).startsWith(constraint.toString().toLowerCase()))
                   {
                      suggestions.add(oField);
                   }
@@ -788,4 +796,26 @@ public class EditBookActivity extends AppCompatActivity implements MultiSpinner.
       };
    }
 
+   private void hideField(View view, String sName)
+   {
+      
+      view.setVisibility(View.GONE);
+      
+      pmHiddenFields.getMenu().add(Menu.NONE, pmHiddenFields.getMenu().size(), 0, sName);
+      hmHiddenFileds.put(pmHiddenFields.getMenu().getItem(pmHiddenFields.getMenu().size()-1), view);
+   }
+   
+   private boolean hasFieldsOfType(int iTypeID)
+   {
+      boolean hasFieldsOfType = false; 
+      for(Field field: oBook.alFields)
+      {
+         if(field.iTypeID == iTypeID)
+         {
+            hasFieldsOfType = true;
+            break;
+         }
+      }
+      return hasFieldsOfType;
+   }
 }

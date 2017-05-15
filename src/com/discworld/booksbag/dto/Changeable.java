@@ -39,4 +39,13 @@ public class Changeable<T>
    {
       return value.hashCode();
    }
+   
+   public boolean isEmpty()
+   {
+      if(value instanceof String)
+         return ((String) value).trim().isEmpty();
+      else if(value instanceof Integer)
+         return ((Integer)value) == 0;
+      return true;
+   }
 }

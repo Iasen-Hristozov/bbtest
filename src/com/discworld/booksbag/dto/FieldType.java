@@ -8,11 +8,11 @@ public class FieldType
 {
    public int iID = 0;
    public String sName;
-   public boolean isVisible = true;
+   public boolean isVisible = false;
    public byte iType = 0;
    public int iInputType = 0;
    public String sDigit = "";
-   public boolean isMultiline = false;
+//   public boolean isMultiline = false;
 
    public final static byte TYPE_TEXT = 1,
                             TYPE_TEXT_AUTOCOMPLETE = 2,

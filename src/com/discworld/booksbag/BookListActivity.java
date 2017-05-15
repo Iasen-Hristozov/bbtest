@@ -3,6 +3,7 @@ package com.discworld.booksbag;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,13 +12,20 @@ import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dummy.DummyContent;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.List;
 
 /**
@@ -31,6 +39,9 @@ import java.util.List;
 public class BookListActivity extends AppCompatActivity
 {
    public final static int SHOW_EDIT_BOOK = 101;
+   
+   private static final String XPR_DIR = "BooksBag",
+                               DB_PATH = "//data//com.discworld.booksbag//databases//";
    
    private DBAdapter oDbAdapter = null;
 
@@ -81,6 +92,42 @@ public class BookListActivity extends AppCompatActivity
          mTwoPane = true;
       }
    }
+   
+   
+
+   @Override
+   public boolean onCreateOptionsMenu(Menu menu)
+   {
+      getMenuInflater().inflate(R.menu.menu_main, menu);
+      return true;
+   }
+
+
+
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item)
+   {
+      switch(item.getItemId())
+      {
+         case R.id.action_settings:
+            return true;
+
+         case R.id.action_exp_db:
+            oDbAdapter.close();
+            if(bExportDb())
+               Toast.makeText(getApplicationContext(), R.string.prf_xpr_db_scs, Toast.LENGTH_SHORT).show();
+            oDbAdapter.open();            
+            return true;
+         
+         case R.id.action_imp_db:
+            return true;
+            
+         default:
+            return true;
+      }
+   }
+
+
 
    private void setupRecyclerView(@NonNull RecyclerView recyclerView)
    {
@@ -187,5 +234,51 @@ public class BookListActivity extends AppCompatActivity
       oDbAdapter.open();
 
 //      oBook = oDbAdapter.getBook(oBook.iID);
+   }
+
+   private boolean bExportDb()
+   {
+      try 
+      {
+         File flRoot = android.os.Environment.getExternalStorageDirectory(); 
+         
+//         File flXprDir = new File (flRoot.getAbsolutePath() + "/" + XPR_DIR);
+         File flXprDir = new File (Environment.getExternalStorageDirectory() + "/" + XPR_DIR);
+         flXprDir.mkdirs(); 
+         File flData = Environment.getDataDirectory();
+
+         if (flXprDir.canWrite()) 
+         {
+            File flCurrentDB = new File(flData, DB_PATH + DBAdapter.DATABASE_NAME);
+            File flBackupDB = new File(flXprDir, DBAdapter.DATABASE_NAME);
+
+            if (flCurrentDB.exists()) 
+            {
+               FileChannel src = new FileInputStream(flCurrentDB).getChannel();
+               FileChannel dst = new FileOutputStream(flBackupDB).getChannel();
+               
+               dst.transferFrom(src, 0, src.size());
+               return true;
+            }
+         }
+      } 
+      catch (Exception e) 
+      {
+        System.out.println(e.getMessage());
+        return false;
+      }
+//      finally
+//      {
+//         try
+//         {
+//            src.close();
+//            dst.close();
+//         } catch(IOException e)
+//         {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//         }
+//      }
+      return false;
    }
 }

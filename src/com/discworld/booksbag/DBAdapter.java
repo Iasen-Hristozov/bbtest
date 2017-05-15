@@ -22,7 +22,7 @@ import com.discworld.booksbag.dummy.DummyContent;
 public class DBAdapter
 {
    private static final String TAG = "DB";
-	private static final String DATABASE_NAME = "books_bag.db";
+	public static final String DATABASE_NAME = "books_bag.db";
    private static final int DATABASE_VERSION = 1;
 
    private static final String TABLE_BOOKS = "books";
