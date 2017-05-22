@@ -144,6 +144,11 @@ public class FieldEditTextUpdatableClearable extends LinearLayout
       oEditTextX.setHint(resid);
    }
    
+   public void setError(CharSequence error)
+   {
+      oEditTextX.setError(error);
+   }
+   
    public void setUpdateListener(OnUpdateListener onUpdateListener)
    {
       oEditTextX.setOnUpdateListener(onUpdateListener);

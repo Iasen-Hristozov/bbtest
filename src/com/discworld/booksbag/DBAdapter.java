@@ -84,17 +84,17 @@ public class DBAdapter
 //         + KEY_PBL_ID + " INTEGER, "
 //         + KEY_PBL_LCT_ID + " INTEGER, "
          + KEY_PBL_DT + " INTEGER, "
-         + KEY_PGS + "INTEGER, "
+         + KEY_PGS + " INTEGER, "
 //         + KEY_STS_ID + "INTEGER, "
 //         + KEY_RTN_ID + "INTEGER, "
 //         + KEY_FMT_ID + "INTEGER, "
 //         + KEY_LCT_ID + "INTEGER, "
-         + KEY_PRC + "INTEGER, "
-         + KEY_VL + "INTEGER, "
-         + KEY_CND_ID + "INTEGER, "
-         + KEY_DUE_DT + "INTEGER, "
-         + KEY_RD_DT + "INTEGER, "
-         + KEY_EDN + "INTEGER, "
+         + KEY_PRC + " TEXT, "
+         + KEY_VL + " TEXT, "
+//         + KEY_CND_ID + "INTEGER, "
+         + KEY_DUE_DT + " INTEGER, "
+         + KEY_RD_DT + " INTEGER, "
+         + KEY_EDN + " INTEGER, "
          + KEY_ISBN + " TEXT, "
          + KEY_WEB + " TEXT)";
 
@@ -116,9 +116,9 @@ public class DBAdapter
 
    // FIELDS table create statement
    private static final String CREATE_TABLE_FIELDS = "CREATE TABLE " + TABLE_FIELDS + " ("
-//         + KEY_TP_ID + " INTEGER, "
-         + KEY_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-         + KEY_NM + " TEXT)";
+            + KEY_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + KEY_TP_ID + " INTEGER, "
+            + KEY_NM + " TEXT)";
 
    // BOOK_FIELDS table create statement
    private static final String CREATE_TABLE_BOOK_FIELDS = "CREATE TABLE " + TABLE_BOOK_FIELDS + " ("
@@ -336,31 +336,31 @@ public class DBAdapter
 //         statement.clearBindings();
 
          ContentValues values = new ContentValues();
-         values.put(KEY_TTL, oBook.sTitle);
-         values.put(KEY_DSCR, oBook.sDescription);
-         values.put(KEY_VLM, oBook.iVolume);
-         values.put(KEY_PBL_DT, oBook.iPublicationDate);
-         values.put(KEY_PGS, oBook.iPages);
-//         values.put(KEY_PRC, oBook.iPrice);
-//         values.put(KEY_VL, oBook.iValue);
-         values.put(KEY_PRC, oBook.sPrice);
-         values.put(KEY_VL, oBook.sValue);
-         values.put(KEY_DUE_DT, oBook.iDueDate);
-         values.put(KEY_RD_DT, oBook.iReadDate);
-         values.put(KEY_EDN, oBook.iEdition);
-         values.put(KEY_ISBN, oBook.sISBN);
-         values.put(KEY_WEB, oBook.sWeb);
+         values.put(KEY_TTL, oBook.csTitle.value);
+         values.put(KEY_DSCR, oBook.csDescription.value);
+         values.put(KEY_VLM, oBook.ciVolume.value);
+         values.put(KEY_PBL_DT, oBook.ciPublicationDate.value);
+         values.put(KEY_PGS, oBook.ciPages.value);
+         values.put(KEY_PRC, oBook.csPrice.value);
+         values.put(KEY_VL, oBook.csValue.value);
+         values.put(KEY_DUE_DT, oBook.ciDueDate.value);
+         values.put(KEY_RD_DT, oBook.ciReadDate.value);
+         values.put(KEY_EDN, oBook.ciEdition.value);
+         values.put(KEY_ISBN, oBook.csISBN.value);
+         values.put(KEY_WEB, oBook.csWeb.value);
 
          long iBookID = db.insert(TABLE_BOOKS, null, values);
 
-
-         for (Field oField : oBook.alFields)
+         
+         // TODO Remove empty fields
+         for(int i = 0; i < oBook.alFields.size(); i++)
          {
-            if (oField.iID == 0)
+            if (oBook.alFields.get(i).iID == 0)
             {
                values = new ContentValues();
-               values.put(KEY_NM, oField.sValue);
-               oField.iID = db.insert(TABLE_FIELDS, null, values);
+               values.put(KEY_TP_ID, oBook.alFields.get(i).iTypeID);
+               values.put(KEY_NM, oBook.alFields.get(i).sValue);
+               oBook.alFields.get(i).iID = db.insert(TABLE_FIELDS, null, values);
             }
          }
 
@@ -370,7 +370,7 @@ public class DBAdapter
             values.put(KEY_FLD_ID, oField.iID);
             values.put(KEY_TP_ID, oField.iTypeID);
             values.put(KEY_BK_ID, iBookID);
-            db.insert(TABLE_BOOK_FIELDS, null, values);
+            long res = db.insert(TABLE_BOOK_FIELDS, null, values);
          }
 
 //      statement.bindString(KEY_TTL_ID, oBook.sTitle);

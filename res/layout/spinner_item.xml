@@ -6,9 +6,9 @@
    android:gravity="center_vertical"
    android:minHeight="36dp"
    android:paddingLeft="14dip"
-   android:paddingStart="14dip"
    android:paddingRight="15dip"
    android:paddingEnd="15dip"
    android:textAppearance="?android:attr/textAppearanceMedium"
    android:textColor="?android:attr/textColorAlertDialogListItem" />
+<!--    android:paddingStart="14dip" -->
 

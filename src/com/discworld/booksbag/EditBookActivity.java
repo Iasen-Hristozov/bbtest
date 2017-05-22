@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
+import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,12 +43,11 @@ public class EditBookActivity extends AppCompatActivity
    public final static String BOOK_ID = "book_id";
 
    private Book oBook;
-   private EditText etTitle,
-                    etDescription;
    private LinearLayout llFields;
    private DBAdapter oDbAdapter = null;
    private PopupMenu pmHiddenFields = null;
    private Button btnAddField = null;
+   private FieldEditTextUpdatableClearable fBookTitle = null;
    
    HashMap<MenuItem, View> hmHiddenFileds = new HashMap<MenuItem, View>();
 
@@ -58,6 +58,40 @@ public class EditBookActivity extends AppCompatActivity
       setContentView(R.layout.activity_edit_book);
       getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
+    // BEGIN_INCLUDE (inflate_set_custom_view)
+    // Inflate a "Done" custom action bar view to serve as the "Up" affordance.
+    // Show the custom action bar view and hide the normal Home icon and title.
+      
+      final ActionBar actionBar = getSupportActionBar();
+      actionBar.setDisplayShowHomeEnabled(false);
+      actionBar.setDisplayShowTitleEnabled(false);
+      actionBar.setDisplayShowCustomEnabled(true);
+      actionBar.setCustomView(R.layout.actionbar_custom_view_done);
+      
+      ((Toolbar)actionBar.getCustomView().getParent()).setContentInsetsAbsolute(0, 0);
+      actionBar.getCustomView().findViewById(R.id.actionbar_done)
+                               .setOnClickListener(new View.OnClickListener()
+                               {
+                                  @Override
+                                  public void onClick(View v)
+                                  {
+                                     getCurrentFocus().clearFocus();
+                                     if(oBook.csTitle.value.trim().isEmpty())
+                                     {
+                                        fBookTitle.setError("Empty!!!!");
+                                        return;
+                                     }
+                                     else
+                                     {
+                                        fBookTitle.setError(null);
+                                        saveBook();
+                                        setResult(RESULT_OK, new Intent());
+                                        finish();                  // "Done"
+                                     }
+                                  }
+                               });
+      // END_INCLUDE (inflate_set_custom_view)
+
       oDbAdapter = new DBAdapter(this);
 
       Bundle extras = getIntent().getExtras();
@@ -65,44 +99,7 @@ public class EditBookActivity extends AppCompatActivity
          return;
 
       long iBookID = extras.getLong(BOOK_ID);
-
-//      // BEGIN_INCLUDE (inflate_set_custom_view)
-//      // Inflate a "Done" custom action bar view to serve as the "Up" affordance.
-//      final LayoutInflater inflater = (LayoutInflater) getActionBar().getThemedContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-//      final View customActionBarView = inflater.inflate(R.layout.actionbar_custom_view_done, null);
-//      customActionBarView.findViewById(R.id.actionbar_done).setOnClickListener(
-//            new View.OnClickListener()
-//            {
-//               @Override
-//               public void onClick(View v)
-//               {
-//                  // "Done"
-//                  finish();
-//               }
-//            });
-
-      // Show the custom action bar view and hide the normal Home icon and title.
-//      final ActionBar actionBar = getActionBar();
-      final ActionBar actionBar = getSupportActionBar();
-      actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-                                  ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME| ActionBar.DISPLAY_SHOW_TITLE);
-//      actionBar.setCustomView(customActionBarView);
-      actionBar.setCustomView(R.layout.actionbar_custom_view_done);
-      // END_INCLUDE (inflate_set_custom_view)
-
-
-      actionBar.getCustomView().findViewById(R.id.actionbar_done)
-                               .setOnClickListener(new View.OnClickListener()
-                               {
-                                  @Override
-                                  public void onClick(View v)
-                                  {
-                                     saveBook();
-                                     setResult(RESULT_OK, new Intent());
-                                     finish();                  // "Done"
-                                  }
-                               });
-
+      
       if(iBookID != 0)
          oBook = oDbAdapter.getBook(iBookID);
       else
@@ -230,6 +227,7 @@ public class EditBookActivity extends AppCompatActivity
          oDbAdapter.insertBook(oBook);
    }
    
+   
    private <T> void addFieldText(LinearLayout rootView, FieldType oFieldType)
    {
       switch(oFieldType.iID)
@@ -289,6 +287,8 @@ public class EditBookActivity extends AppCompatActivity
       oField.setText(cValue.toString());
       oField.setHint(oFieldType.sName);
       oField.setInputType(oFieldType.iInputType);
+      if(oFieldType.iID == DBAdapter.FLD_TITLE)
+         fBookTitle = oField;
 //      if(oFieldType.isMultiline)
 //         oField.setMultiline();
       oField.setUpdateListener(new EditTextX.OnUpdateListener()
@@ -395,8 +395,8 @@ public class EditBookActivity extends AppCompatActivity
    
    private void addFieldSpinner(ViewGroup rootView, FieldType oFieldType)
    {
-      Field oField = null;
-      int iSelected = -1;
+//      Field oField = null;
+      Field oField = new Field(oFieldType.iID);
       
       final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
 
@@ -404,29 +404,76 @@ public class EditBookActivity extends AppCompatActivity
       final FieldSpinner oFieldSpinner = new FieldSpinner(this);
       oFieldSpinner.setTitle(oFieldType.sName);
       
-      for(int i = 0; oField == null || i < oBook.alFields.size() && oField.iTypeID != oFieldType.iID; i++)
-         oField = oBook.alFields.get(i);
+//      for(int i = 0; i < oBook.alFields.size() && (oField == null || oField.iTypeID != oFieldType.iID); i++)
+      for(int i = 0; i < oBook.alFields.size() && (oField.iID == 0 || oField.iTypeID != oFieldType.iID); i++)
+         if(oBook.alFields.get(i).iTypeID == oFieldType.iID)
+            oField = oBook.alFields.get(i);
+      if(oField.iID == 0) // The book has not such a field 
+         oBook.alFields.add(oField);
 
-      String tFieldValues[] = new String[alFieldValues.size()];
-      for(int i = 0; i < alFieldValues.size(); i++)
-      {
-         tFieldValues[i] = alFieldValues.get(i).sValue;
-         if(oField != null && oField.iID == alFieldValues.get(i).iID)
-            iSelected = i;
-      }
-
+//      String tFieldValues[] = new String[alFieldValues.size() + 1];
+//      int iSelected = tFieldValues.length-1;
+//      for(int i = 0; i < alFieldValues.size(); i++)
+//      {
+//         tFieldValues[i] = alFieldValues.get(i).sValue;
+////         if(oField != null && oField.iID == alFieldValues.get(i).iID)
+//         if(oField.iID == alFieldValues.get(i).iID)
+//            iSelected = i;
+//      }
+//
+//      tFieldValues[tFieldValues.length - 1] = oFieldType.sName;
 //      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tFieldValues);  
-      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tFieldValues);
-//      ArrayAdapter oArrayAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.spinner_item);
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tFieldValues)
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_spinner_dropdown_item, tFieldValues)
+//      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.simple_spinner_dropdown_item)
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item)
+      {
+         @Override
+         public View getView(int position, View convertView, ViewGroup parent) 
+         {
+             View v = super.getView(position, convertView, parent);
+             if (position == 0) 
+             {
+                 ((TextView)v.findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.colorHint));
+
+             }
+
+             return v;
+         }       
+
+         @Override
+         public View getDropDownView(int position, View convertView, ViewGroup parent) {
+             View v = null;
+             if (position == 0) {
+                 TextView tv = new TextView(getContext());
+                 tv.setHeight(0);
+                 tv.setVisibility(View.GONE);
+                 v = tv;
+             } else {
+                 v = super.getDropDownView(position, null, parent);
+             }
+             parent.setVerticalScrollBarEnabled(false);
+             return v;
+         }         
+      };
+      oArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+      oArrayAdapter.add(oFieldType.sName);
+      for(Field f: alFieldValues)
+         oArrayAdapter.add(f.sValue);
+      
       oFieldSpinner.setAdapter(oArrayAdapter);
-      oFieldSpinner.setSelection(iSelected);
+//      oFieldSpinner.setSelection(iSelected);
+      oFieldSpinner.setSelection(0);
+      
       oFieldSpinner.setTag(oField);
+      
       oFieldSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
       {
          @Override
          public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
          {
-            ((Field) oFieldSpinner.getTag()).copy(alFieldValues.get(pos));
+            if(pos > 0)
+               ((Field) oFieldSpinner.getTag()).copy(alFieldValues.get(pos - 1));
          }
 
          @Override
@@ -438,7 +485,8 @@ public class EditBookActivity extends AppCompatActivity
       });
       
       rootView.addView(oFieldSpinner);
-      if(!oFieldType.isVisible && oField == null)
+//      if(!oFieldType.isVisible && oField == null)
+      if(!oFieldType.isVisible && oField.iID == 0)
          hideField(oFieldSpinner, oFieldType.sName);
    }
 
@@ -460,8 +508,6 @@ public class EditBookActivity extends AppCompatActivity
 //         tDictionaryValues[i] = alFieldsValues.get(i).sValue;
 //      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item, tDictionaryValues);  
       final ArrayItemsAdapter oArrayAdapter = new ArrayItemsAdapter(this, android.R.layout.select_dialog_item, alItemsValues);
-      
-      oFieldMultiText.setItems(oArrayAdapter, oBook.alFields);
       
       oFieldMultiText.setOnAddRemoveListener(new FieldMultiText.OnAddRemoveFieldListener()
       {
@@ -516,6 +562,8 @@ public class EditBookActivity extends AppCompatActivity
                ((Field) view.getTag()).copy((Field)selection);
          }
       });
+      
+      oFieldMultiText.setItems(oArrayAdapter, oBook.alFields);
       
       rootView.addView(oFieldMultiText);
       
@@ -736,7 +784,6 @@ public class EditBookActivity extends AppCompatActivity
          return view;         
          
       }
-
 
       @Override
       public Filter getFilter() 

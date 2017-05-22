@@ -55,22 +55,21 @@ public class Book
    
    public ArrayList<Field> alFields = new ArrayList<>();
 
-   private static final int ID_KEY_ID = 1,
-         ID_KEY_TTL = 2,
-         ID_KEY_DSCR = 3,
-         ID_KEY_VLM = 4,
-         ID_KEY_PBL_DT = 5,
-         ID_KEY_PGS = 6,
-         ID_KEY_PRC = 7,
-         ID_KEY_VL = 8,
-         ID_KEY_DUE_DT = 9,
-         ID_KEY_RD_DT = 10,
-         ID_KEY_EDN = 11,
-         ID_KEY_ISBN = 12,
-         ID_KEY_WEB = 13;
-
    public Book()
    {
+      csTitle = new Changeable<String>("");
+      csDescription  = new Changeable<String>("");
+      csPrice = new Changeable<String>("");
+      csValue = new Changeable<String>("");
+      csISBN = new Changeable<String>("");
+      csWeb = new Changeable<String>("");
+
+      ciVolume = new Changeable<Integer>(0);
+      ciPages = new Changeable<Integer>(0);
+      ciPublicationDate = new Changeable<Integer>(0);
+      ciEdition = new Changeable<Integer>(0);
+      ciReadDate = new Changeable<Integer>(0);
+      ciDueDate = new Changeable<Integer>(0);      
    }
 
    public Book(int iID,

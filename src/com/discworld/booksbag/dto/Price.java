@@ -10,6 +10,11 @@ public class Price
    
    public Price(String sPrice)
    {
+      this();
+      
+      if(sPrice.isEmpty())
+         return;
+         
       String sParts[] = sPrice.split("\\|");
       iValue = Integer.parseInt(sParts[0]);
       if(sParts.length > 1)
