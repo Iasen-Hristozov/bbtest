@@ -30,6 +30,9 @@ public class Price
    @Override
    public String toString()
    {
-      return String.valueOf(iValue) + "|" + String.valueOf(iCurrencyID);
+      if(iValue == 0)
+         return "";
+      else
+         return String.valueOf(iValue) + "|" + String.valueOf(iCurrencyID);
    }
 }

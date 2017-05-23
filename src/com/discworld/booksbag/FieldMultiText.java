@@ -29,7 +29,7 @@ public class FieldMultiText extends LinearLayout
       
       void onFieldUpdated(View view, String value);
 
-      void onItemSelect(ArrayAdapter<?> adapter, View view, int position);
+//      void onItemSelect(ArrayAdapter<?> adapter, View view, int position);
 
       void onItemSelect(View view, Item selection);
    }

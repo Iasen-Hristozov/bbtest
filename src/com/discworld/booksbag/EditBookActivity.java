@@ -84,6 +84,7 @@ public class EditBookActivity extends AppCompatActivity
                                      else
                                      {
                                         fBookTitle.setError(null);
+                                        
                                         saveBook();
                                         setResult(RESULT_OK, new Intent());
                                         finish();                  // "Done"
@@ -221,6 +222,14 @@ public class EditBookActivity extends AppCompatActivity
 
    private void saveBook()
    {
+      // Clear empty fields
+//      for(Field f: oBook.alFields)
+//         if(f.sValue.trim().isEmpty())
+//            oBook.alFields.remove(f);
+      for(int i = oBook.alFields.size()-1; i >= 0; i-- )
+         if(oBook.alFields.get(i).sValue.trim().isEmpty())
+            oBook.alFields.remove(i);
+      
       if(oBook.iID != 0)
          oDbAdapter.updateBook(oBook);
       else
@@ -342,17 +351,24 @@ public class EditBookActivity extends AppCompatActivity
    
    private void addAutocompleteField(ViewGroup rootView, final FieldType oFieldType)
    {
-      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
-
-      Field oField = new Field(oFieldType.iID);
-      for(int i = 0; oField == null || i < oBook.alFields.size(); i++)
-         if(oFieldType.iID == oBook.alFields.get(i).iTypeID)
-            oField = oBook.alFields.get(i);
       final FieldAutoCompleteTextView oFieldAutoCompleteTextView = new FieldAutoCompleteTextView(this);
       oFieldAutoCompleteTextView.setTitle(oFieldType.sName);
       oFieldAutoCompleteTextView.setHint(oFieldType.sName);
-      if(!oField.sValue.isEmpty())
+
+      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
+      Field oField = new Field(oFieldType.iID);
+      
+      // Looking in book field collection for field of type 
+      for(int i = 0; oField == null || i < oBook.alFields.size(); i++)
+         if(oFieldType.iID == oBook.alFields.get(i).iTypeID)
+            oField = oBook.alFields.get(i);
+
+      if(oField.iID == 0) // The book has not such a field 
+         oBook.alFields.add(oField);
+      else
+//      if(!oField.sValue.isEmpty())
          oFieldAutoCompleteTextView.setText(oField.sValue);
+      
       oFieldAutoCompleteTextView.setTag(oField);
       
       ArrayFieldsAdapter oArrayAdapter = new ArrayFieldsAdapter(this, android.R.layout.select_dialog_item, alFieldValues);
@@ -371,19 +387,23 @@ public class EditBookActivity extends AppCompatActivity
          public void onUpdate(EditText et)
          {
             boolean isFound = false;
-            for(Field oField : alFieldValues)
+            for(Field f : alFieldValues)
             {
-               if(et.getText().toString().equalsIgnoreCase(((Field)oFieldAutoCompleteTextView.getTag()).sValue))
+               if(et.getText().toString().trim().equalsIgnoreCase(((Field)oFieldAutoCompleteTextView.getTag()).sValue))
                {
                   isFound = true;
-                  ((Field)oFieldAutoCompleteTextView.getTag()).copy(oField);
+                  ((Field)oFieldAutoCompleteTextView.getTag()).copy(f);
+                  break;
                }
             }
             if(!isFound)
             {
-               Field oNewFieldValue = new Field(oFieldType.iID, et.getText().toString());
-               alFieldValues.add(oNewFieldValue);
-               oBook.alFields.add(oNewFieldValue);
+//               Field oNewFieldValue = new Field(oFieldType.iID, et.getText().toString());
+//               ((Field)oFieldAutoCompleteTextView.getTag()).copy(oNewFieldValue);
+               ((Field)oFieldAutoCompleteTextView.getTag()).iID = 0;
+               ((Field)oFieldAutoCompleteTextView.getTag()).sValue = et.getText().toString();
+//               alFieldValues.add(oNewFieldValue);
+//               oBook.alFields.add(oNewFieldValue);
             }
          }
       });
@@ -395,14 +415,12 @@ public class EditBookActivity extends AppCompatActivity
    
    private void addFieldSpinner(ViewGroup rootView, FieldType oFieldType)
    {
-//      Field oField = null;
-      Field oField = new Field(oFieldType.iID);
-      
-      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
-
-//      final FieldSpinner oFieldSpinner = new FieldSpinner(this, alFieldValues);
       final FieldSpinner oFieldSpinner = new FieldSpinner(this);
       oFieldSpinner.setTitle(oFieldType.sName);
+      
+//      Field oField = null;
+      Field oField = new Field(oFieldType.iID);
+      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
       
 //      for(int i = 0; i < oBook.alFields.size() && (oField == null || oField.iTypeID != oFieldType.iID); i++)
       for(int i = 0; i < oBook.alFields.size() && (oField.iID == 0 || oField.iTypeID != oFieldType.iID); i++)
@@ -431,29 +449,29 @@ public class EditBookActivity extends AppCompatActivity
          @Override
          public View getView(int position, View convertView, ViewGroup parent) 
          {
-             View v = super.getView(position, convertView, parent);
-             if (position == 0) 
-             {
-                 ((TextView)v.findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.colorHint));
-
-             }
-
-             return v;
+            View v = super.getView(position, convertView, parent);
+            if(position == 0) 
+               ((TextView)v.findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.colorHint));
+            
+            return v;
          }       
 
          @Override
-         public View getDropDownView(int position, View convertView, ViewGroup parent) {
-             View v = null;
-             if (position == 0) {
-                 TextView tv = new TextView(getContext());
-                 tv.setHeight(0);
-                 tv.setVisibility(View.GONE);
-                 v = tv;
-             } else {
+         public View getDropDownView(int position, View convertView, ViewGroup parent) 
+         {
+            View v = null;
+            if (position == 0) 
+            {
+               TextView tv = new TextView(getContext());
+               tv.setHeight(0);
+               tv.setVisibility(View.GONE);
+               v = tv;
+            } 
+            else 
                  v = super.getDropDownView(position, null, parent);
-             }
-             parent.setVerticalScrollBarEnabled(false);
-             return v;
+            
+            parent.setVerticalScrollBarEnabled(false);
+            return v;
          }         
       };
       oArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
@@ -464,9 +482,7 @@ public class EditBookActivity extends AppCompatActivity
       oFieldSpinner.setAdapter(oArrayAdapter);
 //      oFieldSpinner.setSelection(iSelected);
       oFieldSpinner.setSelection(0);
-      
       oFieldSpinner.setTag(oField);
-      
       oFieldSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
       {
          @Override
@@ -538,22 +554,25 @@ public class EditBookActivity extends AppCompatActivity
             boolean isExists = false;
             for(Field field: alFieldsValues)
             {
-               if(field.getValue().equalsIgnoreCase(value))
+               if(field.getValue().trim().equalsIgnoreCase(value.trim()))
                {
                   ((Field )view.getTag()).copy(field);
                   isExists = true;
+                  break;
                }
             }
             if(!isExists)
+            {
+               ((Field )view.getTag()).iID = 0;
                ((Field )view.getTag()).sValue = value;
+            }
          }
-         
 
-         @Override
-         public void onItemSelect(ArrayAdapter<?> adapter, View view, int position)
-         {
-            ((Field) view.getTag()).copy(alFieldsValues.get(position));
-         }
+//         @Override
+//         public void onItemSelect(ArrayAdapter<?> adapter, View view, int position)
+//         {
+//            ((Field) view.getTag()).copy(alFieldsValues.get(position));
+//         }
 
          @Override
          public void onItemSelect(View view, FieldMultiText.Item selection)
@@ -573,11 +592,11 @@ public class EditBookActivity extends AppCompatActivity
    
    private void addFieldMultiSpinner(ViewGroup rootView, final FieldType oFieldType)
    {
-      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
       final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this);
       oFieldMultiSpinner.setTitle(oFieldType.sName + "s");
       oFieldMultiSpinner.setHint(oFieldType.sName);
-      
+
+      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
       ArrayList<Item> alItems = new ArrayList<>();
       for(Field oFieldValue : alFieldValues)
       {
@@ -624,11 +643,9 @@ public class EditBookActivity extends AppCompatActivity
    @SuppressWarnings("unchecked")
    private void addFieldMoney(ViewGroup rootView, FieldType oFieldType)
    {
-      int iSelected = 0;
-
-      final ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
-      
       final FieldMoney oFieldMoney = new FieldMoney(this);
+      oFieldMoney.setTitle(oFieldType.sName);
+      oFieldMoney.setHint(oFieldType.sName);
       
       switch(oFieldType.iID)
       {
@@ -643,22 +660,22 @@ public class EditBookActivity extends AppCompatActivity
          default:
             return;
       }
-      
-      final Price oPrice = new Price(((Changeable<String>) oFieldMoney.getTag()).value);
 
-      oFieldMoney.setTitle(oFieldType.sName);
-      oFieldMoney.setHint(oFieldType.sName);
+      final Price oPrice = new Price(((Changeable<String>) oFieldMoney.getTag()).value);
       oFieldMoney.setValue(oPrice.iValue);
 
-      String tCurrencies[] = new String[alCurrencies.size()];
+      final ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+      int iSelected = 0;
+      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item);
+//      String tCurrencies[] = new String[alCurrencies.size()];
       for(int i = 0; i < alCurrencies.size(); i++)
       {
-         tCurrencies[i] = alCurrencies.get(i).sValue;
+//         tCurrencies[i] = alCurrencies.get(i).sValue;
+         oArrayAdapter.add(alCurrencies.get(i).sValue);
          if(oPrice != null && oPrice.iCurrencyID == alCurrencies.get(i).iID)
             iSelected = i;
       }
       
-      ArrayAdapter<String> oArrayAdapter = new ArrayAdapter<String> (this, R.layout.spinner_item, tCurrencies);
       oFieldMoney.setAdapter(oArrayAdapter);
       oFieldMoney.setSelection(iSelected);
 
@@ -684,8 +701,8 @@ public class EditBookActivity extends AppCompatActivity
          public void onUpdate(EditText et)
          {
             String sValue = et.getText().toString();
-            sValue = sValue.replace(" ", "");
-            sValue = sValue.replace("-,", "-0,");
+//            sValue = sValue.replace(" ", "");
+//            sValue = sValue.replace("-,", "-0,");
             int iValue;
             if(sValue.isEmpty() || sValue.matches("-|,|-,"))
                iValue = 0;
@@ -755,7 +772,7 @@ public class EditBookActivity extends AppCompatActivity
       });
       rootView.addView(oFieldDate);
       
-      if(!oFieldType.isVisible && ((Changeable<?>) oFieldDate.getTag()).isEmpty())
+      if(!oFieldType.isVisible && ((Changeable<Integer>) oFieldDate.getTag()).value == 0)
          hideField(oFieldDate, oFieldType.sName);
       
    }

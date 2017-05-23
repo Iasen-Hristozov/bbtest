@@ -1383,12 +1383,12 @@ public class EditBookActivityOld extends AppCompatActivity implements MultiSpinn
          }
          
 
-         @Override
-         public void onItemSelect(ArrayAdapter<?> adapter, View view, int position)
-         {
-            ((Field) view.getTag()).copy(alFieldsValues.get(position));
-         }
-
+//         @Override
+//         public void onItemSelect(ArrayAdapter<?> adapter, View view, int position)
+//         {
+//            ((Field) view.getTag()).copy(alFieldsValues.get(position));
+//         }
+//
          @Override
          public void onItemSelect(View view, FieldMultiText.Item selection)
          {

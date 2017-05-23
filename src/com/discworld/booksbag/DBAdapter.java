@@ -2,6 +2,7 @@ package com.discworld.booksbag;
 
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,22 +36,10 @@ public class DBAdapter
 
    // BOOKS column names
    private static final String KEY_TTL = "title";
-//   private static final String KEY_AUT1_ID = "author1_id";
-//   private static final String KEY_AUT2_ID = "author2_id";
-//   private static final String KEY_AUT3_ID = "author3_id";
    private static final String KEY_DSCR = "description";
-//   private static final String KEY_SRS_ID = "series_id";
    private static final String KEY_VLM = "volume";
-//   private static final String KEY_CTG_ID = "category_id";
-//   private static final String KEY_LNG_ID = "language_id";
-//   private static final String KEY_PBL_ID = "publisher_id";
-//   private static final String KEY_PBL_LCT_ID = "publication_location_id";
    private static final String KEY_PBL_DT = "publication_date";
    private static final String KEY_PGS = "pages";
-//   private static final String KEY_STS_ID = "status_id";
-//   private static final String KEY_RTN_ID = "rating_id";
-//   private static final String KEY_FMT_ID = "format_id";
-//   private static final String KEY_LCT_ID = "location_id";
    private static final String KEY_PRC = "price";
    private static final String KEY_VL = "value";
    private static final String KEY_CND_ID = "condition_id";
@@ -73,25 +62,12 @@ public class DBAdapter
    private static final String CREATE_TABLE_BOOKS = "CREATE TABLE " + TABLE_BOOKS + " ("
          + KEY_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
          + KEY_TTL + " TEXT, "
-//         + KEY_AUT1_ID + " INTEGER, "
-//         + KEY_AUT2_ID + " INTEGER, "
-//         + KEY_AUT3_ID + "	INTEGER, "
          + KEY_DSCR + " TEXT, "
-//         + KEY_SRS_ID + " INTEGER, "
          + KEY_VLM + " INTEGER, "
-//         + KEY_CTG_ID + " INTEGER, "
-//         + KEY_LNG_ID + " INTEGER, "
-//         + KEY_PBL_ID + " INTEGER, "
-//         + KEY_PBL_LCT_ID + " INTEGER, "
          + KEY_PBL_DT + " INTEGER, "
          + KEY_PGS + " INTEGER, "
-//         + KEY_STS_ID + "INTEGER, "
-//         + KEY_RTN_ID + "INTEGER, "
-//         + KEY_FMT_ID + "INTEGER, "
-//         + KEY_LCT_ID + "INTEGER, "
          + KEY_PRC + " TEXT, "
          + KEY_VL + " TEXT, "
-//         + KEY_CND_ID + "INTEGER, "
          + KEY_DUE_DT + " INTEGER, "
          + KEY_RD_DT + " INTEGER, "
          + KEY_EDN + " INTEGER, "
@@ -133,8 +109,6 @@ public class DBAdapter
 	public final static char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
 
    public final static int FLD_AUTHOR = 1,
-//                            FLD_AUT2 = 2,
-//                            FLD_AUT3 = 3,
                            FLD_SERIE = 2,
                            FLD_CATEGORY = 3,
                            FLD_LANGUAGE = 4,
@@ -350,9 +324,7 @@ public class DBAdapter
          values.put(KEY_WEB, oBook.csWeb.value);
 
          long iBookID = db.insert(TABLE_BOOKS, null, values);
-
          
-         // TODO Remove empty fields
          for(int i = 0; i < oBook.alFields.size(); i++)
          {
             if (oBook.alFields.get(i).iID == 0)
@@ -639,7 +611,9 @@ public class DBAdapter
 
    private static class DBOpenHelper extends SQLiteOpenHelper
 	{
-		public DBOpenHelper(Context context, String name, CursorFactory factory, int version)
+      private final static String msg_ftm = "Error inserting in %1$s TypeID:%2$d Value:%3$s";
+		
+      public DBOpenHelper(Context context, String name, CursorFactory factory, int version)
 		{
 			super(context, name, factory, version);
 		}
@@ -650,6 +624,95 @@ public class DBAdapter
 			_db.execSQL(CREATE_TABLE_BOOKS);
 			_db.execSQL(CREATE_TABLE_FIELDS);
 			_db.execSQL(CREATE_TABLE_BOOK_FIELDS);
+
+			_db.beginTransaction();
+	      try
+	      {
+	         ContentValues values;
+	         String msg;
+	         
+	         for(Field f: DummyContent.LANGUAGES)
+	         {
+	            values = new ContentValues();
+	            values.put(KEY_TP_ID, f.iTypeID);
+	            values.put(KEY_NM, f.sValue);
+               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+               {
+                  msg = String.format(Locale.getDefault(),msg_ftm, "LANGUAGES", f.iTypeID, f.sValue);
+                  throw new RuntimeException(msg);
+               }
+	         }
+	         
+            for(Field f: DummyContent.STATUS)
+            {
+               values = new ContentValues();
+               values.put(KEY_TP_ID, f.iTypeID);
+               values.put(KEY_NM, f.sValue);
+               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+               {
+                  msg = String.format(Locale.getDefault(), msg_ftm, "STATUS", f.iTypeID, f.sValue);
+                  throw new RuntimeException(msg);
+               }
+            }
+
+            for(Field f: DummyContent.RATINGS)
+            {
+               values = new ContentValues();
+               values.put(KEY_TP_ID, f.iTypeID);
+               values.put(KEY_NM, f.sValue);
+               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+               {
+                  msg = String.format(Locale.getDefault(), msg_ftm, "RATINGS", f.iTypeID, f.sValue);
+                  throw new RuntimeException(msg);
+               }
+            }
+
+            for(Field f: DummyContent.FORMATS)
+            {
+               values = new ContentValues();
+               values.put(KEY_TP_ID, f.iTypeID);
+               values.put(KEY_NM, f.sValue);
+               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+               {
+                  msg = String.format(Locale.getDefault(), msg_ftm, "FORMATS", f.iTypeID, f.sValue);
+                  throw new RuntimeException(msg);
+               }
+            }
+            
+            for(Field f: DummyContent.CONDITIONS)
+            {
+               values = new ContentValues();
+               values.put(KEY_TP_ID, f.iTypeID);
+               values.put(KEY_NM, f.sValue);
+               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+               {
+                  msg = String.format(Locale.getDefault(), msg_ftm, "CONDITIONS", f.iTypeID, f.sValue);
+                  throw new RuntimeException(msg);
+               }
+            }
+            
+            for(Field f: DummyContent.CURRENCIES)
+            {
+               values = new ContentValues();
+               values.put(KEY_TP_ID, f.iTypeID);
+               values.put(KEY_NM, f.sValue);
+               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+               {
+                  msg = String.format(Locale.getDefault(), msg_ftm, "CURRENCIES", f.iTypeID, f.sValue);
+                  throw new RuntimeException(msg);
+               }
+            }
+            _db.setTransactionSuccessful();
+	      }
+	      catch(RuntimeException e)
+	      {
+	         Log.e("TaskDBAdapter", e.getMessage());
+	      }
+            
+	      finally
+	      {
+	         _db.endTransaction();
+         }
 		}
 
 		@Override
