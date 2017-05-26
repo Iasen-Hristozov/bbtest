@@ -7,27 +7,27 @@ import java.util.ArrayList;
  */
 public class Book
 {
-   public int iAuthor1ID,
-              iAuthor2ID,
-              iAuthor3ID,
-              iSeriesID,
-              iVolume = 0,
-              iCategoryID,
-              iLanguageID,
-              iPublisherID,
-              iPublicationLocationID,
-              iPublicationDate = 0,
-              iPages = 0,
-              iStatusID,
-              iRatingID,
-              iFormatID,
-              iLocationID,
-//              iPrice = 0,
-//              iValue = 0,
-              iConditionID,
-              iDueDate,
-              iReadDate,
-              iEdition;
+//   public int iAuthor1ID,
+//              iAuthor2ID,
+//              iAuthor3ID,
+//              iSeriesID,
+//              iVolume = 0,
+//              iCategoryID,
+//              iLanguageID,
+//              iPublisherID,
+//              iPublicationLocationID,
+//              iPublicationDate = 0,
+//              iPages = 0,
+//              iStatusID,
+//              iRatingID,
+//              iFormatID,
+//              iLocationID,
+////              iPrice = 0,
+////              iValue = 0,
+//              iConditionID,
+//              iDueDate,
+//              iReadDate,
+//              iEdition;
 
    public long iID = 0;
    
@@ -46,12 +46,12 @@ public class Book
                               ciReadDate,
                               ciDueDate;
    
-   public String sTitle,
-                 sDescription,
-                 sISBN,
-                 sWeb,
-                 sPrice,
-                 sValue;
+//   public String sTitle,
+//                 sDescription,
+//                 sISBN,
+//                 sWeb,
+//                 sPrice,
+//                 sValue;
    
    public ArrayList<Field> alFields = new ArrayList<>();
 
@@ -91,29 +91,30 @@ public class Book
       this.iID = iID;
       this.csTitle = new Changeable<String>(sTitle);
 //      this.csTitle.value = sTitle;
-      this.sTitle = sTitle;
-      this.sDescription = sDescription;
+//      this.sTitle = sTitle;
+//      this.sDescription = sDescription;
       csDescription = new Changeable<String>(sDescription);
-      this.iVolume = iVolume;
+//      this.iVolume = iVolume;
       ciVolume = new Changeable<Integer>(iVolume);
-      this.iPublicationDate = iPublicationDate;
-      this.iPages = iPages;
+//    this.iPublicationDate = iPublicationDate;
+      ciPublicationDate = new Changeable<Integer>(iPublicationDate);
+//    this.iPages = iPages;
       ciPages = new Changeable<Integer>(iPages);
 //      this.iPrice = iPrice;
-//      this.iValue = iValue;
-      this.sPrice = sPrice;
+//    this.sPrice = sPrice;
       csPrice = new Changeable<String>(sPrice);
-      this.sValue = sValue;
+//      this.iValue = iValue;
+//      this.sValue = sValue;
       csValue = new Changeable<String>(sValue);
-      this.iDueDate = iDueDate;
-      this.iReadDate = iReadDate;
+//      this.iReadDate = iReadDate;
       ciReadDate = new Changeable<Integer>(iReadDate);
+//    this.iDueDate = iDueDate;
       ciDueDate = new Changeable<Integer>(iDueDate);
-      this.iEdition = iEdition;
+//      this.iEdition = iEdition;
       ciEdition = new Changeable<Integer>(iEdition);
-      this.sISBN = sISBN;
+//      this.sISBN = sISBN;
       csISBN = new Changeable<String>(sISBN);
-      this.sWeb = sWeb;
+//      this.sWeb = sWeb;
       csWeb = new Changeable<String>(sWeb);
    }
 }

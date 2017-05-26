@@ -94,7 +94,8 @@ public class EditBookActivity extends AppCompatActivity
       // END_INCLUDE (inflate_set_custom_view)
 
       oDbAdapter = new DBAdapter(this);
-
+      oDbAdapter.open();
+      
       Bundle extras = getIntent().getExtras();
       if(extras == null)
          return;
@@ -480,8 +481,11 @@ public class EditBookActivity extends AppCompatActivity
          oArrayAdapter.add(f.sValue);
       
       oFieldSpinner.setAdapter(oArrayAdapter);
-//      oFieldSpinner.setSelection(iSelected);
-      oFieldSpinner.setSelection(0);
+      int iSelected = 0;
+      for(int i = 0; i < alFieldValues.size(); i++)
+         if(alFieldValues.get(i).equals(oField))
+            iSelected = i + 1;
+      oFieldSpinner.setSelection(iSelected);
       oFieldSpinner.setTag(oField);
       oFieldSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
       {

@@ -43,61 +43,55 @@ public class DummyContent
 //   public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
    public static final Map<Long, Book> BOOKS_MAP = new HashMap<Long, Book>();
 
-//   private static final int COUNT = 25;
-//   private static final int BOOKS_COUNT = 3;
 
    static
    {
       // Add some sample items.
-//      for (int i = 1; i <= COUNT; i++)
-//      {
-//         addItem(createDummyItem(i));
-//      }
       
-      AUTHORS.add(new Field(DBAdapter.FLD_AUTHOR, 1, "Жул Верн"));
-      AUTHORS.add(new Field(DBAdapter.FLD_AUTHOR, 2, "Александър Дюма"));
-      AUTHORS.add(new Field(DBAdapter.FLD_AUTHOR, 3, "Карл Май"));
+      AUTHORS.add(new Field(1, DBAdapter.FLD_AUTHOR, "Жул Верн"));
+      AUTHORS.add(new Field(2, DBAdapter.FLD_AUTHOR, "Александър Дюма"));
+      AUTHORS.add(new Field(3, DBAdapter.FLD_AUTHOR, "Карл Май"));
 
-      SERIES.add(new Field(DBAdapter.FLD_SERIE, 4, "Тримата мускетари"));
-      SERIES.add(new Field(DBAdapter.FLD_SERIE, 5, "Винету"));
+      SERIES.add(new Field(4, DBAdapter.FLD_SERIE, "Тримата мускетари"));
+      SERIES.add(new Field(5, DBAdapter.FLD_SERIE, "Винету"));
       
-      CATEGORIES.add(new Field(DBAdapter.FLD_CATEGORY, 6, "Приключения"));
-      CATEGORIES.add(new Field(DBAdapter.FLD_CATEGORY, 7, "Криминал"));
+      CATEGORIES.add(new Field(6, DBAdapter.FLD_CATEGORY, "Приключения"));
+      CATEGORIES.add(new Field(7, DBAdapter.FLD_CATEGORY, "Криминал"));
       
-      LANGUAGES.add(new Field(DBAdapter.FLD_LANGUAGE, 8, "Български"));
-      LANGUAGES.add(new Field(DBAdapter.FLD_LANGUAGE, 9, "Руски"));
-      LANGUAGES.add(new Field(DBAdapter.FLD_LANGUAGE, 10, "Английски"));
+      LANGUAGES.add(new Field(8, DBAdapter.FLD_LANGUAGE, "Български"));
+      LANGUAGES.add(new Field(9, DBAdapter.FLD_LANGUAGE, "Руски"));
+      LANGUAGES.add(new Field(10, DBAdapter.FLD_LANGUAGE, "Английски"));
       
-      PUBLISHERS.add(new Field(DBAdapter.FLD_PUBLISHER, 11, "Отечество"));
-      PUBLISHERS.add(new Field(DBAdapter.FLD_PUBLISHER, 12, "Галактика"));
-      PUBLISHERS.add(new Field(DBAdapter.FLD_PUBLISHER, 14, "Юношески романи"));
+      PUBLISHERS.add(new Field(11, DBAdapter.FLD_PUBLISHER, "Отечество"));
+      PUBLISHERS.add(new Field(12, DBAdapter.FLD_PUBLISHER, "Галактика"));
+      PUBLISHERS.add(new Field(14, DBAdapter.FLD_PUBLISHER, "Юношески романи"));
 
-      PUBLISHING_LOCATIONS.add(new Field(DBAdapter.FLD_PUBLICATION_LOCATION, 15, "София"));
-      PUBLISHING_LOCATIONS.add(new Field(DBAdapter.FLD_PUBLICATION_LOCATION, 16, "Варна"));
-      PUBLISHING_LOCATIONS.add(new Field(DBAdapter.FLD_PUBLICATION_LOCATION, 17, "Москва"));
+      PUBLISHING_LOCATIONS.add(new Field(15, DBAdapter.FLD_PUBLICATION_LOCATION, "София"));
+      PUBLISHING_LOCATIONS.add(new Field(16, DBAdapter.FLD_PUBLICATION_LOCATION, "Варна"));
+      PUBLISHING_LOCATIONS.add(new Field(17, DBAdapter.FLD_PUBLICATION_LOCATION, "Москва"));
       
-      STATUS.add(new Field(DBAdapter.FLD_STATUS, 18, "Налична"));
-      STATUS.add(new Field(DBAdapter.FLD_STATUS, 19, "Търси се"));
-      STATUS.add(new Field(DBAdapter.FLD_STATUS, 20, "Дадена"));
+      STATUS.add(new Field(18, DBAdapter.FLD_STATUS, "Налична"));
+      STATUS.add(new Field(19, DBAdapter.FLD_STATUS, "Търси се"));
+      STATUS.add(new Field(20, DBAdapter.FLD_STATUS, "Дадена"));
       
-      RATINGS.add(new Field(DBAdapter.FLD_RATING, 21, "1"));
-      RATINGS.add(new Field(DBAdapter.FLD_RATING, 22, "2"));
-      RATINGS.add(new Field(DBAdapter.FLD_RATING, 23, "3"));
+      RATINGS.add(new Field(21, DBAdapter.FLD_RATING, "1"));
+      RATINGS.add(new Field(22, DBAdapter.FLD_RATING, "2"));
+      RATINGS.add(new Field(23, DBAdapter.FLD_RATING, "3"));
 
-      FORMATS.add(new Field(DBAdapter.FLD_FORMAT, 24, "Hard copy"));
-      FORMATS.add(new Field(DBAdapter.FLD_FORMAT, 25, "fb2"));
-      FORMATS.add(new Field(DBAdapter.FLD_FORMAT, 26, "epub"));
+      FORMATS.add(new Field(24, DBAdapter.FLD_FORMAT, "Hard copy"));
+      FORMATS.add(new Field(25, DBAdapter.FLD_FORMAT, "fb2"));
+      FORMATS.add(new Field(26, DBAdapter.FLD_FORMAT, "epub"));
       
-      LOCATIONS.add(new Field(DBAdapter.FLD_LOCATION, 27, "Горна библиотека"));
-      LOCATIONS.add(new Field(DBAdapter.FLD_LOCATION, 28, "Долна библиотека"));
+      LOCATIONS.add(new Field(27, DBAdapter.FLD_LOCATION, "Горна библиотека"));
+      LOCATIONS.add(new Field(28, DBAdapter.FLD_LOCATION, "Долна библиотека"));
 
-      CONDITIONS.add(new Field(DBAdapter.FLD_CONDITION, 29, "Отлично"));
-      CONDITIONS.add(new Field(DBAdapter.FLD_CONDITION, 30, "Много добро"));
-      CONDITIONS.add(new Field(DBAdapter.FLD_CONDITION, 31, "Добро"));
+      CONDITIONS.add(new Field(29, DBAdapter.FLD_CONDITION, "Отлично"));
+      CONDITIONS.add(new Field(30, DBAdapter.FLD_CONDITION, "Много добро"));
+      CONDITIONS.add(new Field(31, DBAdapter.FLD_CONDITION, "Добро"));
       
-      CURRENCIES.add(new Field(DBAdapter.FLD_CURRENCY, 32, "BGN"));
-      CURRENCIES.add(new Field(DBAdapter.FLD_CURRENCY, 33, "EUR"));
-      CURRENCIES.add(new Field(DBAdapter.FLD_CURRENCY, 34, "RBL"));
+      CURRENCIES.add(new Field(32, DBAdapter.FLD_CURRENCY, "BGN"));
+      CURRENCIES.add(new Field(33, DBAdapter.FLD_CURRENCY, "EUR"));
+      CURRENCIES.add(new Field(34, DBAdapter.FLD_CURRENCY, "RBL"));
       
       Book oBook = new Book(1,                                                   // ID
                             "Трех мушкетера",                                    // Title

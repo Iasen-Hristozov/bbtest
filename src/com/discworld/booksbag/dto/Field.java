@@ -22,7 +22,7 @@ public class Field implements Item
       this.sValue = sValue;
    }
 
-   public Field(int iTypeID, long iID, String sValue)
+   public Field(long iID, int iTypeID, String sValue)
    {
       this.iID = iID;
       this.iTypeID = iTypeID;
@@ -48,6 +48,15 @@ public class Field implements Item
    {
       return sValue;
    }
+
+   @Override
+   public boolean equals(Object o)
+   {
+      Field f = (Field) o;
+      return iID == f.iID && iTypeID == f.iTypeID && sValue.equalsIgnoreCase(f.sValue); 
+   }
+   
+   
 
 
 //   @Override

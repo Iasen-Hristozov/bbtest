@@ -1,9 +1,9 @@
 package com.discworld.booksbag;
 
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,7 +18,6 @@ import com.discworld.booksbag.dto.Date;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
 import com.discworld.booksbag.dto.Price;
-import com.discworld.booksbag.dummy.DummyContent;
 
 /**
  * A fragment representing a single Book detail screen.
@@ -55,6 +54,7 @@ public class BookDetailFragment extends Fragment
       super.onCreate(savedInstanceState);
       
       oDbAdapter = new DBAdapter(getActivity());
+      oDbAdapter.open();
 
       if (getArguments().containsKey(ARG_ITEM_ID))
       {
@@ -70,7 +70,7 @@ public class BookDetailFragment extends Fragment
          if (appBarLayout != null)
          {
 //            appBarLayout.setTitle(mItem.content);
-            appBarLayout.setTitle(mItem.sTitle);
+            appBarLayout.setTitle(mItem.csTitle.value);
          }
       }
    }
@@ -134,34 +134,34 @@ public class BookDetailFragment extends Fragment
                switch(fieldType.iID)
                {
                   case DBAdapter.FLD_DESCRIPTION:
-                     if(!mItem.sDescription.trim().isEmpty())
+                     if(!mItem.csDescription.value.trim().isEmpty())
                      {
                         sName = "Description:";
-                        sValue = mItem.sDescription;
+                        sValue = mItem.csDescription.value;
                      }
                   break;
                   
                   case DBAdapter.FLD_VOLUME:
-                     if(mItem.iVolume != 0)
+                     if(mItem.ciVolume.value != 0)
                      {
                         sName = "Volume:";
-                        sValue = String.valueOf(mItem.iVolume);
+                        sValue = String.valueOf(mItem.ciVolume.value);
                      }
                   break;
                   
                   case DBAdapter.FLD_PUBLICATION_DATE:
-                     if(mItem.iPublicationDate != 0)
+                     if(mItem.ciPublicationDate.value != 0)
                      {
                         sName = "Publication Date:";
-                        sValue = String.valueOf(mItem.iPublicationDate);
+                        sValue = String.valueOf(mItem.ciPublicationDate.value);
                      }
                   break;
                   
                   case DBAdapter.FLD_PAGES:
-                     if(mItem.iPages != 0)
+                     if(mItem.ciPages.value != 0)
                      {
                         sName = "Pages:";
-                        sValue = String.valueOf(mItem.iPages);
+                        sValue = String.valueOf(mItem.ciPages.value);
                      }
                   break;
                   
@@ -175,10 +175,10 @@ public class BookDetailFragment extends Fragment
 //                  break;
 
                   case DBAdapter.FLD_PRICE:
-                     if(!mItem.sPrice.trim().isEmpty())
+                     if(!mItem.csPrice.value.trim().isEmpty())
                      {
                         sName = "Price:";
-                        Price oPrice = new Price(mItem.sPrice);
+                        Price oPrice = new Price(mItem.csPrice.value);
                         ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
                         Field fldCurrency = null;
                         for(Field oField : alCurrencies)
@@ -187,7 +187,7 @@ public class BookDetailFragment extends Fragment
                               fldCurrency = oField;
                               break;
                            }
-                        char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+//                        char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
                         String sPrice = fldCurrency == null ? 
                                           String.format(getResources().getString(R.string.amn_vl), oPrice.iValue / 100, DBAdapter.separator, oPrice.iValue % 100) :  
                                           String.format(getResources().getString(R.string.amn_vl_crn), oPrice.iValue / 100, DBAdapter.separator, oPrice.iValue % 100, fldCurrency.sValue);
@@ -206,10 +206,10 @@ public class BookDetailFragment extends Fragment
 //                  break;
 
                   case DBAdapter.FLD_VALUE:
-                     if(!mItem.sValue.trim().isEmpty())
+                     if(!mItem.csValue.value.trim().isEmpty())
                      {
                         sName = "Value:";
-                        Price oBookValue = new Price(mItem.sValue);
+                        Price oBookValue = new Price(mItem.csValue.value);
                         ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
                         Field fldCurrency = null;
                         for(Field oField : alCurrencies)
@@ -218,7 +218,7 @@ public class BookDetailFragment extends Fragment
                               fldCurrency = oField;
                               break;
                            }
-                        char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+//                        char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
                         String sBookValue = fldCurrency == null ? 
                                  String.format(getResources().getString(R.string.amn_vl), oBookValue.iValue / 100, DBAdapter.separator, oBookValue.iValue % 100) :  
                                  String.format(getResources().getString(R.string.amn_vl_crn), oBookValue.iValue / 100, DBAdapter.separator, oBookValue.iValue % 100, fldCurrency.sValue);
@@ -228,42 +228,42 @@ public class BookDetailFragment extends Fragment
                   break;
                   
                   case DBAdapter.FLD_DUE_DATE:
-                     if(mItem.iDueDate != 0)
+                     if(mItem.ciDueDate.value != 0)
                      {
                         sName = "Due Date:";
-                        sValue = String.valueOf(new Date(mItem.iDueDate).toString());
+                        sValue = String.valueOf(new Date(mItem.ciDueDate.value).toString());
                      }
                   break;
                   
                   case DBAdapter.FLD_READ_DATE:
-                     if(mItem.iReadDate != 0)
+                     if(mItem.ciReadDate.value != 0)
                      {
                         sName = "Read Date:";
-                        sValue = String.valueOf(new Date(mItem.iReadDate).toString());
+                        sValue = String.valueOf(new Date(mItem.ciReadDate.value).toString());
                      }
                   break;
                   
                   case DBAdapter.FLD_EDITION:
-                     if(mItem.iEdition != 0)
+                     if(mItem.ciEdition.value != 0)
                      {
                         sName = "Edition:";
-                        sValue = String.valueOf(mItem.iEdition);
+                        sValue = String.valueOf(mItem.ciEdition.value);
                      }
                   break;
                   
                   case DBAdapter.FLD_ISBN:
-                     if(!mItem.sISBN.trim().isEmpty())
+                     if(!mItem.csISBN.value.trim().isEmpty())
                      {
                         sName = "ISBN:";
-                        sValue = String.valueOf(mItem.sISBN);
+                        sValue = String.valueOf(mItem.csISBN.value);
                      }
                   break;
                   
                   case DBAdapter.FLD_WEB:
-                     if(!mItem.sWeb.trim().isEmpty())
+                     if(!mItem.csWeb.value.trim().isEmpty())
                      {
                         sName = "Web:";
-                        sValue = String.valueOf(mItem.sWeb);
+                        sValue = String.valueOf(mItem.csWeb.value);
                      }
                   break;
                }
@@ -278,6 +278,13 @@ public class BookDetailFragment extends Fragment
       }
 
       return rootView;
+   }
+
+   @Override
+   public void onActivityResult(int requestCode, int resultCode, Intent data)
+   {
+      // TODO Auto-generated method stub
+      super.onActivityResult(requestCode, resultCode, data);
    }
 
    private void addField(LinearLayout rootView, String sName, String sValue)

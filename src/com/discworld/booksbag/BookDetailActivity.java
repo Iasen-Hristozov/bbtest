@@ -64,15 +64,7 @@ public class BookDetailActivity extends AppCompatActivity
       {
          // Create the detail fragment and add it to the activity
          // using a fragment transaction.
-         Bundle arguments = new Bundle();
-//         arguments.putString(BookDetailFragment.ARG_ITEM_ID, getIntent().getStringExtra(BookDetailFragment.ARG_ITEM_ID));
-//         arguments.putLong(BookDetailFragment.ARG_ITEM_ID, getIntent().getLongExtra(BookDetailFragment.ARG_ITEM_ID, 0));
-         arguments.putLong(BookDetailFragment.ARG_ITEM_ID, iBookID);
-         BookDetailFragment fragment = new BookDetailFragment();
-         fragment.setArguments(arguments);
-         getSupportFragmentManager().beginTransaction()
-                                    .add(R.id.book_detail_container, fragment)
-                                    .commit();
+         loadFragment(iBookID);
       }
    }
 
@@ -94,4 +86,26 @@ public class BookDetailActivity extends AppCompatActivity
       }
       return super.onOptionsItemSelected(item);
    }
+
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data)
+   {
+      if(resultCode == RESULT_OK)
+         loadFragment(iBookID);
+   }
+   
+   private void loadFragment(long iBookID)
+   {
+      Bundle arguments = new Bundle();
+//    arguments.putString(BookDetailFragment.ARG_ITEM_ID, getIntent().getStringExtra(BookDetailFragment.ARG_ITEM_ID));
+//    arguments.putLong(BookDetailFragment.ARG_ITEM_ID, getIntent().getLongExtra(BookDetailFragment.ARG_ITEM_ID, 0));
+    arguments.putLong(BookDetailFragment.ARG_ITEM_ID, iBookID);
+    BookDetailFragment fragment = new BookDetailFragment();
+    fragment.setArguments(arguments);
+    getSupportFragmentManager().beginTransaction()
+                               .replace(R.id.book_detail_container, fragment)
+                               .commitAllowingStateLoss();
+   }
+   
+   
 }

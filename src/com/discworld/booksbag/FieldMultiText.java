@@ -224,6 +224,16 @@ public class FieldMultiText extends LinearLayout
       boolean hasFieldsOfType = false;
       for(Item item: alItems)
       {
+         
+//         for(int j = 0; j< adapter.getCount(); j++)
+//         {
+//            if(adapter.getItem(j).equals(item))
+//            {
+//               addField(llFields, item);
+//               hasFieldsOfType = true;
+//               
+//            }
+//         }
          int i = adapter.getPosition(item);
          if(i >= 0)
          {

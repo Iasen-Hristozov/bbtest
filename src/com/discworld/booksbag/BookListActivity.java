@@ -1,16 +1,21 @@
 package com.discworld.booksbag;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.discworld.booksbag.dto.Book;
-import com.discworld.booksbag.dummy.DummyContent;
+import com.discworld.booksbag.dto.Result;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,6 +63,9 @@ public class BookListActivity extends AppCompatActivity
       setContentView(R.layout.activity_book_list);
 
       oDbAdapter = new DBAdapter(this);
+      oDbAdapter.open();
+      
+      verifyStoragePermissions(this);
       
       Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
       setSupportActionBar(toolbar);
@@ -140,10 +148,12 @@ public class BookListActivity extends AppCompatActivity
    {
 
 //      private final List<DummyContent.DummyItem> mValues;
-      private final List<Book> mValues;
+//      private final List<Book> mValues;
+      private final List<Result> mValues;
 
 //      public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items)
-      public SimpleItemRecyclerViewAdapter(List<Book> items)
+//      public SimpleItemRecyclerViewAdapter(List<Book> items)
+      public SimpleItemRecyclerViewAdapter(List<Result> items)
       {
          mValues = items;
       }
@@ -159,8 +169,8 @@ public class BookListActivity extends AppCompatActivity
       public void onBindViewHolder(final ViewHolder holder, int position)
       {
          holder.mItem = mValues.get(position);
-         holder.mIdView.setText(String.valueOf(mValues.get(position).iID));
-         holder.mContentView.setText(mValues.get(position).sTitle);
+         holder.mIdView.setText(String.valueOf(mValues.get(position)._id));
+         holder.mContentView.setText(mValues.get(position).content);
 
          holder.mView.setOnClickListener(new View.OnClickListener()
          {
@@ -170,7 +180,7 @@ public class BookListActivity extends AppCompatActivity
                if (mTwoPane)
                {
                   Bundle arguments = new Bundle();
-                  arguments.putLong(BookDetailFragment.ARG_ITEM_ID, holder.mItem.iID);
+                  arguments.putLong(BookDetailFragment.ARG_ITEM_ID, holder.mItem._id);
                   BookDetailFragment fragment = new BookDetailFragment();
                   fragment.setArguments(arguments);
                   getSupportFragmentManager().beginTransaction()
@@ -181,7 +191,7 @@ public class BookListActivity extends AppCompatActivity
                {
                   Context context = v.getContext();
                   Intent intent = new Intent(context, BookDetailActivity.class);
-                  intent.putExtra(BookDetailFragment.ARG_ITEM_ID, holder.mItem.iID);
+                  intent.putExtra(BookDetailFragment.ARG_ITEM_ID, holder.mItem._id);
 
                   context.startActivity(intent);
                }
@@ -200,7 +210,7 @@ public class BookListActivity extends AppCompatActivity
          public final View mView;
          public final TextView mIdView;
          public final TextView mContentView;
-         public Book mItem;
+         public Result mItem;
 
          public ViewHolder(View view)
          {
@@ -238,47 +248,61 @@ public class BookListActivity extends AppCompatActivity
 
    private boolean bExportDb()
    {
-      try 
+      try
       {
-         File flRoot = android.os.Environment.getExternalStorageDirectory(); 
-         
-//         File flXprDir = new File (flRoot.getAbsolutePath() + "/" + XPR_DIR);
-         File flXprDir = new File (Environment.getExternalStorageDirectory() + "/" + XPR_DIR);
-         flXprDir.mkdirs(); 
+//         File flRoot = android.os.Environment.getExternalStorageDirectory();
+
+         // File flXprDir = new File (flRoot.getAbsolutePath() + "/" + XPR_DIR);
+         File flXprDir = new File(Environment.getExternalStorageDirectory() + "/" + XPR_DIR);
+
          File flData = Environment.getDataDirectory();
 
-         if (flXprDir.canWrite()) 
+         if(flXprDir.canWrite())
          {
-            File flCurrentDB = new File(flData, DB_PATH + DBAdapter.DATABASE_NAME);
+            File flCurrentDB = new File(flData, DB_PATH
+                     + DBAdapter.DATABASE_NAME);
             File flBackupDB = new File(flXprDir, DBAdapter.DATABASE_NAME);
 
-            if (flCurrentDB.exists()) 
+            if(flCurrentDB.exists())
             {
                FileChannel src = new FileInputStream(flCurrentDB).getChannel();
                FileChannel dst = new FileOutputStream(flBackupDB).getChannel();
-               
+
                dst.transferFrom(src, 0, src.size());
                return true;
             }
          }
-      } 
-      catch (Exception e) 
+      } catch(Exception e)
       {
-        System.out.println(e.getMessage());
-        return false;
+         System.out.println(e.getMessage());
+         Log.e("BookListActivity", e.getMessage());
+         return false;
       }
-//      finally
-//      {
-//         try
-//         {
-//            src.close();
-//            dst.close();
-//         } catch(IOException e)
-//         {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//         }
-//      }
+      // finally
+      // {
+      // try
+      // {
+      // src.close();
+      // dst.close();
+      // } catch(IOException e)
+      // {
+      // // TODO Auto-generated catch block
+      // e.printStackTrace();
+      // }
+      // }
       return false;
    }
+   
+   public static void verifyStoragePermissions(Activity activity) {
+      // Check if we have write permission
+      int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+      if (permission != PackageManager.PERMISSION_GRANTED) {
+          // We don't have permission so prompt the user
+          ActivityCompat.requestPermissions(
+                  activity,
+                  new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                  1);
+      }
+  }
 }
