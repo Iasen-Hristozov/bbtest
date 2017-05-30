@@ -1,5 +1,10 @@
 package com.discworld.booksbag;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -18,14 +23,18 @@ import android.util.Log;
 import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
+import com.discworld.booksbag.dto.FileUtils;
 import com.discworld.booksbag.dto.Result;
 import com.discworld.booksbag.dummy.DummyContent;
 
 public class DBAdapter
 {
-   private static final String TAG = "DB";
-	public static final String DATABASE_NAME = "books_bag.db";
-   private static final int DATABASE_VERSION = 1;
+	public static final String DATABASE_NAME = "books_bag.db",
+	                           DB_PATH = "//data//com.discworld.booksbag//databases//";
+
+	private static final String TAG = "DB";
+
+	private static final int DATABASE_VERSION = 1;
 
    private static final String TABLE_BOOKS = "books";
    private static final String TABLE_FIELDS = "fields";
@@ -567,11 +576,14 @@ public class DBAdapter
       }
       else
       {
+         int res ;
          db.beginTransaction();
          try
          {
-            db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + iBookID, null);
-            db.delete(TABLE_BOOKS, KEY_ID + " = " + iBookID, null);
+            res = db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + iBookID, null);
+            res = db.delete(TABLE_BOOKS, KEY_ID + " = " + iBookID, null);
+            
+            db.setTransactionSuccessful();
          }
          catch (Exception e)
          {
@@ -612,6 +624,7 @@ public class DBAdapter
                if (oField.iID == 0)
                {
                   oValues = new ContentValues();
+                  oValues.put(KEY_TP_ID, oField.iTypeID);
                   oValues.put(KEY_NM, oField.sValue);
                   oField.iID = db.insert(TABLE_FIELDS, null, oValues);
                }
@@ -646,7 +659,7 @@ public class DBAdapter
             oValues.put(KEY_WEB, oBook.csWeb.value);
             res = db.update(TABLE_BOOKS,
                       oValues,
-                      KEY_ID + " = ?" + oBook.iID,
+                      KEY_ID + " = " + oBook.iID,
                       null);
    
             db.setTransactionSuccessful();
@@ -789,4 +802,59 @@ public class DBAdapter
 			onCreate(_db);
 		}
 	}
+   
+   /**
+    * Copies the database file at the specified location over the current
+    * internal application database.
+    * */
+   public boolean importDatabase(String dbPath) 
+   {
+
+      // Close the SQLiteOpenHelper so it will commit the created empty
+      // database to internal storage.
+      dbHelper.close();
+      File newDb = new File(dbPath);
+      File oldDb = context.getDatabasePath(DATABASE_NAME);
+      if(newDb.exists())
+      {
+         try
+         {
+            FileUtils.copyFile(new FileInputStream(newDb), new FileOutputStream(oldDb));
+         } 
+         catch(IOException e)
+         {
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            return false;
+         }
+         // Access the copied database so SQLiteHelper will cache it and mark
+         // it as created.
+         dbHelper.getWritableDatabase().close();
+         return true;
+      }
+      return false;
+   }
+   
+   public boolean exportDatabase(String dbPath)
+   {
+
+      // Close the SQLiteOpenHelper so it will commit the created empty
+      // database to internal storage.
+      dbHelper.close();
+      File newDb = new File(dbPath);
+//      File oldDb = new File(context.getDatabasePath(DATABASE_NAME).toString());
+      File oldDb = context.getDatabasePath(DATABASE_NAME);
+
+         try
+         {
+            FileUtils.copyFile(new FileInputStream(oldDb), new FileOutputStream(newDb));
+         } 
+         catch(IOException e)
+         {
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            return false;
+         }
+      return true;
+   }
 }

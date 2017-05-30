@@ -216,9 +216,10 @@ public class EditBookActivity extends AppCompatActivity
    @Override
    public void onBackPressed()
    {
-      saveBook();
-      setResult(RESULT_OK, new Intent());
-      super.onBackPressed();
+//      saveBook();
+      setResult(RESULT_CANCELED, new Intent());
+      finish();
+//      super.onBackPressed();
    }
 
    private void saveBook()

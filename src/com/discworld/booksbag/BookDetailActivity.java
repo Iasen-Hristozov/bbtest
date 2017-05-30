@@ -19,7 +19,8 @@ import android.view.MenuItem;
  */
 public class BookDetailActivity extends AppCompatActivity
 {
-   long iBookID = 0;
+   private int resultCode = RESULT_CANCELED;
+   private long iBookID = 0;
 
    @Override
    protected void onCreate(Bundle savedInstanceState)
@@ -91,7 +92,12 @@ public class BookDetailActivity extends AppCompatActivity
    protected void onActivityResult(int requestCode, int resultCode, Intent data)
    {
       if(resultCode == RESULT_OK)
+      {
          loadFragment(iBookID);
+         this.resultCode = RESULT_OK;
+      }
+      else
+         this.resultCode = RESULT_CANCELED;
    }
    
    private void loadFragment(long iBookID)
@@ -106,6 +112,12 @@ public class BookDetailActivity extends AppCompatActivity
                                .replace(R.id.book_detail_container, fragment)
                                .commitAllowingStateLoss();
    }
-   
-   
+
+   @Override
+   public void onBackPressed()
+   {
+      setResult(resultCode, new Intent());
+      finish();                  // "Done"
+//      super.onBackPressed();
+   }
 }
