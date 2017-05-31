@@ -5,18 +5,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,21 +27,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.discworld.booksbag.dto.Book;
-import com.discworld.booksbag.dto.FileUtils;
 import com.discworld.booksbag.dto.Result;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * An activity representing a list of Books. This activity
@@ -52,16 +53,19 @@ public class BookListActivity extends AppCompatActivity
 {
    public final static int SHOW_EDIT_BOOK = 101;
    
+   private long sel_id;
+   
+   private EditText etFilter;
    private static final String XPR_DIR = "BooksBag",
                                DB_PATH = "//data//com.discworld.booksbag//databases//";
    
    private DBAdapter oDbAdapter = null;
    
+   private SimpleItemRecyclerViewAdapter oSimpleItemRecyclerViewAdapter;
+
    private View recyclerView;
    
    private ActionMode mActionMode;
-   
-   private long sel_id;
 
    /**
     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -104,7 +108,34 @@ public class BookListActivity extends AppCompatActivity
       recyclerView = findViewById(R.id.book_list);
       assert recyclerView != null;
 //      setupRecyclerView((RecyclerView) recyclerView);
-      registerForContextMenu(recyclerView);
+//      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL));
+      
+      etFilter = (EditText) findViewById(R.id.et_filter);
+ 
+      // Capture Text in EditText
+      etFilter.addTextChangedListener(new TextWatcher() 
+      {
+ 
+         @Override
+         public void afterTextChanged(Editable arg0) 
+         {
+            // TODO Auto-generated method stub
+            String text = etFilter.getText().toString().toLowerCase(Locale.getDefault());
+            oSimpleItemRecyclerViewAdapter.filter(text);
+         }
+ 
+         @Override
+         public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) 
+         {
+            // TODO Auto-generated method stub
+         }
+ 
+         @Override
+         public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) 
+         {
+            // TODO Auto-generated method stub
+         }
+      });
 
       if (findViewById(R.id.book_detail_container) != null)
       {
@@ -157,7 +188,9 @@ public class BookListActivity extends AppCompatActivity
    {
 //      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
 //      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.BOOKS));
-      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL)));
+//      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL)));
+      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL));
+      recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
    }
 
    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>
@@ -165,13 +198,18 @@ public class BookListActivity extends AppCompatActivity
 
 //      private final List<DummyContent.DummyItem> mValues;
 //      private final List<Book> mValues;
+      private final List<Result> mValuesAll;
       private final List<Result> mValues;
+      private String sFilter;
 
 //      public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items)
 //      public SimpleItemRecyclerViewAdapter(List<Book> items)
       public SimpleItemRecyclerViewAdapter(List<Result> items)
       {
-         mValues = items;
+         mValuesAll = items;
+         mValues = new ArrayList<Result>();
+         mValues.addAll(mValuesAll);
+         sFilter = "";
       }
 
       @Override
@@ -186,7 +224,19 @@ public class BookListActivity extends AppCompatActivity
       {
          holder.mItem = mValues.get(position);
          holder.mIdView.setText(String.valueOf(mValues.get(position)._id));
-         holder.mContentView.setText(mValues.get(position).content);
+         Spannable spContent = new SpannableString(mValues.get(position).content);
+         int iFilteredStart = mValues.get(position).content.indexOf(sFilter);
+         int iFilterEnd;
+         if(iFilteredStart < 0)
+         {
+            iFilteredStart = 0;
+            iFilterEnd = 0;
+         }
+         else
+            iFilterEnd = iFilteredStart + sFilter.length();
+         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivity.this, R.color.colorAccent)), iFilteredStart, iFilterEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+         holder.mContentView.setText(spContent);
+//         holder.mContentView.setText(mValues.get(position).content);
 
          holder.mView.setOnClickListener(new View.OnClickListener()
          {
@@ -278,6 +328,29 @@ public class BookListActivity extends AppCompatActivity
             return super.toString() + " '" + mContentView.getText() + "'";
          }
       }
+   
+      // Filter Class
+      public void filter(String charText) 
+      {
+         charText = charText.toLowerCase(Locale.getDefault());
+         sFilter = charText;
+         mValues.clear();
+         if (charText.length() == 0) 
+         {
+            mValues.addAll(mValuesAll);
+         } 
+         else 
+         {
+            for (Result result : mValuesAll) 
+            {
+               if (result.content.toLowerCase(Locale.getDefault()).contains(charText)) 
+               {
+                  mValues.add(result);
+               }
+            }
+         }
+         notifyDataSetChanged();
+      }      
    }
 
    @Override
@@ -295,7 +368,10 @@ public class BookListActivity extends AppCompatActivity
 
       oDbAdapter.open();
       if(bUpdate)
+      {
          setupRecyclerView((RecyclerView) recyclerView);
+         etFilter.setText("");
+      }
 
 //      oBook = oDbAdapter.getBook(oBook.iID);
    }
