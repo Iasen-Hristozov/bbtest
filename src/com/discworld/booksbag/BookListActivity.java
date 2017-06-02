@@ -107,6 +107,12 @@ public class BookListActivity extends AppCompatActivity
       
       recyclerView = findViewById(R.id.book_list);
       assert recyclerView != null;
+      
+//      DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+//               layoutManager.getOrientation());
+//      RecyclerView.ItemDecoration itemDecoration =
+//               new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);      
+//           recyclerView.addItemDecoration(dividerItemDecoration);      
 //      setupRecyclerView((RecyclerView) recyclerView);
 //      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL));
       
