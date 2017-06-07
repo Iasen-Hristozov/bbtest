@@ -63,7 +63,7 @@ public class BookListActivity extends AppCompatActivity
    
    private SimpleItemRecyclerViewAdapter oSimpleItemRecyclerViewAdapter;
 
-   private View recyclerView;
+   private RecyclerView recyclerView;
    
    private ActionMode mActionMode;
 
@@ -105,8 +105,11 @@ public class BookListActivity extends AppCompatActivity
          }
       });
       
-      recyclerView = findViewById(R.id.book_list);
+//      RecyclerView.ItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+      android.support.v7.widget.DividerItemDecoration dd = new android.support.v7.widget.DividerItemDecoration(this, android.support.v7.widget.DividerItemDecoration.VERTICAL);
+      recyclerView = (RecyclerView) findViewById(R.id.book_list);
       assert recyclerView != null;
+      recyclerView.addItemDecoration(dd);
       
 //      DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
 //               layoutManager.getOrientation());
