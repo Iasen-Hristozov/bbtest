@@ -1,4 +1,9 @@
-package com.discworld.booksbag;
+package com.discworld.booksbag.fields;
+
+import com.discworld.booksbag.R;
+import com.discworld.booksbag.R.id;
+import com.discworld.booksbag.R.layout;
+import com.discworld.booksbag.R.styleable;
 
 import android.content.Context;
 import android.content.res.TypedArray;

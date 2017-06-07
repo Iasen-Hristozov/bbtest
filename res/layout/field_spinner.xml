@@ -5,13 +5,13 @@
    android:layout_height="wrap_content"
    android:orientation="vertical">
 
-   <com.discworld.booksbag.Title
+   <com.discworld.booksbag.fields.Title
       android:id="@+id/title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       custom:text="@string/et_title"
       custom:color="@color/colorBlue" >
-   </com.discworld.booksbag.Title>
+   </com.discworld.booksbag.fields.Title>
 
    <Spinner
       android:id="@+id/spinner"

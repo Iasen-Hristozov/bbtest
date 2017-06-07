@@ -14,7 +14,7 @@
 <!--         android:layout_alignParentLeft="true" -->
 <!--         android:hint="@string/lbl_author"/> -->
 
-    <com.discworld.booksbag.dto.AutoCompleteTextViewX
+    <com.discworld.booksbag.fields.AutoCompleteTextViewX
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"

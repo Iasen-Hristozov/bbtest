@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <com.discworld.booksbag.dto.AutoCompleteTextViewX
+    <com.discworld.booksbag.fields.AutoCompleteTextViewX
         android:id="@+id/et_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

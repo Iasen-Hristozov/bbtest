@@ -1,7 +1,11 @@
-package com.discworld.booksbag;
+package com.discworld.booksbag.fields;
 
 import java.util.Calendar;
 
+import com.discworld.booksbag.R;
+import com.discworld.booksbag.R.id;
+import com.discworld.booksbag.R.layout;
+import com.discworld.booksbag.R.styleable;
 import com.discworld.booksbag.dto.Date;
 
 import android.app.Activity;

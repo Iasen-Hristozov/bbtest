@@ -6,13 +6,13 @@
    android:layout_height="wrap_content"
    android:orientation="vertical">
 
-   <com.discworld.booksbag.Title
+   <com.discworld.booksbag.fields.Title
       android:id="@+id/title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       custom:text="@string/et_title"
       custom:color="@color/colorBlue" >
-   </com.discworld.booksbag.Title>
+   </com.discworld.booksbag.fields.Title>
 
       <Button
          android:id="@+id/spinner"
@@ -20,7 +20,6 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:paddingLeft="14dip"
-         android:paddingStart="14dip"
          android:textAppearance="?android:attr/textAppearanceMedium"
          />
 </LinearLayout>

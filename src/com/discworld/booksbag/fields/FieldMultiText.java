@@ -1,9 +1,12 @@
-package com.discworld.booksbag;
+package com.discworld.booksbag.fields;
 
 import java.util.ArrayList;
 
-import com.discworld.booksbag.dto.AutoCompleteTextViewX;
-import com.discworld.booksbag.dto.AutoCompleteTextViewX.OnUpdateListener;
+import com.discworld.booksbag.R;
+import com.discworld.booksbag.R.id;
+import com.discworld.booksbag.R.layout;
+import com.discworld.booksbag.R.styleable;
+import com.discworld.booksbag.fields.AutoCompleteTextViewX.OnUpdateListener;
 
 import android.content.Context;
 import android.content.res.TypedArray;

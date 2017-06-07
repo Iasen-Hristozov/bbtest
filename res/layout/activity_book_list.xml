@@ -4,8 +4,7 @@
    xmlns:tools="http://schemas.android.com/tools"
    android:layout_width="match_parent"
    android:layout_height="match_parent"
-   android:fitsSystemWindows="true"
-   tools:context=".MainActivity" >
+   android:fitsSystemWindows="true" >
 
    <android.support.design.widget.AppBarLayout
       android:id="@+id/app_bar"
@@ -19,7 +18,7 @@
          android:layout_height="?attr/actionBarSize"
          app:popupTheme="@style/AppTheme.PopupOverlay" >
 
-         <com.discworld.booksbag.dto.EditTextX
+         <com.discworld.booksbag.fields.EditTextX
             android:id="@+id/et_filter"
             android:layout_width="200dp"
             android:layout_height="wrap_content" />

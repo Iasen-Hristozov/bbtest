@@ -120,7 +120,7 @@
         android:src="@drawable/list_divide"
         />
 
-    <com.discworld.booksbag.dto.MultiSpinner
+    <com.discworld.booksbag.fields.MultiSpinner
         android:id="@+id/multi_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

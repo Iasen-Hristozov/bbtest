@@ -1,4 +1,4 @@
-package com.discworld.booksbag.dto;
+package com.discworld.booksbag.fields;
 
 import android.content.Context;
 import android.util.AttributeSet;

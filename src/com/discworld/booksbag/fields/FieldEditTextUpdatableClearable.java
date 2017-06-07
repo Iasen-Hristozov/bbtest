@@ -1,8 +1,11 @@
-package com.discworld.booksbag;
+package com.discworld.booksbag.fields;
 
-import com.discworld.booksbag.dto.EditTextX;
-import com.discworld.booksbag.dto.EditTextX.OnUpdateListener;
-import com.discworld.booksbag.dto.EditTextX.Callback;
+import com.discworld.booksbag.R;
+import com.discworld.booksbag.R.id;
+import com.discworld.booksbag.R.layout;
+import com.discworld.booksbag.R.styleable;
+import com.discworld.booksbag.fields.EditTextX.Callback;
+import com.discworld.booksbag.fields.EditTextX.OnUpdateListener;
 
 import android.content.Context;
 import android.content.res.TypedArray;

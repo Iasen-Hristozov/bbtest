@@ -1,4 +1,4 @@
-package com.discworld.booksbag.dto;
+package com.discworld.booksbag.fields;
 
 import android.app.Activity;
 import android.app.AlertDialog;

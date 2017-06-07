@@ -1,4 +1,4 @@
-package com.discworld.booksbag.dto;
+package com.discworld.booksbag.fields;
 
 import com.discworld.booksbag.R;
 
@@ -13,17 +13,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class EditTextX extends EditText
+public class AutoCompleteTextViewX extends AutoCompleteTextView
 {
    private Context oContext;
    
    private OnUpdateListener onUpdateListener = null;
 
    private Callback oCallback = null;
-   
+
    private OnEditorActionListener onEditorActionListener = new OnEditorActionListener()
    {
       @Override
@@ -62,7 +63,7 @@ public class EditTextX extends EditText
 //         }
       }
    };   
-   
+      
    private TextWatcher textWatcher = new TextWatcher() 
    {
        @Override
@@ -94,32 +95,32 @@ public class EditTextX extends EditText
                final Drawable rightDrawable = getCompoundDrawables()[DRAWABLE_RIGHT];
                if (rightDrawable != null && event.getRawX() >= (getRight() - rightDrawable.getBounds().width())) 
                {
-                   if (oCallback != null) oCallback.beforeClear(EditTextX.this);
+                   if (oCallback != null) oCallback.beforeClear(AutoCompleteTextViewX.this);
                    setText("");
                    requestFocus();
-                   if (oCallback != null) oCallback.afterClear(EditTextX.this);
+                   if (oCallback != null) oCallback.afterClear(AutoCompleteTextViewX.this);
                    return true;
                }
            }
            return false;
        }
    };
-   
-   public EditTextX(final Context context)
+
+   public AutoCompleteTextViewX(final Context context)
    {
       super(context);
       
       vInit(context);
    }
    
-   public EditTextX(Context context, AttributeSet attrs)
+   public AutoCompleteTextViewX(Context context, AttributeSet attrs)
    {
       super(context, attrs);
 
       vInit(context);
    }
    
-   public EditTextX(Context context, AttributeSet attrs, int defStyle)
+   public AutoCompleteTextViewX(Context context, AttributeSet attrs, int defStyle)
    {
       super(context, attrs, defStyle);
 
@@ -141,7 +142,7 @@ public class EditTextX extends EditText
       // NOTE: The most important.
       setOnTouchListener(onTouchListener);      
    }
-
+   
    @Override
    public boolean onKeyPreIme(int keyCode, KeyEvent event)
    {
@@ -156,11 +157,6 @@ public class EditTextX extends EditText
    public void setOnUpdateListener(OnUpdateListener onUpdateListener)
    {
       this.onUpdateListener = onUpdateListener;
-   }
-
-   public OnUpdateListener getOnUpdateListener()
-   {
-      return onUpdateListener;
    }
 
    public interface OnUpdateListener
@@ -205,4 +201,5 @@ public class EditTextX extends EditText
    
       void afterClear(EditText editText);
    }
+   
 }

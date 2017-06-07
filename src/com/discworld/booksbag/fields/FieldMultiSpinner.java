@@ -1,6 +1,12 @@
-package com.discworld.booksbag;
+package com.discworld.booksbag.fields;
 
 import java.util.ArrayList;
+
+import com.discworld.booksbag.R;
+import com.discworld.booksbag.R.id;
+import com.discworld.booksbag.R.layout;
+import com.discworld.booksbag.R.string;
+import com.discworld.booksbag.R.styleable;
 
 import android.app.Activity;
 import android.app.AlertDialog;

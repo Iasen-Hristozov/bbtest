@@ -12,6 +12,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.discworld.booksbag.dto.DividerItemDecoration;
 import com.discworld.booksbag.dto.Result;
 
 import java.io.File;
@@ -53,9 +56,12 @@ public class BookListActivity extends AppCompatActivity
 {
    public final static int SHOW_EDIT_BOOK = 101;
    
+   private int iOrderID = DBAdapter.ORD_TTL;
+   
    private long sel_id;
    
    private EditText etFilter;
+   
    private static final String XPR_DIR = "BooksBag",
                                DB_PATH = "//data//com.discworld.booksbag//databases//";
    
@@ -106,11 +112,16 @@ public class BookListActivity extends AppCompatActivity
       });
       
 //      RecyclerView.ItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-      android.support.v7.widget.DividerItemDecoration dd = new android.support.v7.widget.DividerItemDecoration(this, android.support.v7.widget.DividerItemDecoration.VERTICAL);
+      DividerItemDecoration dd = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
       recyclerView = (RecyclerView) findViewById(R.id.book_list);
       assert recyclerView != null;
       recyclerView.addItemDecoration(dd);
-      
+      recyclerView.setItemAnimator(new DefaultItemAnimator());
+      recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//      oDbAdapter.open();
+//      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL));
+//      recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
+
 //      DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
 //               layoutManager.getOrientation());
 //      RecyclerView.ItemDecoration itemDecoration =
@@ -159,6 +170,35 @@ public class BookListActivity extends AppCompatActivity
    
 
    @Override
+      protected void onResume()
+      {
+         super.onResume();
+   
+         oDbAdapter.open();
+         if(bUpdate)
+         {
+   //         setupRecyclerView((RecyclerView) recyclerView);
+            oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
+            recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
+            etFilter.setText("");
+         }
+   
+   //      oBook = oDbAdapter.getBook(oBook.iID);
+      }
+
+
+
+   @Override
+   protected void onPause()
+   {
+      oDbAdapter.close();
+   
+      super.onPause();
+   }
+
+
+
+   @Override
    public boolean onCreateOptionsMenu(Menu menu)
    {
       getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -193,12 +233,25 @@ public class BookListActivity extends AppCompatActivity
       }
    }
 
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data)
+   {
+      super.onActivityResult(requestCode, resultCode, data);
+      
+      if(resultCode == RESULT_OK)
+         bUpdate = true;
+      else
+         bUpdate = false;
+   }
+
+
+
    private void setupRecyclerView(@NonNull RecyclerView recyclerView)
    {
 //      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
 //      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.BOOKS));
 //      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL)));
-      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL));
+      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
       recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
    }
 
@@ -362,29 +415,6 @@ public class BookListActivity extends AppCompatActivity
       }      
    }
 
-   @Override
-   protected void onPause()
-   {
-      oDbAdapter.close();
-
-      super.onPause();
-   }
-
-   @Override
-   protected void onResume()
-   {
-      super.onResume();
-
-      oDbAdapter.open();
-      if(bUpdate)
-      {
-         setupRecyclerView((RecyclerView) recyclerView);
-         etFilter.setText("");
-      }
-
-//      oBook = oDbAdapter.getBook(oBook.iID);
-   }
-
    private boolean bExportDb()
    {
       try
@@ -470,17 +500,6 @@ public class BookListActivity extends AppCompatActivity
       }
    }
 
-   @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data)
-   {
-      super.onActivityResult(requestCode, resultCode, data);
-      
-      if(resultCode == RESULT_OK)
-         bUpdate = true;
-      else
-         bUpdate = false;
-   }
-   
    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() 
    {
       // Called when the action mode is created; startActionMode() was called
@@ -513,7 +532,11 @@ public class BookListActivity extends AppCompatActivity
 //                long i = info.id;
                 assert oDbAdapter != null;
                 oDbAdapter.deleteBook(sel_id);
-                setupRecyclerView((RecyclerView) recyclerView);
+//                setupRecyclerView((RecyclerView) recyclerView);
+//                oSimpleItemRecyclerViewAdapter.get
+                oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID)); 
+                recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, false);
+//                oSimpleItemRecyclerViewAdapter.notifyItemRemoved(2);
                 mode.finish(); // Action picked, so close the CAB
                 return true;
              default:

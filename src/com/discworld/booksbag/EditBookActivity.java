@@ -22,15 +22,22 @@ import android.widget.Filter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.discworld.booksbag.FieldMultiSpinner.Item;
-import com.discworld.booksbag.dto.AutoCompleteTextViewX;
 import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.Changeable;
 import com.discworld.booksbag.dto.Date;
-import com.discworld.booksbag.dto.EditTextX;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
 import com.discworld.booksbag.dto.Price;
+import com.discworld.booksbag.fields.AutoCompleteTextViewX;
+import com.discworld.booksbag.fields.EditTextX;
+import com.discworld.booksbag.fields.FieldAutoCompleteTextView;
+import com.discworld.booksbag.fields.FieldDate;
+import com.discworld.booksbag.fields.FieldEditTextUpdatableClearable;
+import com.discworld.booksbag.fields.FieldMoney;
+import com.discworld.booksbag.fields.FieldMultiSpinner;
+import com.discworld.booksbag.fields.FieldMultiText;
+import com.discworld.booksbag.fields.FieldSpinner;
+import com.discworld.booksbag.fields.FieldMultiSpinner.Item;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

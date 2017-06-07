@@ -3,14 +3,16 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="horizontal"
-              android:background="@drawable/background_selector_accent">
+              android:focusable="true"
+              android:clickable="true"
+              android:background="?android:attr/selectableItemBackground"
+              >
 
     <TextView
         android:id="@+id/id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textColor="@drawable/text_selector_white"
         android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
@@ -18,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textColor="@drawable/text_selector_white"
         android:textAppearance="?attr/textAppearanceListItem"/>
 </LinearLayout>
+<!-- android:background="@drawable/background_selector_accent" -->
+<!--         android:textColor="@drawable/text_selector_white" -->

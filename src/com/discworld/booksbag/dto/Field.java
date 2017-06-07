@@ -1,6 +1,6 @@
 package com.discworld.booksbag.dto;
 
-import com.discworld.booksbag.FieldMultiText.Item;
+import com.discworld.booksbag.fields.FieldMultiText.Item;
 
 /**
  * Created by Iasen on 12.7.2016 г..

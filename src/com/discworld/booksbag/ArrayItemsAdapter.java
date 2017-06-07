@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.discworld.booksbag.FieldMultiText.Item;
+import com.discworld.booksbag.fields.FieldMultiText.Item;
 
 public class ArrayItemsAdapter extends ArrayAdapter<Item> 
 {
