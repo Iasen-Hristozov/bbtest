@@ -10,11 +10,14 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
@@ -28,11 +31,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.discworld.booksbag.BookListActivity.SimpleItemRecyclerViewAdapter.ViewHolder;
 import com.discworld.booksbag.dto.DividerItemDecoration;
 import com.discworld.booksbag.dto.Result;
 
@@ -56,11 +62,12 @@ public class BookListActivity extends AppCompatActivity
 {
    public final static int SHOW_EDIT_BOOK = 101;
    
-   private int iOrderID = DBAdapter.ORD_TTL;
+   private int iOrderID = DBAdapter.ORD_TTL,
+               iClickedItemNdx = -1;
    
    private long sel_id;
    
-   private EditText etFilter;
+//   private EditText etFilter;
    
    private static final String XPR_DIR = "BooksBag",
                                DB_PATH = "//data//com.discworld.booksbag//databases//";
@@ -68,7 +75,58 @@ public class BookListActivity extends AppCompatActivity
    private DBAdapter oDbAdapter = null;
    
    private SimpleItemRecyclerViewAdapter oSimpleItemRecyclerViewAdapter;
+   
+   private View.OnClickListener onRecyclerViewClickListener = new View.OnClickListener()
+   {
+      @Override
+      public void onClick(View v)
+      {
+         iClickedItemNdx = recyclerView.indexOfChild(v);
+         sel_id = oSimpleItemRecyclerViewAdapter.getItemId(iClickedItemNdx);
+         
+         if(mTwoPane)
+         {
+            Bundle arguments = new Bundle();
+            arguments.putLong(BookDetailFragment.ARG_ITEM_ID, sel_id);
+            BookDetailFragment fragment = new BookDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                                       .replace(R.id.book_detail_container, fragment)
+                                       .commit();
+         } 
+         else
+         {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, BookDetailActivity.class);
+            intent.putExtra(BookDetailFragment.ARG_ITEM_ID, sel_id);
 
+            // context.startActivity (intent);
+            startActivityForResult(intent, 0);
+         }         
+      }
+   };
+
+   private View.OnLongClickListener onRecyclerViewLongClickListener = new View.OnLongClickListener()
+   {
+      @Override
+      public boolean onLongClick(View v)
+      {
+         iClickedItemNdx = recyclerView.indexOfChild(v);
+         sel_id = oSimpleItemRecyclerViewAdapter.getItemId(iClickedItemNdx);
+         if(mActionMode != null)
+         {
+            return false;
+         }
+
+         // Start the CAB using the ActionMode.Callback defined above
+         startSupportActionMode(mActionModeCallback);
+
+         v.setSelected(true);
+         return true;      
+      }
+   };
+   
+   
    private RecyclerView recyclerView;
    
    private ActionMode mActionMode;
@@ -112,12 +170,13 @@ public class BookListActivity extends AppCompatActivity
       });
       
 //      RecyclerView.ItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-      DividerItemDecoration dd = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
       recyclerView = (RecyclerView) findViewById(R.id.book_list);
       assert recyclerView != null;
-      recyclerView.addItemDecoration(dd);
+      recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
       recyclerView.setItemAnimator(new DefaultItemAnimator());
       recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      
+
 //      oDbAdapter.open();
 //      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL));
 //      recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
@@ -130,32 +189,32 @@ public class BookListActivity extends AppCompatActivity
 //      setupRecyclerView((RecyclerView) recyclerView);
 //      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL));
       
-      etFilter = (EditText) findViewById(R.id.et_filter);
- 
-      // Capture Text in EditText
-      etFilter.addTextChangedListener(new TextWatcher() 
-      {
- 
-         @Override
-         public void afterTextChanged(Editable arg0) 
-         {
-            // TODO Auto-generated method stub
-            String text = etFilter.getText().toString().toLowerCase(Locale.getDefault());
-            oSimpleItemRecyclerViewAdapter.filter(text);
-         }
- 
-         @Override
-         public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) 
-         {
-            // TODO Auto-generated method stub
-         }
- 
-         @Override
-         public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) 
-         {
-            // TODO Auto-generated method stub
-         }
-      });
+//      etFilter = (EditText) findViewById(R.id.et_filter);
+// 
+//      // Capture Text in EditText
+//      etFilter.addTextChangedListener(new TextWatcher() 
+//      {
+// 
+//         @Override
+//         public void afterTextChanged(Editable arg0) 
+//         {
+//            // TODO Auto-generated method stub
+//            String text = etFilter.getText().toString().toLowerCase(Locale.getDefault());
+//            oSimpleItemRecyclerViewAdapter.filter(text);
+//         }
+// 
+//         @Override
+//         public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) 
+//         {
+//            // TODO Auto-generated method stub
+//         }
+// 
+//         @Override
+//         public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) 
+//         {
+//            // TODO Auto-generated method stub
+//         }
+//      });
 
       if (findViewById(R.id.book_detail_container) != null)
       {
@@ -170,21 +229,23 @@ public class BookListActivity extends AppCompatActivity
    
 
    @Override
-      protected void onResume()
+   protected void onResume()
+   {
+      super.onResume();
+
+      oDbAdapter.open();
+      if(bUpdate)
       {
-         super.onResume();
-   
-         oDbAdapter.open();
-         if(bUpdate)
-         {
-   //         setupRecyclerView((RecyclerView) recyclerView);
-            oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
-            recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
-            etFilter.setText("");
-         }
-   
-   //      oBook = oDbAdapter.getBook(oBook.iID);
+//         setupRecyclerView((RecyclerView) recyclerView);
+          oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
+          oSimpleItemRecyclerViewAdapter.setClickListener(onRecyclerViewClickListener);
+          oSimpleItemRecyclerViewAdapter.setLongClickListener(onRecyclerViewLongClickListener);
+          recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
+//         etFilter.setText("");
       }
+
+      // oBook = oDbAdapter.getBook(oBook.iID);
+   }
 
 
 
@@ -202,6 +263,26 @@ public class BookListActivity extends AppCompatActivity
    public boolean onCreateOptionsMenu(Menu menu)
    {
       getMenuInflater().inflate(R.menu.menu_main, menu);
+      
+      final MenuItem searchItem = menu.findItem(R.id.action_search);
+      final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+      searchView.setOnQueryTextListener(new OnQueryTextListener()
+      {
+         
+         @Override
+         public boolean onQueryTextSubmit(String arg0)
+         {
+            // TODO Auto-generated method stub
+            return false;
+         }
+         
+         @Override
+         public boolean onQueryTextChange(String arg0)
+         {
+            oSimpleItemRecyclerViewAdapter.filter(arg0);
+            return true;
+         }
+      });
       return true;
    }
 
@@ -246,6 +327,47 @@ public class BookListActivity extends AppCompatActivity
 
 
 
+   /**
+       * Copies the database file at the specified location over the current
+       * internal application database.
+       * */
+   //   public boolean importDatabase(String dbPath) throws IOException 
+   //   {
+   //
+   //       // Close the SQLiteOpenHelper so it will commit the created empty
+   //       // database to internal storage.
+   //       oDbAdapter.close();
+   //       File newDb = new File(dbPath);
+   //       File oldDb = new File(DB_PATH + DBAdapter.DATABASE_NAME);
+   //       if (newDb.exists()) 
+   //       {
+   //           FileUtils.copyFile(new FileInputStream(newDb), new FileOutputStream(oldDb));
+   //           // Access the copied database so SQLiteHelper will cache it and mark
+   //           // it as created.
+   ////           oDbAdapter.getWritableDatabase().close();
+   //           
+   //           return true;
+   //       }
+   //       return false;
+   //   }   
+      
+      public static void verifyStoragePermissions(Activity activity) 
+      {
+         // Check if we have write permission
+         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+   
+         if (permission != PackageManager.PERMISSION_GRANTED) 
+         {
+             // We don't have permission so prompt the user
+             ActivityCompat.requestPermissions(
+                     activity,
+                     new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                     1);
+         }
+      }
+
+
+
    private void setupRecyclerView(@NonNull RecyclerView recyclerView)
    {
 //      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
@@ -253,166 +375,6 @@ public class BookListActivity extends AppCompatActivity
 //      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL)));
       oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
       recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
-   }
-
-   public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>
-   {
-
-//      private final List<DummyContent.DummyItem> mValues;
-//      private final List<Book> mValues;
-      private final List<Result> mValuesAll;
-      private final List<Result> mValues;
-      private String sFilter;
-
-//      public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items)
-//      public SimpleItemRecyclerViewAdapter(List<Book> items)
-      public SimpleItemRecyclerViewAdapter(List<Result> items)
-      {
-         mValuesAll = items;
-         mValues = new ArrayList<Result>();
-         mValues.addAll(mValuesAll);
-         sFilter = "";
-      }
-
-      @Override
-      public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-      {
-         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_list_content, parent, false);
-         return new ViewHolder(view);
-      }
-
-      @Override
-      public void onBindViewHolder(final ViewHolder holder, int position)
-      {
-         holder.mItem = mValues.get(position);
-         holder.mIdView.setText(String.valueOf(mValues.get(position)._id));
-         Spannable spContent = new SpannableString(mValues.get(position).content);
-         int iFilteredStart = mValues.get(position).content.indexOf(sFilter);
-         int iFilterEnd;
-         if(iFilteredStart < 0)
-         {
-            iFilteredStart = 0;
-            iFilterEnd = 0;
-         }
-         else
-            iFilterEnd = iFilteredStart + sFilter.length();
-         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivity.this, R.color.colorAccent)), iFilteredStart, iFilterEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-         holder.mContentView.setText(spContent);
-//         holder.mContentView.setText(mValues.get(position).content);
-
-         holder.mView.setOnClickListener(new View.OnClickListener()
-         {
-            @Override
-            public void onClick(View v)
-            {
-               if (mTwoPane)
-               {
-                  Bundle arguments = new Bundle();
-                  arguments.putLong(BookDetailFragment.ARG_ITEM_ID, holder.mItem._id);
-                  BookDetailFragment fragment = new BookDetailFragment();
-                  fragment.setArguments(arguments);
-                  getSupportFragmentManager().beginTransaction()
-                                             .replace(R.id.book_detail_container, fragment)
-                                             .commit();
-               }
-               else
-               {
-                  Context context = v.getContext();
-                  Intent intent = new Intent(context, BookDetailActivity.class);
-                  intent.putExtra(BookDetailFragment.ARG_ITEM_ID, holder.mItem._id);
-
-//                  context.startActivity  (intent);
-                  startActivityForResult(intent, 0);
-               }
-            }
-         });
-         
-         holder.mView.setOnLongClickListener(new View.OnLongClickListener() 
-         {
-            // Called when the user long-clicks on someView
-            public boolean onLongClick(View view) 
-            {
-               if (mActionMode != null) 
-               {
-                  return false;
-               }
-
-               // Start the CAB using the ActionMode.Callback defined above
-               sel_id = holder.mItem._id;
-               BookListActivity.this.startSupportActionMode(mActionModeCallback);
-               
-//               mActionMode = ((ActionBarActivity)view.getContext()).startSupportActionMode(mActionModeCallback);
-//               mActionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(new Toolbar_ActionMode_Callb
-               view.setSelected(true);
-               return true;
-            }
-         });
-      }
-
-      @Override
-      public int getItemCount()
-      {
-         return mValues.size();
-      }
-
-      public class ViewHolder extends RecyclerView.ViewHolder
-      {
-         public final View mView;
-         public final TextView mIdView;
-         public final TextView mContentView;
-         public Result mItem;
-
-         public ViewHolder(View view)
-         {
-            super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
-            
-//            view.setOnLongClickListener(new View.OnLongClickListener() 
-//            {
-//               @Override
-//               public boolean onLongClick(View v) 
-//               {
-////                   Toast.makeText(v.getContext(), "Position is " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
-//                   mActionMode = ((AppCompatActivity)v.getContext()).startSupportActionMode(mActionModeCallback);
-//                   v.setSelected(true);
-//                   return true;
-//
-////                   return false;
-//               }
-//           });
-         }
-
-         @Override
-         public String toString()
-         {
-            return super.toString() + " '" + mContentView.getText() + "'";
-         }
-      }
-   
-      // Filter Class
-      public void filter(String charText) 
-      {
-         charText = charText.toLowerCase(Locale.getDefault());
-         sFilter = charText;
-         mValues.clear();
-         if (charText.length() == 0) 
-         {
-            mValues.addAll(mValuesAll);
-         } 
-         else 
-         {
-            for (Result result : mValuesAll) 
-            {
-               if (result.content.toLowerCase(Locale.getDefault()).contains(charText)) 
-               {
-                  mValues.add(result);
-               }
-            }
-         }
-         notifyDataSetChanged();
-      }      
    }
 
    private boolean bExportDb()
@@ -461,42 +423,180 @@ public class BookListActivity extends AppCompatActivity
       return true;
    }
    
-   /**
-    * Copies the database file at the specified location over the current
-    * internal application database.
-    * */
-//   public boolean importDatabase(String dbPath) throws IOException 
-//   {
-//
-//       // Close the SQLiteOpenHelper so it will commit the created empty
-//       // database to internal storage.
-//       oDbAdapter.close();
-//       File newDb = new File(dbPath);
-//       File oldDb = new File(DB_PATH + DBAdapter.DATABASE_NAME);
-//       if (newDb.exists()) 
-//       {
-//           FileUtils.copyFile(new FileInputStream(newDb), new FileOutputStream(oldDb));
-//           // Access the copied database so SQLiteHelper will cache it and mark
-//           // it as created.
-////           oDbAdapter.getWritableDatabase().close();
-//           
-//           return true;
-//       }
-//       return false;
-//   }   
-   
-   public static void verifyStoragePermissions(Activity activity) 
+   public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>
    {
-      // Check if we have write permission
-      int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+      private String sFilter;
 
-      if (permission != PackageManager.PERMISSION_GRANTED) 
+      OnClickListener onClickListener = null;
+
+      OnLongClickListener onLongClickListener = null;
+      
+      private final List<Result> alItemsAll, 
+                                 alItems;
+      
+      public void setClickListener(OnClickListener callback) 
       {
-          // We don't have permission so prompt the user
-          ActivityCompat.requestPermissions(
-                  activity,
-                  new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
-                  1);
+         this.onClickListener = callback;
+      }      
+
+      public void setLongClickListener(OnLongClickListener callback) 
+      {
+         this.onLongClickListener = callback;
+      }      
+      
+      public SimpleItemRecyclerViewAdapter(List<Result> items)
+      {
+         alItemsAll = items;
+         alItems = new ArrayList<Result>();
+         alItems.addAll(alItemsAll);
+         sFilter = "";
+      }
+
+      @Override
+      public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+      {
+         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_list_content, parent, false);
+         return new ViewHolder(view);
+      }
+
+      @Override
+      public void onBindViewHolder(final ViewHolder holder, int position)
+      {
+         holder.mItem = alItems.get(position);
+         holder.mIdView.setText(String.valueOf(alItems.get(position)._id));
+         Spannable spContent = new SpannableString(alItems.get(position).content);
+         int iFilteredStart = alItems.get(position).content.indexOf(sFilter);
+         int iFilterEnd;
+         if(iFilteredStart < 0)
+         {
+            iFilteredStart = 0;
+            iFilterEnd = 0;
+         } 
+         else
+            iFilterEnd = iFilteredStart + sFilter.length();
+         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivity.this, R.color.colorAccent)),
+                                                                          iFilteredStart, iFilterEnd,
+                                                                          Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+         holder.mContentView.setText(spContent);
+         // holder.mContentView.setText(mValues.get(position).content);
+
+         holder.mView.setOnClickListener(onClickListener);
+         holder.mView.setOnLongClickListener(onLongClickListener);
+//         holder.mView.setOnClickListener(new View.OnClickListener()
+//         {
+//            @Override
+//            public void onClick(View v)
+//            {
+//               if(mTwoPane)
+//               {
+//                  Bundle arguments = new Bundle();
+//                  arguments.putLong(BookDetailFragment.ARG_ITEM_ID, holder.mItem._id);
+//                  BookDetailFragment fragment = new BookDetailFragment();
+//                  fragment.setArguments(arguments);
+//                  getSupportFragmentManager().beginTransaction()
+//                                             .replace(R.id.book_detail_container, fragment)
+//                                             .commit();
+//               } 
+//               else
+//               {
+//                  Context context = v.getContext();
+//                  Intent intent = new Intent(context, BookDetailActivity.class);
+//                  intent.putExtra(BookDetailFragment.ARG_ITEM_ID, holder.mItem._id);
+//
+//                  // context.startActivity (intent);
+//                  startActivityForResult(intent, 0);
+//               }
+//            }
+//         });
+//
+//         holder.mView.setOnLongClickListener(new View.OnLongClickListener()
+//         {
+//            // Called when the user long-clicks on someView
+//            public boolean onLongClick(View view)
+//            {
+//               if(mActionMode != null)
+//               {
+//                  return false;
+//               }
+//
+//               // Start the CAB using the ActionMode.Callback defined above
+//               sel_id = holder.mItem._id;
+//               BookListActivity.this.startSupportActionMode(mActionModeCallback);
+//
+//               // mActionMode =
+//               // ((ActionBarActivity)view.getContext()).startSupportActionMode(mActionModeCallback);
+//               // mActionMode = ((AppCompatActivity)
+//               // getActivity()).startSupportActionMode(new
+//               // Toolbar_ActionMode_Callb
+//               view.setSelected(true);
+////               SimpleItemRecyclerViewAdapter.this.onClickListener.onClick(view);
+//               return true;
+//            }
+//         });
+      }
+
+      @Override
+      public int getItemCount()
+      {
+         return alItems.size();
+      }
+
+      public class ViewHolder extends RecyclerView.ViewHolder
+      {
+         public final View     mView;
+         public final TextView mIdView;
+         public final TextView mContentView;
+         public Result         mItem;
+
+         public ViewHolder(View view)
+         {
+            super(view);
+            mView = view;
+            mIdView = (TextView) view.findViewById(R.id.id);
+            mContentView = (TextView) view.findViewById(R.id.content);
+         }
+
+         @Override
+         public String toString()
+         {
+            return super.toString() + " '" + mContentView.getText() + "'";
+         }
+      }
+      
+      public void removeAt(int position)
+      {
+         boolean b = alItemsAll.remove(alItems.get(position));
+         alItems.remove(position);
+         notifyItemRemoved(position);
+      }
+
+      // Filter Class
+      public void filter(String charText)
+      {
+         charText = charText.toLowerCase(Locale.getDefault());
+         sFilter = charText;
+         alItems.clear();
+         if(charText.length() == 0)
+         {
+            alItems.addAll(alItemsAll);
+         } else
+         {
+            for(Result result : alItemsAll)
+            {
+               if(result.content.toLowerCase(Locale.getDefault()).contains(
+                        charText))
+               {
+                  alItems.add(result);
+               }
+            }
+         }
+         notifyDataSetChanged();
+      }
+
+      @Override
+      public long getItemId(int position)
+      {
+         return alItems.get(position)._id;
       }
    }
 
@@ -533,10 +633,12 @@ public class BookListActivity extends AppCompatActivity
                 assert oDbAdapter != null;
                 oDbAdapter.deleteBook(sel_id);
 //                setupRecyclerView((RecyclerView) recyclerView);
-//                oSimpleItemRecyclerViewAdapter.get
-                oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID)); 
-                recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, false);
+//                oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID)); 
+//                recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, false);
+//                oSimpleItemRecyclerViewAdapter.notifyItemRemoved(iClickedItemNdx);
 //                oSimpleItemRecyclerViewAdapter.notifyItemRemoved(2);
+                oSimpleItemRecyclerViewAdapter.removeAt(iClickedItemNdx);
+
                 mode.finish(); // Action picked, so close the CAB
                 return true;
              default:

@@ -7,6 +7,7 @@
    <string name="action_exp_db">Export DB</string>
    <string name="action_imp_db">Import DB</string>
    <string name="action_delete">Delete</string>
+   <string name="action_search">Search</string>
    <string name="prf_xpr_db_scs">DB is successfully exported</string>
    <string name="prf_imp_db_scs">DB is successfully imported</string>
    <string name="title_book_detail">Book Detail</string>
