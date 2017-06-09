@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -72,20 +73,48 @@ public class BookDetailActivity extends AppCompatActivity
    @Override
    public boolean onOptionsItemSelected(MenuItem item)
    {
-      long id = item.getItemId();
-      if (id == android.R.id.home)
+//      switch(item.getItemId())
+//      {
+//      default:
+//         return false;
+//      }
+      
+      switch(item.getItemId())
       {
-         // This ID represents the Home or Up button. In the case of this
-         // activity, the Up button is shown. Use NavUtils to allow users
-         // to navigate up one level in the application structure. For
-         // more details, see the Navigation pattern on Android Design:
-         //
-         // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-         //
-         NavUtils.navigateUpTo(this, new Intent(this, BookListActivity.class));
-         return true;
+         case android.R.id.home:
+            // This ID represents the Home or Up button. In the case of this
+            // activity, the Up button is shown. Use NavUtils to allow users
+            // to navigate up one level in the application structure. For
+            // more details, see the Navigation pattern on Android Design:
+            //
+            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+            //
+            NavUtils.navigateUpTo(this, new Intent(this, BookListActivity.class));
+            
+            return true;
+            
+         case R.id.action_duplicate:
+            Intent intent = new Intent(getApplicationContext(), EditBookActivity.class);
+            intent.putExtra(EditBookActivity.BOOK_ID, iBookID);
+            intent.putExtra(EditBookActivity.IS_COPY, true);
+            startActivityForResult(intent, BookListActivity.SHOW_EDIT_BOOK_COPY);
+            return true;
+            
+         case R.id.action_delete:
+            DBAdapter oDbAdapter = new DBAdapter(this);
+            oDbAdapter.open();
+            oDbAdapter.deleteBook(iBookID);
+            oDbAdapter.close();
+            
+            resultCode = RESULT_OK;
+            close();
+            
+            return true;
+            
+         default:
+            return super.onOptionsItemSelected(item);
       }
-      return super.onOptionsItemSelected(item);
+      
    }
 
    @Override
@@ -95,6 +124,9 @@ public class BookDetailActivity extends AppCompatActivity
       {
          loadFragment(iBookID);
          this.resultCode = RESULT_OK;
+         if(requestCode == BookListActivity.SHOW_EDIT_BOOK_COPY)
+            close();
+            
       }
       else
          this.resultCode = RESULT_CANCELED;
@@ -116,8 +148,21 @@ public class BookDetailActivity extends AppCompatActivity
    @Override
    public void onBackPressed()
    {
+      close();
+//      super.onBackPressed();
+   }
+   
+   private void close()
+   {
       setResult(resultCode, new Intent());
       finish();                  // "Done"
-//      super.onBackPressed();
+   }
+
+   @Override
+   public boolean onCreateOptionsMenu(Menu menu)
+   {
+      getMenuInflater().inflate(R.menu.menu_details, menu);
+      
+      return true;
    }
 }

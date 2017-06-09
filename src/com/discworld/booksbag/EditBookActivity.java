@@ -47,7 +47,8 @@ import java.util.Locale;
 
 public class EditBookActivity extends AppCompatActivity 
 {
-   public final static String BOOK_ID = "book_id";
+   public final static String BOOK_ID = "book_id",
+                              IS_COPY = "is_copy";
 
    private Book oBook;
    private LinearLayout llFields;
@@ -108,9 +109,14 @@ public class EditBookActivity extends AppCompatActivity
          return;
 
       long iBookID = extras.getLong(BOOK_ID);
+      boolean isCopy =  extras.getBoolean(IS_COPY, false);
       
       if(iBookID != 0)
+      {
          oBook = oDbAdapter.getBook(iBookID);
+         if(isCopy)
+            oBook.iID = 0;
+      }
       else
          oBook = new Book();
       

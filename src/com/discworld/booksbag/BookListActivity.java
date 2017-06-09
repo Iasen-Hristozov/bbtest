@@ -4,9 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
@@ -60,7 +64,8 @@ import java.util.Locale;
  */
 public class BookListActivity extends AppCompatActivity
 {
-   public final static int SHOW_EDIT_BOOK = 101;
+   public final static int SHOW_EDIT_BOOK = 101,
+                           SHOW_EDIT_BOOK_COPY = 102;
    
    private int iOrderID = DBAdapter.ORD_TTL,
                iClickedItemNdx = -1;
@@ -70,11 +75,16 @@ public class BookListActivity extends AppCompatActivity
 //   private EditText etFilter;
    
    private static final String XPR_DIR = "BooksBag",
-                               DB_PATH = "//data//com.discworld.booksbag//databases//";
+                               DB_PATH = "//data//com.discworld.booksbag//databases//",
+                               PREF_ORDER_ID = "order_id";
    
    private DBAdapter oDbAdapter = null;
    
+   private ArrayList<OrderItem> alOrderItems = new ArrayList<>();
+   
    private SimpleItemRecyclerViewAdapter oSimpleItemRecyclerViewAdapter;
+   
+   private SharedPreferences oPreferences;
    
    private View.OnClickListener onRecyclerViewClickListener = new View.OnClickListener()
    {
@@ -143,7 +153,10 @@ public class BookListActivity extends AppCompatActivity
    {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_book_list);
-
+      
+      oPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+      loadPreferences();
+      
       oDbAdapter = new DBAdapter(this);
 //      oDbAdapter.open();
       
@@ -224,9 +237,10 @@ public class BookListActivity extends AppCompatActivity
          // activity should be in two-pane mode.
          mTwoPane = true;
       }
+      
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_TTL, getString(R.string.ord_title)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_AUT, getString(R.string.ord_author)));
    }
-   
-   
 
    @Override
    protected void onResume()
@@ -237,10 +251,11 @@ public class BookListActivity extends AppCompatActivity
       if(bUpdate)
       {
 //         setupRecyclerView((RecyclerView) recyclerView);
-          oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
-          oSimpleItemRecyclerViewAdapter.setClickListener(onRecyclerViewClickListener);
-          oSimpleItemRecyclerViewAdapter.setLongClickListener(onRecyclerViewLongClickListener);
-          recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
+//          oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
+//          oSimpleItemRecyclerViewAdapter.setClickListener(onRecyclerViewClickListener);
+//          oSimpleItemRecyclerViewAdapter.setLongClickListener(onRecyclerViewLongClickListener);
+//          recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
+          setupRecyclerView(recyclerView, iOrderID);
 //         etFilter.setText("");
       }
 
@@ -307,6 +322,29 @@ public class BookListActivity extends AppCompatActivity
                Toast.makeText(getApplicationContext(), R.string.prf_imp_db_scs, Toast.LENGTH_SHORT).show();
             oDbAdapter.open();            
             
+            return true;
+            
+         case R.id.action_sort:
+            View menuItemView = findViewById(R.id.action_sort); // SAME ID AS MENU ID
+            PopupMenu popupMenu = new PopupMenu(this, menuItemView);
+            for(OrderItem oItem: alOrderItems)
+               popupMenu.getMenu().add(Menu.NONE, oItem.iID, 0, oItem.sTitle).setCheckable(true).setChecked(oItem.iID == iOrderID);
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+            {
+               
+               @Override
+               public boolean onMenuItemClick(MenuItem menuItem)
+               {
+                  iOrderID = menuItem.getItemId();
+                  saveOrderID(iOrderID);
+                  setupRecyclerView(recyclerView, iOrderID);
+                  return true;
+               }
+            });
+//            popupMenu.inflate(R.menu.menu_main);
+            // ...
+            popupMenu.show();
+            // ...
             return true;
             
          default:
@@ -377,6 +415,28 @@ public class BookListActivity extends AppCompatActivity
       recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
    }
 
+   private void setupRecyclerView(@NonNull RecyclerView recyclerView, int iOrderID)
+   {
+      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
+      oSimpleItemRecyclerViewAdapter.setClickListener(onRecyclerViewClickListener);
+      oSimpleItemRecyclerViewAdapter.setLongClickListener(onRecyclerViewLongClickListener);
+      recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
+   }
+   
+   private void loadPreferences()
+   {
+      iOrderID = oPreferences.getInt(PREF_ORDER_ID, DBAdapter.ORD_TTL);
+   }
+   
+   private void saveOrderID(int iOrderID)
+   {
+      Editor editor = oPreferences.edit();
+      
+      editor.putInt(PREF_ORDER_ID, iOrderID);
+      
+      editor.commit();      
+   }
+   
    private boolean bExportDb()
    {
       try
@@ -653,4 +713,17 @@ public class BookListActivity extends AppCompatActivity
          mActionMode = null;
       }
    };
+   
+   private class OrderItem 
+   {
+      public int iID;
+      public String sTitle;
+      
+      public OrderItem(int iID, String sTitle)
+      {
+         this.iID = iID;
+         this.sTitle = sTitle;
+      }
+      
+   }
 }
