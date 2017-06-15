@@ -91,11 +91,11 @@ public class Title extends LinearLayout
    
    public void setColor(int valueColor)
    {
-      if(valueColor > 0 )
-      {
+//      if(valueColor > 0 )
+//      {
          title.setTextColor(valueColor);
          line.setBackgroundColor(valueColor);
-      }
+//      }
    }
    
    public void setLineSize(int lineSize)

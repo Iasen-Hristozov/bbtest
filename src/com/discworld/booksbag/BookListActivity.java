@@ -272,8 +272,6 @@ public class BookListActivity extends AppCompatActivity
       super.onPause();
    }
 
-
-
    @Override
    public boolean onCreateOptionsMenu(Menu menu)
    {
@@ -328,7 +326,8 @@ public class BookListActivity extends AppCompatActivity
             View menuItemView = findViewById(R.id.action_sort); // SAME ID AS MENU ID
             PopupMenu popupMenu = new PopupMenu(this, menuItemView);
             for(OrderItem oItem: alOrderItems)
-               popupMenu.getMenu().add(Menu.NONE, oItem.iID, 0, oItem.sTitle).setCheckable(true).setChecked(oItem.iID == iOrderID);
+               popupMenu.getMenu().add(1, oItem.iID, 0, oItem.sTitle).setCheckable(true).setChecked(oItem.iID == iOrderID);
+            popupMenu.getMenu().setGroupCheckable(1, true, true);
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
             {
                

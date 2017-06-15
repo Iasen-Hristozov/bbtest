@@ -2,7 +2,6 @@ package com.discworld.booksbag;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormatSymbols;
@@ -39,7 +38,6 @@ public class DBAdapter
    private static final String TABLE_BOOKS = "books";
    private static final String TABLE_FIELDS = "fields";
    private static final String TABLE_BOOK_FIELDS = "book_fields";
-	private static final String TABLE_PRESENCES = "presences";
 
    // Common column names
    private static final String KEY_ID = "_id";
@@ -52,7 +50,6 @@ public class DBAdapter
    private static final String KEY_PGS = "pages";
    private static final String KEY_PRC = "price";
    private static final String KEY_VL = "value";
-   private static final String KEY_CND_ID = "condition_id";
    private static final String KEY_DUE_DT = "due_date";
    private static final String KEY_RD_DT = "read_date";
    private static final String KEY_EDN = "edition";
@@ -109,8 +106,8 @@ public class DBAdapter
    // BOOK_FIELDS table create statement
    private static final String CREATE_TABLE_BOOK_FIELDS = "CREATE TABLE " + TABLE_BOOK_FIELDS + " ("
          + KEY_BK_ID + " INTEGER, "
-         + KEY_FLD_ID + " INTEGER, "
-         + KEY_TP_ID + " INTEGER)";
+         + KEY_FLD_ID + " INTEGER)";
+//         + KEY_TP_ID + " INTEGER)";
    
 	private SQLiteDatabase db;
 	private final Context context;
@@ -326,9 +323,9 @@ public class DBAdapter
             query = "SELECT b." + KEY_ID + ", COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(f_name, \", \"), b."+ KEY_TTL + ")  AS content"
                      + " FROM " + TABLE_BOOKS + " AS b"
                      + " LEFT JOIN"
-                     + " (SELECT bf."+KEY_FLD_ID+" AS bf_field_id, bf."+KEY_BK_ID+" AS bf_book_id, f." + KEY_NM + " AS f_name"
+                     + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name"
                      +" FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " 
-                     + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE bf." + KEY_TP_ID + " = 1) AS ss on ss.bf_book_id = b." + KEY_ID 
+                     + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss on ss.bf_book_id = b." + KEY_ID 
                      + " GROUP BY b." + KEY_ID 
                      + " ORDER BY content";
 
@@ -347,7 +344,7 @@ public class DBAdapter
             query = "SELECT b." + KEY_ID + ", GROUP_CONCAT(f_name, \", \") || \" - \" ||" + " b." + KEY_TTL + " AS content"
                      + " FROM " + TABLE_BOOKS 
                      + " AS b LEFT JOIN"
-                     + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"
+                     + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"
                      + " ON ss.bf_book_id = b." + KEY_ID 
                      + " GROUP BY b." + KEY_ID 
                      + " ORDER BY content";
@@ -403,9 +400,9 @@ public class DBAdapter
          {
             values = new ContentValues();
             values.put(KEY_FLD_ID, oField.iID);
-            values.put(KEY_TP_ID, oField.iTypeID);
+//            values.put(KEY_TP_ID, oField.iTypeID);
             values.put(KEY_BK_ID, iBookID);
-            long res = db.insert(TABLE_BOOK_FIELDS, null, values);
+            db.insert(TABLE_BOOK_FIELDS, null, values);
          }
 
 //      statement.bindString(KEY_TTL_ID, oBook.sTitle);
@@ -540,7 +537,7 @@ public class DBAdapter
                              cursor.getString(ID_KEY_WEB));
          }
    
-         String sql = "SELECT f." + KEY_ID + ", bf." + KEY_TP_ID + ", f." + KEY_NM
+         String sql = "SELECT f." + KEY_ID + ", f." + KEY_TP_ID + ", f." + KEY_NM
                      +" FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS + " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
                      +" WHERE bf." + KEY_BK_ID + " = " + iBookID;
    
@@ -576,12 +573,11 @@ public class DBAdapter
       }
       else
       {
-         int res ;
          db.beginTransaction();
          try
          {
-            res = db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + iBookID, null);
-            res = db.delete(TABLE_BOOKS, KEY_ID + " = " + iBookID, null);
+            db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + iBookID, null);
+            db.delete(TABLE_BOOKS, KEY_ID + " = " + iBookID, null);
             
             db.setTransactionSuccessful();
          }
@@ -630,16 +626,14 @@ public class DBAdapter
                }
             }
    
-            long res = 0;
-            res = db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + oBook.iID, null);
+            db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + oBook.iID, null);
    
             for (Field oField : oBook.alFields)
             {
                oValues = new ContentValues();
                oValues.put(KEY_FLD_ID, oField.iID);
-               oValues.put(KEY_TP_ID, oField.iTypeID);
                oValues.put(KEY_BK_ID, oBook.iID);
-               res = db.insert(TABLE_BOOK_FIELDS, null, oValues);
+               db.insert(TABLE_BOOK_FIELDS, null, oValues);
             }
    
             oValues = new ContentValues();
@@ -657,7 +651,7 @@ public class DBAdapter
             oValues.put(KEY_EDN, oBook.ciEdition.value);
             oValues.put(KEY_ISBN, oBook.csISBN.value);
             oValues.put(KEY_WEB, oBook.csWeb.value);
-            res = db.update(TABLE_BOOKS,
+            db.update(TABLE_BOOKS,
                       oValues,
                       KEY_ID + " = " + oBook.iID,
                       null);

@@ -4,8 +4,8 @@
    android:id="@+id/ll_parent"
    android:layout_width="match_parent"
    android:layout_height="wrap_content"
-   android:orientation="vertical">
-
+   android:layout_marginBottom="@dimen/fld_mrg_btm"
+   android:orientation="vertical" >
 
       <RelativeLayout
          android:layout_width="match_parent"

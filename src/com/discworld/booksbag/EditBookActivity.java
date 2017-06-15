@@ -2,6 +2,8 @@ package com.discworld.booksbag;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -308,6 +310,7 @@ public class EditBookActivity extends AppCompatActivity
    {
       final FieldEditTextUpdatableClearable oField = new FieldEditTextUpdatableClearable(this);
       oField.setTitle(oFieldType.sName);
+      oField.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
       oField.setText(cValue.toString());
       oField.setHint(oFieldType.sName);
       oField.setInputType(oFieldType.iInputType);
@@ -368,6 +371,7 @@ public class EditBookActivity extends AppCompatActivity
    {
       final FieldAutoCompleteTextView oFieldAutoCompleteTextView = new FieldAutoCompleteTextView(this);
       oFieldAutoCompleteTextView.setTitle(oFieldType.sName);
+      oFieldAutoCompleteTextView.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
       oFieldAutoCompleteTextView.setHint(oFieldType.sName);
 
       final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
@@ -431,7 +435,9 @@ public class EditBookActivity extends AppCompatActivity
    private void addFieldSpinner(ViewGroup rootView, FieldType oFieldType)
    {
       final FieldSpinner oFieldSpinner = new FieldSpinner(this);
+
       oFieldSpinner.setTitle(oFieldType.sName);
+      oFieldSpinner.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
       
 //      Field oField = null;
       Field oField = new Field(oFieldType.iID);
@@ -529,6 +535,7 @@ public class EditBookActivity extends AppCompatActivity
       final FieldMultiText oFieldMultiText = new FieldMultiText(this);
       // TODO Fix it
       oFieldMultiText.setTitle(oFieldType.sName + "s");
+      oFieldMultiText.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
       oFieldMultiText.setHint(oFieldType.sName);
 
       // Set adapter
@@ -612,6 +619,7 @@ public class EditBookActivity extends AppCompatActivity
    {
       final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this);
       oFieldMultiSpinner.setTitle(oFieldType.sName + "s");
+      oFieldMultiSpinner.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
       oFieldMultiSpinner.setHint(oFieldType.sName);
 
       final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
@@ -663,6 +671,7 @@ public class EditBookActivity extends AppCompatActivity
    {
       final FieldMoney oFieldMoney = new FieldMoney(this);
       oFieldMoney.setTitle(oFieldType.sName);
+      oFieldMoney.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
       oFieldMoney.setHint(oFieldType.sName);
       
       switch(oFieldType.iID)
@@ -772,6 +781,7 @@ public class EditBookActivity extends AppCompatActivity
       }
       
       oFieldDate.setTitle(oFieldType.sName);
+      oFieldDate.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
       oFieldDate.setHint(oFieldType.sName);
       oFieldDate.setDate(date);
       
