@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import android.content.ContentValues;
@@ -23,6 +24,7 @@ import com.discworld.booksbag.dto.Book;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
 import com.discworld.booksbag.dto.FileUtils;
+import com.discworld.booksbag.dto.ParentResult;
 import com.discworld.booksbag.dto.Result;
 import com.discworld.booksbag.dummy.DummyContent;
 
@@ -236,15 +238,7 @@ public class DBAdapter
       }
       else
       {
-//         ArrayList<Book> alBooks = new ArrayList<Book>();
          ArrayList<Result> alResults = new ArrayList<Result>();
-   
-   //      String query = "b." + KEY_ID + ", b." + KEY_TTL + ", GROUP_CONCAT(f." + KEY_NM + ") AS authors "
-   //            + "FROM " + TABLE_BOOKS + " AS b LEFT JOIN " + TABLE_BOOK_FIELDS + " AS bf ON bf." + KEY_BK_ID + " = " + "b." + KEY_ID
-   //            + " LEFT JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-   //            + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUT
-   //            + " GROUP BY b." + KEY_ID
-   //            + " ORDER BY b." + KEY_TTL;
    
          Cursor cursor = db.rawQuery(query, null);
          Result result;
@@ -253,51 +247,64 @@ public class DBAdapter
          {
             do
             {
-//   //            oBook = new Field(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
-////               oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-////                        cursor.getString(ID_KEY_TTL),
-////                        cursor.getString(ID_KEY_DSCR),
-////                        Integer.parseInt(cursor.getString(ID_KEY_VLM)),
-////                        Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
-////                        Integer.parseInt(cursor.getString(ID_KEY_PGS)),
-//////                        Integer.parseInt(cursor.getString(ID_KEY_PRC)),
-//////                        Integer.parseInt(cursor.getString(ID_KEY_VL)),
-////                        cursor.getString(ID_KEY_PRC),
-////                        cursor.getString(ID_KEY_VL),
-////                        Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
-////                        Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
-////                        Integer.parseInt(cursor.getString(ID_KEY_EDN)),
-////                        cursor.getString(ID_KEY_ISBN),
-////                        cursor.getString(ID_KEY_WEB));
-//               oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-//                        cursor.getString(ID_KEY_TTL),
-//                        cursor.getString(ID_KEY_DSCR),
-//                        Integer.parseInt(cursor.getString(ID_KEY_VLM)),
-//                        Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
-//                        Integer.parseInt(cursor.getString(ID_KEY_PGS)),
-////                        Integer.parseInt(cursor.getString(ID_KEY_PRC)),
-////                        Integer.parseInt(cursor.getString(ID_KEY_VL)),
-//                        cursor.getString(ID_KEY_PRC),
-//                        cursor.getString(ID_KEY_VL),
-//                        Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
-//                        Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
-//                        Integer.parseInt(cursor.getString(ID_KEY_EDN)),
-//                        cursor.getString(ID_KEY_ISBN),
-//                        cursor.getString(ID_KEY_WEB));
+
                result = new Result();
-               result._id = Integer.parseInt(cursor.getString(0));
+               result.id = Integer.parseInt(cursor.getString(0));
                result.content = cursor.getString(1);
-//               alBooks.add(oBook);
                alResults.add(result);
             } while (cursor.moveToNext());
          }
          cursor.close();
    
-//         return alBooks;
          return alResults;
       }      
    }
 
+   public ArrayList<ParentResult> getBooksOrderedBy1(String query)
+   {
+      if(Debug.ON)
+      {
+         return null;
+      }
+      else
+      {
+         ArrayList<ParentResult> alParrentResults = new ArrayList<ParentResult>();
+   
+         Cursor cursor = db.rawQuery(query, null);
+         
+         if(cursor.moveToFirst())
+         {
+            Result result;
+            String sParrent = cursor.getString(0);
+            List<Result> alChildResults = new ArrayList<Result>();
+            ParentResult oParrentResult = new ParentResult(sParrent, alChildResults);
+
+            do
+            {
+               sParrent = cursor.getString(0);
+               result = new Result();
+               result.id = Integer.parseInt(cursor.getString(1));
+               result.content = cursor.getString(2);
+               if(!sParrent.equalsIgnoreCase(oParrentResult.getName()))
+               {
+                  alParrentResults.add(oParrentResult);
+                  alChildResults = new ArrayList<Result>();
+                  oParrentResult = new ParentResult(sParrent, alChildResults);
+//                  alParrentResults.add(oParrentResult);
+//                  sParrentTmp = sParrent;
+               }
+//               oParrentResult.addChildResult(result);
+               alChildResults.add(result);
+            } while (cursor.moveToNext());
+            alParrentResults.add(oParrentResult);
+         }
+         cursor.close();
+   
+         return alParrentResults;
+      }      
+   }
+   
+   
    public ArrayList<Result> getBooks(int iOrder)
 //   public ArrayList<Book> getBooks(int iOrder)
    {
@@ -357,6 +364,21 @@ public class DBAdapter
       }
 
       return getBooksOrderedBy(query);
+   }
+   
+   public ArrayList<ParentResult> getBooks1(int iOrder)
+   {
+      String query1 = "SELECT GROUP_CONCAT(f_name, \", \") AS parrent, b." + KEY_ID + " AS child_id, b." + KEY_TTL + " AS child"
+               + " FROM " + TABLE_BOOKS 
+               + " AS b LEFT JOIN"
+               + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"
+               + " ON ss.bf_book_id = b." + KEY_ID 
+               + " GROUP BY b." + KEY_ID 
+               + " ORDER BY parrent, child";
+
+      ArrayList<ParentResult> alParrentResults = getBooksOrderedBy1(query1);
+      
+      return alParrentResults;
    }
 
    public void insertBook(Book oBook)

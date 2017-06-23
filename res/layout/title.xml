@@ -11,7 +11,11 @@
       android:layout_height="wrap_content"
       android:text="@string/et_title"
       android:textAppearance="?android:attr/textAppearanceMedium"
-      android:textColor="@color/colorBlue" />
+      android:textColor="@color/colorBlue"
+      android:textSize="14sp"
+      android:textStyle="bold"
+      android:typeface="sans"
+      android:textAllCaps="true" />
 
    <LinearLayout
       android:id="@+id/ll_line"

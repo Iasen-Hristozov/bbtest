@@ -24,28 +24,32 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnSystemUiVisibilityChangeListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.discworld.booksbag.dto.BooksAdapter;
+import com.discworld.booksbag.BookListActivityOld.SimpleItemRecyclerViewAdapter.ViewHolder;
 import com.discworld.booksbag.dto.DividerItemDecoration;
-//import com.discworld.booksbag.dto.ParrentAdapter;
 import com.discworld.booksbag.dto.Result;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -58,7 +62,7 @@ import java.util.Locale;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class BookListActivity extends AppCompatActivity
+public class BookListActivityOld extends AppCompatActivity
 {
    public final static int SHOW_EDIT_BOOK = 101,
                            SHOW_EDIT_BOOK_COPY = 102;
@@ -79,8 +83,7 @@ public class BookListActivity extends AppCompatActivity
    
    private ArrayList<OrderItem> alOrderItems = new ArrayList<>();
    
-//   private ParrentAdapter oSimpleItemRecyclerViewAdapter;
-   private BooksAdapter oSimpleItemRecyclerViewAdapter;
+   private SimpleItemRecyclerViewAdapter oSimpleItemRecyclerViewAdapter;
    
    private SharedPreferences oPreferences;
    
@@ -276,7 +279,6 @@ public class BookListActivity extends AppCompatActivity
       
       final MenuItem searchItem = menu.findItem(R.id.action_search);
       final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-      
       searchView.setOnQueryTextListener(new OnQueryTextListener()
       {
          
@@ -290,10 +292,8 @@ public class BookListActivity extends AppCompatActivity
          @Override
          public boolean onQueryTextChange(String arg0)
          {
-            if(!oSimpleItemRecyclerViewAdapter.isExpandAll())
-               oSimpleItemRecyclerViewAdapter.expandAll();
             oSimpleItemRecyclerViewAdapter.filter(arg0);
-            tvBooksCount.setText(String.valueOf(oSimpleItemRecyclerViewAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
+            tvBooksCount.setText(String.valueOf(oSimpleItemRecyclerViewAdapter.getItemCount()) + " " + getString(R.string.lbl_books));
             return true;
          }
       });
@@ -404,15 +404,24 @@ public class BookListActivity extends AppCompatActivity
          }
       }
 
+
+
+   private void setupRecyclerView(@NonNull RecyclerView recyclerView)
+   {
+//      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+//      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.BOOKS));
+//      recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(DBAdapter.ORD_TTL)));
+      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
+      recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
+   }
+
    private void setupRecyclerView(@NonNull RecyclerView recyclerView, int iOrderID)
    {
-      oSimpleItemRecyclerViewAdapter = new BooksAdapter(this, oDbAdapter.getBooks1(iOrderID));
-//      oSimpleItemRecyclerViewAdapter = new ParrentAdapter(this, oDbAdapter.getBooks1(iOrderID));
+      oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID));
       oSimpleItemRecyclerViewAdapter.setClickListener(onRecyclerViewClickListener);
       oSimpleItemRecyclerViewAdapter.setLongClickListener(onRecyclerViewLongClickListener);
-//      recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
-      recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
-      tvBooksCount.setText(String.valueOf(oSimpleItemRecyclerViewAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
+      recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
+      tvBooksCount.setText(String.valueOf(oSimpleItemRecyclerViewAdapter.getItemCount()) + " " + getString(R.string.lbl_books));
    }
    
    private void loadPreferences()
@@ -428,7 +437,53 @@ public class BookListActivity extends AppCompatActivity
       
       editor.commit();      
    }
+   
+   private boolean bExportDb()
+   {
+      try
+      {
+//         File flRoot = android.os.Environment.getExternalStorageDirectory();
 
+         // File flXprDir = new File (flRoot.getAbsolutePath() + "/" + XPR_DIR);
+         File flXprDir = new File(Environment.getExternalStorageDirectory() + "/" + XPR_DIR);
+
+         File flData = Environment.getDataDirectory();
+
+         if(flXprDir.canWrite())
+         {
+            File flCurrentDB = new File(flData, DB_PATH + DBAdapter.DATABASE_NAME);
+            File flBackupDB = new File(flXprDir, DBAdapter.DATABASE_NAME);
+
+            if(flCurrentDB.exists())
+            {
+               FileChannel src = new FileInputStream(flCurrentDB).getChannel();
+               FileChannel dst = new FileOutputStream(flBackupDB).getChannel();
+
+               dst.transferFrom(src, 0, src.size());
+               return true;
+            }
+         }
+      } catch(Exception e)
+      {
+         System.out.println(e.getMessage());
+         Log.e("BookListActivity", e.getMessage());
+         return false;
+      }
+      // finally
+      // {
+      // try
+      // {
+      // src.close();
+      // dst.close();
+      // } catch(IOException e)
+      // {
+      // // TODO Auto-generated catch block
+      // e.printStackTrace();
+      // }
+      // }
+      return true;
+   }
+   
    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>
    {
       private String sFilter;
@@ -480,13 +535,65 @@ public class BookListActivity extends AppCompatActivity
          } 
          else
             iFilterEnd = iFilteredStart + sFilter.length();
-         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivity.this, R.color.colorAccent)),
+         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivityOld.this, R.color.colorAccent)),
                                                                           iFilteredStart, iFilterEnd,
                                                                           Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
          holder.mContentView.setText(spContent);
+         // holder.mContentView.setText(mValues.get(position).content);
 
          holder.mView.setOnClickListener(onClickListener);
          holder.mView.setOnLongClickListener(onLongClickListener);
+//         holder.mView.setOnClickListener(new View.OnClickListener()
+//         {
+//            @Override
+//            public void onClick(View v)
+//            {
+//               if(mTwoPane)
+//               {
+//                  Bundle arguments = new Bundle();
+//                  arguments.putLong(BookDetailFragment.ARG_ITEM_ID, holder.mItem._id);
+//                  BookDetailFragment fragment = new BookDetailFragment();
+//                  fragment.setArguments(arguments);
+//                  getSupportFragmentManager().beginTransaction()
+//                                             .replace(R.id.book_detail_container, fragment)
+//                                             .commit();
+//               } 
+//               else
+//               {
+//                  Context context = v.getContext();
+//                  Intent intent = new Intent(context, BookDetailActivity.class);
+//                  intent.putExtra(BookDetailFragment.ARG_ITEM_ID, holder.mItem._id);
+//
+//                  // context.startActivity (intent);
+//                  startActivityForResult(intent, 0);
+//               }
+//            }
+//         });
+//
+//         holder.mView.setOnLongClickListener(new View.OnLongClickListener()
+//         {
+//            // Called when the user long-clicks on someView
+//            public boolean onLongClick(View view)
+//            {
+//               if(mActionMode != null)
+//               {
+//                  return false;
+//               }
+//
+//               // Start the CAB using the ActionMode.Callback defined above
+//               sel_id = holder.mItem._id;
+//               BookListActivity.this.startSupportActionMode(mActionModeCallback);
+//
+//               // mActionMode =
+//               // ((ActionBarActivity)view.getContext()).startSupportActionMode(mActionModeCallback);
+//               // mActionMode = ((AppCompatActivity)
+//               // getActivity()).startSupportActionMode(new
+//               // Toolbar_ActionMode_Callb
+//               view.setSelected(true);
+////               SimpleItemRecyclerViewAdapter.this.onClickListener.onClick(view);
+//               return true;
+//            }
+//         });
       }
 
       @Override
@@ -519,7 +626,7 @@ public class BookListActivity extends AppCompatActivity
       
       public void removeAt(int position)
       {
-//         boolean b = alItemsAll.remove(alItems.get(position));
+         boolean b = alItemsAll.remove(alItems.get(position));
          alItems.remove(position);
          notifyItemRemoved(position);
       }
@@ -584,7 +691,7 @@ public class BookListActivity extends AppCompatActivity
 //                AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 //                long i = info.id;
                 assert oDbAdapter != null;
-//                oDbAdapter.deleteBook(sel_id);
+                oDbAdapter.deleteBook(sel_id);
 //                setupRecyclerView((RecyclerView) recyclerView);
 //                oSimpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(oDbAdapter.getBooks(iOrderID)); 
 //                recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, false);
