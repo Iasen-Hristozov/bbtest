@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -150,7 +151,9 @@ public class BookListActivity extends AppCompatActivity
    {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_book_list);
-      
+      static {
+         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+     }
       oPreferences = PreferenceManager.getDefaultSharedPreferences(this);
       loadPreferences();
       

@@ -368,7 +368,7 @@ public class DBAdapter
    
    public ArrayList<ParentResult> getBooks1(int iOrder)
    {
-      String query1 = "SELECT GROUP_CONCAT(f_name, \", \") AS parrent, b." + KEY_ID + " AS child_id, b." + KEY_TTL + " AS child"
+      String query1 = "SELECT IFNULL(GROUP_CONCAT(f_name, \", \"), \"(missing)\") AS parrent, b." + KEY_ID + " AS child_id, b." + KEY_TTL + " AS child"
                + " FROM " + TABLE_BOOKS 
                + " AS b LEFT JOIN"
                + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"

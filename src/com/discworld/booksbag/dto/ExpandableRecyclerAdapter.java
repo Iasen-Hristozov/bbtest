@@ -2,12 +2,15 @@ package com.discworld.booksbag.dto;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.UiThread;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,7 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
    public ExpandableRecyclerAdapter(Context context)
    {
       mContext = context;
+      
    }
 
    public static class ListItem
@@ -65,8 +69,7 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
 
    protected View inflate(int resourceID, ViewGroup viewGroup)
    {
-      return LayoutInflater.from(mContext)
-                           .inflate(resourceID, viewGroup, false);
+      return LayoutInflater.from(mContext).inflate(resourceID, viewGroup, false);
    }
 
    public class ViewHolder extends RecyclerView.ViewHolder
@@ -79,13 +82,14 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
 
    public class HeaderViewHolder extends ViewHolder
    {
-      ImageView arrow;
+//      ImageView arrow;
 
-      public HeaderViewHolder(View view, final ImageView arrow)
+//      public HeaderViewHolder(View view, final ImageView arrow)
+      public HeaderViewHolder(View view)
       {
          super(view);
 
-         this.arrow = arrow;
+//         this.arrow = arrow;
 
          view.setOnClickListener(new View.OnClickListener()
          {
@@ -101,18 +105,36 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
       {
          if(toggleExpandedItems(getLayoutPosition(), false))
          {
-            openArrow(arrow);
+//            openArrow(arrow);
+            onExpansionToggled(false);
          }
          else
          {
-            closeArrow(arrow);
+//            closeArrow(arrow);
+            onExpansionToggled(true);
          }
       }
 
       public void bind(int position)
       {
-         arrow.setRotation(isExpanded(position) ? 90 : 0);
+//         arrow.setRotation(isExpanded(position) ? 90 : 0);
       }
+      
+      /**
+       * Callback triggered when expansion state is changed, but not during
+       * initialization.
+       * <p>
+       * Useful for implementing animations on expansion.
+       * 
+       * @param expanded
+       *           true if view is expanded before expansion is toggled, false if
+       *           not
+       */
+      @UiThread
+      public void onExpansionToggled(boolean expanded)
+      {
+
+      }      
    }
 
    public boolean toggleExpandedItems(int position, boolean notify)
@@ -141,8 +163,7 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
       int index = indexList.get(position);
       int insert = position;
 
-      for(int i = index + 1; i < allItems.size()
-               && allItems.get(i).ItemType != TYPE_HEADER; i++)
+      for(int i = index + 1; i < allItems.size() && allItems.get(i).ItemType != TYPE_HEADER; i++)
       {
          insert++;
          count++;
@@ -328,17 +349,17 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
       }
    }
 
-   @SuppressLint("NewApi")
-   public static void openArrow(View view)
-   {
-      view.animate().setDuration(ARROW_ROTATION_DURATION).rotation(90);
-   }
-
-   @SuppressLint("NewApi")
-   public static void closeArrow(View view)
-   {
-      view.animate().setDuration(ARROW_ROTATION_DURATION).rotation(0);
-   }
+//   @SuppressLint("NewApi")
+//   public static void openArrow(View view)
+//   {
+//      view.animate().setDuration(ARROW_ROTATION_DURATION).rotation(90);
+//   }
+//
+//   @SuppressLint("NewApi")
+//   public static void closeArrow(View view)
+//   {
+//      view.animate().setDuration(ARROW_ROTATION_DURATION).rotation(0);
+//   }
 
    public int getMode()
    {
