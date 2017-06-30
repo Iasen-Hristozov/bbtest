@@ -11,7 +11,7 @@
       android:layout_height="wrap_content"
       android:text="@string/et_title"
       android:textAppearance="?android:attr/textAppearanceMedium"
-      android:textColor="@color/colorBlue"
+      android:textColor="@color/primary"
       android:textSize="14sp"
       android:textStyle="bold"
       android:typeface="sans"
@@ -21,7 +21,7 @@
       android:id="@+id/ll_line"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:background="@color/colorBlue"
+      android:background="@color/primary"
       android:orientation="vertical" >
    </LinearLayout>
 

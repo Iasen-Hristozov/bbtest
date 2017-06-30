@@ -368,15 +368,36 @@ public class DBAdapter
    
    public ArrayList<ParentResult> getBooks1(int iOrder)
    {
-      String query1 = "SELECT IFNULL(GROUP_CONCAT(f_name, \", \"), \"(missing)\") AS parrent, b." + KEY_ID + " AS child_id, b." + KEY_TTL + " AS child"
-               + " FROM " + TABLE_BOOKS 
-               + " AS b LEFT JOIN"
-               + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"
-               + " ON ss.bf_book_id = b." + KEY_ID 
-               + " GROUP BY b." + KEY_ID 
-               + " ORDER BY parrent, child";
+      String query = "";
+      switch(iOrder)
+      {
+         case ORD_TTL: 
+            query = "SELECT UPPER(SUBSTR(b." + KEY_TTL + ", 1, 1)) AS parent, b." + KEY_ID + " AS child_id, COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(f_name, \", \"), b." + KEY_TTL + ") AS child"
+                  + " FROM " + TABLE_BOOKS + " AS b"
+                  + " LEFT JOIN "
+                  + "(SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name"
+                  + " FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f._id = bf." + KEY_FLD_ID 
+                  + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss on ss.bf_book_id = b._id"
+                  + " GROUP BY b." + KEY_ID 
+                  + " ORDER BY parent, child";
+         break;
 
-      ArrayList<ParentResult> alParrentResults = getBooksOrderedBy1(query1);
+         case ORD_AUT :
+            query = "SELECT IFNULL(GROUP_CONCAT(f_name, \", \"), \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, b." + KEY_TTL + " AS child"
+                  + " FROM " + TABLE_BOOKS 
+                  + " AS b LEFT JOIN"
+                  + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID 
+                  + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"
+                  + " ON ss.bf_book_id = b." + KEY_ID 
+                  + " GROUP BY b." + KEY_ID 
+                  + " ORDER BY parent, child";
+         break;
+         
+         default:
+            return null;
+      }
+
+      ArrayList<ParentResult> alParrentResults = getBooksOrderedBy1(query);
       
       return alParrentResults;
    }

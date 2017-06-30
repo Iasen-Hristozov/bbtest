@@ -5,6 +5,8 @@
    <string name="action_settings">Settings</string>
    <string name="action_exp_db">Export DB</string>
    <string name="action_imp_db">Import DB</string>
+   <string name="action_exp_all">Expand all</string>
+   <string name="action_clp_all">Collapse all</string>
    <string name="action_delete">Delete</string>
    <string name="action_search">Search</string>
    <string name="action_duplicate">Duplicate</string>
@@ -51,4 +53,7 @@
    <string name="ord_title">Order by title</string>
    <string name="ord_author">Order by author</string>
    <string name="lbl_books">books</string>
+   <string name="pref_title">Settings</string>
+   <string name="pref_summary_expand_all">Expand all on data loading</string>
+   <string name="pref_title_expand_all">Expand all</string>
 </resources>

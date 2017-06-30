@@ -12,7 +12,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       custom:text="@string/et_title"
-      custom:color="@color/colorBlue" >
+      custom:color="@color/primary" >
    </com.discworld.booksbag.fields.Title>
 
       <Button

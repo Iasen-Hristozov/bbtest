@@ -21,9 +21,12 @@ import com.discworld.booksbag.R;
 
 public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookListItem>
 {
-   private static final float INITIAL_POSITION = 0.0f,
+   private static final float INITIAL_POSITION = 0f,
                               ROTATED_POSITION = 180f;
 
+//   private static final float INITIAL_POSITION = 270f, 
+//                              ROTATED_POSITION = 90;   
+   
    private int iAllChildrendCount;
    
    private String sFilter = "";
@@ -39,8 +42,8 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
       super(context);
 
       setItems(generateItems(alParentsResults));
-      alListItemsNotFiltered = new ArrayList<BookListItem>();
-      alListItemsNotFiltered.addAll(allItems);
+      alListItemsNotFiltered = new ArrayList<BookListItem>(allItems);
+//      alListItemsNotFiltered.addAll(allItems);
    }
 
    @Override
@@ -83,7 +86,7 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
       }
    }
 
-   public class HeaderViewHolder extends ExpandableRecyclerAdapter.HeaderViewHolder
+   public class HeaderViewHolder extends ExpandableRecyclerAdapter<BookListItem>.HeaderViewHolder
    {
       TextView name;
 
@@ -103,7 +106,7 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
          super.bind(position);
 
          name.setText(visibleItems.get(position).sText);
-         arrow.setRotation(isExpanded(position) ? INITIAL_POSITION: ROTATED_POSITION);
+         arrow.setRotation(isExpanded(position) ? ROTATED_POSITION : INITIAL_POSITION);
       }
       
       @SuppressLint("NewApi")
@@ -113,25 +116,43 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
          if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
          {
             RotateAnimation rotateAnimation;
-            if(expanded)
+            if(!expanded)
             { // rotate clockwise
-               arrow.setRotation(ROTATED_POSITION);
-               rotateAnimation = new RotateAnimation(ROTATED_POSITION,
-                                                     INITIAL_POSITION,
+//               arrow.setRotation(ROTATED_POSITION);
+//               rotateAnimation = new RotateAnimation(ROTATED_POSITION,
+//                                                     INITIAL_POSITION,
+//                                                     RotateAnimation.RELATIVE_TO_SELF,
+//                                                     0.5f,
+//                                                     RotateAnimation.RELATIVE_TO_SELF,
+//                                                     0.5f);
+               
+//               arrow.setRotation(0);
+               rotateAnimation = new RotateAnimation(0,
+                                                     ROTATED_POSITION,
                                                      RotateAnimation.RELATIVE_TO_SELF,
                                                      0.5f,
                                                      RotateAnimation.RELATIVE_TO_SELF,
                                                      0.5f);
+               
             }
             else
             { // rotate counterclockwise
-               arrow.setRotation(INITIAL_POSITION);
-               rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,
-                                                     INITIAL_POSITION,
+//               arrow.setRotation(INITIAL_POSITION);
+//               rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,
+//                                                     INITIAL_POSITION,
+//                                                     RotateAnimation.RELATIVE_TO_SELF,
+//                                                     0.5f,
+//                                                     RotateAnimation.RELATIVE_TO_SELF,
+//                                                     0.5f);
+
+//               arrow.setRotation(ROTATED_POSITION);
+               rotateAnimation = new RotateAnimation(ROTATED_POSITION,
+                                                     0,
                                                      RotateAnimation.RELATIVE_TO_SELF,
                                                      0.5f,
                                                      RotateAnimation.RELATIVE_TO_SELF,
                                                      0.5f);
+            
             }
 
             rotateAnimation.setDuration(200);
@@ -142,7 +163,7 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
       }
    }
 
-   public class ItemViewHolder extends ExpandableRecyclerAdapter.ViewHolder
+   public class ItemViewHolder extends ExpandableRecyclerAdapter<BookListItem>.ViewHolder
    {
       public View view;
       
@@ -169,7 +190,7 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
          } 
          else
             iFilterEnd = iFilteredStart + sFilter.length();
-         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.colorAccent)),
+         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.accent)),
                                                                           iFilteredStart, 
                                                                           iFilterEnd,
                                                                           Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -187,12 +208,12 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
             return new HeaderViewHolder(inflate(R.layout.item_header, parent));
          case TYPE_ITEM:
          default:
-            return new ItemViewHolder(inflate(R.layout.item_person, parent));
+            return new ItemViewHolder(inflate(R.layout.item_book, parent));
       }
    }
 
    @Override
-   public void onBindViewHolder(ExpandableRecyclerAdapter.ViewHolder holder,
+   public void onBindViewHolder(ExpandableRecyclerAdapter<BookListItem>.ViewHolder holder,
                                 int position)
    {
       switch (getItemViewType(position))
@@ -212,6 +233,8 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
 
    public void filter(String charText)
    {
+      iAllChildrendCount = 0;
+
       charText = charText.toLowerCase(Locale.getDefault());
       ArrayList<BookListItem> alBookListItemsTmp = new ArrayList<BooksAdapter.BookListItem>();
       sFilter = charText;
@@ -219,6 +242,9 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
       if(charText.length() == 0)
       {
          setItems(alListItemsNotFiltered);
+         for(ListItem oListItem : alListItemsNotFiltered)
+            if(oListItem.ItemType == TYPE_ITEM)
+               iAllChildrendCount++;
       } 
       else
       {
@@ -234,6 +260,8 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
                   && alBookListItemsTmp.size() > 0 
                   && alBookListItemsTmp.get(alBookListItemsTmp.size()-1).ItemType == TYPE_HEADER)
                   alBookListItemsTmp.remove(alBookListItemsTmp.size()-1);
+               if(oBookListItem.ItemType == TYPE_ITEM)
+                  iAllChildrendCount++;
                alBookListItemsTmp.add(oBookListItem);
 //               visibleItems.add(oBookListItem);
 

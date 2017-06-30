@@ -17,7 +17,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       custom:text="@string/et_title"
-      custom:color="@color/colorBlue" />
+      custom:color="@color/primary" />
          
 <!--          <TextView -->
 <!--             android:layout_width="wrap_content" -->
@@ -35,7 +35,8 @@
             android:layout_alignParentRight="true"
             android:background="@android:color/transparent"
             android:paddingBottom="1dp"
-            android:src="@android:drawable/ic_input_add" />
+            android:src="@drawable/ic_action_add_primary" />
+<!--          android:src="@android:drawable/ic_input_add" -->
 
       </RelativeLayout>
 

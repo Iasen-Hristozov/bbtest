@@ -1,20 +1,17 @@
 package com.discworld.booksbag.dto;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.UiThread;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdapter.ListItem> extends RecyclerView.Adapter<ExpandableRecyclerAdapter.ViewHolder>
+public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdapter.ListItem> extends RecyclerView.Adapter<ExpandableRecyclerAdapter<T>.ViewHolder>
 {
    protected Context mContext;
    protected List<T> allItems = new ArrayList<>();
@@ -22,11 +19,13 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
    private List<Integer> indexList = new ArrayList<>();
    private SparseIntArray expandMap = new SparseIntArray();
    private int mode;
+   
+//   private boolean isAllExpanded = false;
 
    protected static final int TYPE_HEADER = 1000, 
                               TYPE_ITEM = 1001;
 
-   private static final int ARROW_ROTATION_DURATION = 150;
+//   private static final int ARROW_ROTATION_DURATION = 150;
 
    public static final int MODE_NORMAL = 0;
    public static final int MODE_ACCORDION = 1;
@@ -337,6 +336,9 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
 
    public void expandAll()
    {
+      if(visibleItems.size() == allItems.size())
+         return;
+      
       for(int i = visibleItems.size() - 1; i >= 0; i--)
       {
          if(getItemViewType(i) == TYPE_HEADER)
@@ -370,4 +372,16 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
    {
       this.mode = mode;
    }
+   
+
+//   public boolean isAllExpanded()
+//   {
+//      return isAllExpanded;
+//   }
+//   
+//
+//   public void setAllExpanded(boolean isAllExpanded)
+//   {
+//      this.isAllExpanded = isAllExpanded;
+//   }
 }

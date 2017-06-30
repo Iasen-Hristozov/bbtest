@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,12 +31,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnSystemUiVisibilityChangeListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,10 +61,13 @@ public class BookListActivity extends AppCompatActivity
                            SHOW_EDIT_BOOK_COPY = 102;
    private static final String XPR_DIR = "BooksBag",
                                DB_PATH = "//data//com.discworld.booksbag//databases//",
-                               PREF_ORDER_ID = "order_id";
+                               PREF_ORDER_ID = "order_id",
+                               PREF_EXPAND_ALL = "pref_expand_all";
    
    private int iOrderID = DBAdapter.ORD_TTL,
                iClickedItemNdx = -1;
+   
+   private boolean bExpandAll = false;
    
    private long sel_id;
    
@@ -81,7 +80,7 @@ public class BookListActivity extends AppCompatActivity
    private ArrayList<OrderItem> alOrderItems = new ArrayList<>();
    
 //   private ParrentAdapter oSimpleItemRecyclerViewAdapter;
-   private BooksAdapter oSimpleItemRecyclerViewAdapter;
+   private BooksAdapter oBooksAdapter;
    
    private SharedPreferences oPreferences;
    
@@ -91,7 +90,7 @@ public class BookListActivity extends AppCompatActivity
       public void onClick(View v)
       {
          iClickedItemNdx = recyclerView.indexOfChild(v);
-         sel_id = oSimpleItemRecyclerViewAdapter.getItemId(iClickedItemNdx);
+         sel_id = oBooksAdapter.getItemId(iClickedItemNdx);
          
          if(mTwoPane)
          {
@@ -121,7 +120,7 @@ public class BookListActivity extends AppCompatActivity
       public boolean onLongClick(View v)
       {
          iClickedItemNdx = recyclerView.indexOfChild(v);
-         sel_id = oSimpleItemRecyclerViewAdapter.getItemId(iClickedItemNdx);
+         sel_id = oBooksAdapter.getItemId(iClickedItemNdx);
          if(mActionMode != null)
          {
             return false;
@@ -151,11 +150,19 @@ public class BookListActivity extends AppCompatActivity
    {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_book_list);
-      static {
-         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-     }
+  
       oPreferences = PreferenceManager.getDefaultSharedPreferences(this);
       loadPreferences();
+      SharedPreferences.OnSharedPreferenceChangeListener listener  = new SharedPreferences.OnSharedPreferenceChangeListener() 
+      {
+         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) 
+         {
+            if(key.equalsIgnoreCase(PREF_EXPAND_ALL))
+               bExpandAll = oPreferences.getBoolean(PREF_EXPAND_ALL, false); 
+         }
+      };
+
+      oPreferences.registerOnSharedPreferenceChangeListener(listener);
       
       tvBooksCount = (TextView) findViewById(R.id.tv_books_count);
       
@@ -293,10 +300,9 @@ public class BookListActivity extends AppCompatActivity
          @Override
          public boolean onQueryTextChange(String arg0)
          {
-            if(!oSimpleItemRecyclerViewAdapter.isExpandAll())
-               oSimpleItemRecyclerViewAdapter.expandAll();
-            oSimpleItemRecyclerViewAdapter.filter(arg0);
-            tvBooksCount.setText(String.valueOf(oSimpleItemRecyclerViewAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
+            oBooksAdapter.expandAll();
+            oBooksAdapter.filter(arg0);
+            tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
             return true;
          }
       });
@@ -309,6 +315,9 @@ public class BookListActivity extends AppCompatActivity
       switch(item.getItemId())
       {
          case R.id.action_settings:
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+//            intent.setClass(getApplicationContext(), EditBookActivity.class);
+            startActivity(intent);
             return true;
 
          case R.id.action_exp_db:
@@ -324,6 +333,14 @@ public class BookListActivity extends AppCompatActivity
                Toast.makeText(getApplicationContext(), R.string.prf_imp_db_scs, Toast.LENGTH_SHORT).show();
             oDbAdapter.open();            
             
+            return true;
+            
+         case R.id.action_exp_all:
+            oBooksAdapter.expandAll();
+            return true;
+         
+         case R.id.action_clp_all:
+            oBooksAdapter.collapseAll();
             return true;
             
          case R.id.action_sort:
@@ -345,9 +362,7 @@ public class BookListActivity extends AppCompatActivity
                }
             });
 //            popupMenu.inflate(R.menu.menu_main);
-            // ...
             popupMenu.show();
-            // ...
             return true;
             
          default:
@@ -409,18 +424,22 @@ public class BookListActivity extends AppCompatActivity
 
    private void setupRecyclerView(@NonNull RecyclerView recyclerView, int iOrderID)
    {
-      oSimpleItemRecyclerViewAdapter = new BooksAdapter(this, oDbAdapter.getBooks1(iOrderID));
+      oBooksAdapter = new BooksAdapter(this, oDbAdapter.getBooks1(iOrderID));
 //      oSimpleItemRecyclerViewAdapter = new ParrentAdapter(this, oDbAdapter.getBooks1(iOrderID));
-      oSimpleItemRecyclerViewAdapter.setClickListener(onRecyclerViewClickListener);
-      oSimpleItemRecyclerViewAdapter.setLongClickListener(onRecyclerViewLongClickListener);
+      oBooksAdapter.setClickListener(onRecyclerViewClickListener);
+      oBooksAdapter.setLongClickListener(onRecyclerViewLongClickListener);
+//      oBooksAdapter.setAllExpanded(true);
+      if(bExpandAll)
+         oBooksAdapter.expandAll();
 //      recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
-      recyclerView.setAdapter(oSimpleItemRecyclerViewAdapter);
-      tvBooksCount.setText(String.valueOf(oSimpleItemRecyclerViewAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
+      recyclerView.setAdapter(oBooksAdapter);
+      tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
    }
    
    private void loadPreferences()
    {
       iOrderID = oPreferences.getInt(PREF_ORDER_ID, DBAdapter.ORD_TTL);
+      bExpandAll = oPreferences.getBoolean(PREF_EXPAND_ALL, false); 
    }
    
    private void saveOrderID(int iOrderID)
@@ -483,7 +502,7 @@ public class BookListActivity extends AppCompatActivity
          } 
          else
             iFilterEnd = iFilteredStart + sFilter.length();
-         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivity.this, R.color.colorAccent)),
+         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivity.this, R.color.accent)),
                                                                           iFilteredStart, iFilterEnd,
                                                                           Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
          holder.mContentView.setText(spContent);
@@ -593,7 +612,7 @@ public class BookListActivity extends AppCompatActivity
 //                recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, false);
 //                oSimpleItemRecyclerViewAdapter.notifyItemRemoved(iClickedItemNdx);
 //                oSimpleItemRecyclerViewAdapter.notifyItemRemoved(2);
-                oSimpleItemRecyclerViewAdapter.removeAt(iClickedItemNdx);
+                oBooksAdapter.removeAt(iClickedItemNdx);
 
                 mode.finish(); // Action picked, so close the CAB
                 return true;

@@ -4,7 +4,10 @@
    android:layout_width="match_parent"
    android:layout_height="wrap_content"
    android:orientation="horizontal"
-   android:padding="@dimen/standard_padding_small" >
+   android:padding="@dimen/standard_padding" 
+   android:focusable="true"
+   android:clickable="true"
+   android:background="?android:attr/selectableItemBackground">
 
    <ImageView
       android:id="@+id/item_image"
@@ -12,7 +15,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:layout_marginLeft="@dimen/standard_padding"
-      android:src="@drawable/ic_person_black_36dp" />
+      android:src="@drawable/ic_action_book" />
 
    <TextView
       android:id="@+id/item_name"
@@ -20,7 +23,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:layout_margin="@dimen/standard_padding_small"
-      android:textStyle="bold"
-      tools:text="Person Name" />
+      android:textSize="@dimen/standard_text_size"
+      tools:text="Book Name" />
 
 </LinearLayout>

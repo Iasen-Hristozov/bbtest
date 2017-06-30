@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/lbl_author"
-            android:textColor="@color/colorBlue"
+            android:textColor="@color/primary"
             android:layout_centerVertical="true"/>
 
         <ImageButton
@@ -87,7 +87,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/lbl_description"
-        android:textColor="@color/colorBlue"
+        android:textColor="@color/primary"
         android:layout_centerVertical="true"
         />
 
@@ -110,7 +110,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/lbl_category"
-        android:textColor="@color/colorBlue"
+        android:textColor="@color/primary"
         android:layout_centerVertical="true"
         />
 

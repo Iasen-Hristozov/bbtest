@@ -310,7 +310,7 @@ public class EditBookActivity extends AppCompatActivity
    {
       final FieldEditTextUpdatableClearable oField = new FieldEditTextUpdatableClearable(this);
       oField.setTitle(oFieldType.sName);
-      oField.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+      oField.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oField.setText(cValue.toString());
       oField.setHint(oFieldType.sName);
       oField.setInputType(oFieldType.iInputType);
@@ -371,7 +371,7 @@ public class EditBookActivity extends AppCompatActivity
    {
       final FieldAutoCompleteTextView oFieldAutoCompleteTextView = new FieldAutoCompleteTextView(this);
       oFieldAutoCompleteTextView.setTitle(oFieldType.sName);
-      oFieldAutoCompleteTextView.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+      oFieldAutoCompleteTextView.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oFieldAutoCompleteTextView.setHint(oFieldType.sName);
 
       final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
@@ -437,7 +437,7 @@ public class EditBookActivity extends AppCompatActivity
       final FieldSpinner oFieldSpinner = new FieldSpinner(this);
 
       oFieldSpinner.setTitle(oFieldType.sName);
-      oFieldSpinner.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+      oFieldSpinner.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       
 //      Field oField = null;
       Field oField = new Field(oFieldType.iID);
@@ -472,7 +472,7 @@ public class EditBookActivity extends AppCompatActivity
          {
             View v = super.getView(position, convertView, parent);
             if(position == 0) 
-               ((TextView)v.findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.colorHint));
+               ((TextView)v.findViewById(android.R.id.text1)).setTextColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
             
             return v;
          }       
@@ -535,7 +535,7 @@ public class EditBookActivity extends AppCompatActivity
       final FieldMultiText oFieldMultiText = new FieldMultiText(this);
       // TODO Fix it
       oFieldMultiText.setTitle(oFieldType.sName + "s");
-      oFieldMultiText.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+      oFieldMultiText.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oFieldMultiText.setHint(oFieldType.sName);
 
       // Set adapter
@@ -619,7 +619,7 @@ public class EditBookActivity extends AppCompatActivity
    {
       final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this);
       oFieldMultiSpinner.setTitle(oFieldType.sName + "s");
-      oFieldMultiSpinner.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+      oFieldMultiSpinner.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oFieldMultiSpinner.setHint(oFieldType.sName);
 
       final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
@@ -671,7 +671,7 @@ public class EditBookActivity extends AppCompatActivity
    {
       final FieldMoney oFieldMoney = new FieldMoney(this);
       oFieldMoney.setTitle(oFieldType.sName);
-      oFieldMoney.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+      oFieldMoney.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oFieldMoney.setHint(oFieldType.sName);
       
       switch(oFieldType.iID)
@@ -781,7 +781,7 @@ public class EditBookActivity extends AppCompatActivity
       }
       
       oFieldDate.setTitle(oFieldType.sName);
-      oFieldDate.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+      oFieldDate.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oFieldDate.setHint(oFieldType.sName);
       oFieldDate.setDate(date);
       

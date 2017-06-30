@@ -535,7 +535,7 @@ public class BookListActivityOld extends AppCompatActivity
          } 
          else
             iFilterEnd = iFilteredStart + sFilter.length();
-         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivityOld.this, R.color.colorAccent)),
+         spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(BookListActivityOld.this, R.color.accent)),
                                                                           iFilteredStart, iFilterEnd,
                                                                           Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
          holder.mContentView.setText(spContent);
