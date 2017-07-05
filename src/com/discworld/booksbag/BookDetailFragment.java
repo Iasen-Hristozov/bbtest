@@ -37,7 +37,9 @@ public class BookDetailFragment extends Fragment
     * The dummy content this fragment is presenting.
     */
 //   private DummyContent.DummyItem mItem;
-   private Book mItem;
+   private final static String SEP = ", ";
+   
+   private Book oBook;
    private DBAdapter oDbAdapter = null;
 
    /**
@@ -63,14 +65,14 @@ public class BookDetailFragment extends Fragment
          // to load content from a content provider.
 //         mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 //         mItem = DummyContent.BOOKS_MAP.get(getArguments().getLong(ARG_ITEM_ID));
-         mItem = oDbAdapter.getBook(getArguments().getLong(ARG_ITEM_ID));
+         oBook = oDbAdapter.getBook(getArguments().getLong(ARG_ITEM_ID));
 
          Activity activity = this.getActivity();
          CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
          if (appBarLayout != null)
          {
 //            appBarLayout.setTitle(mItem.content);
-            appBarLayout.setTitle(mItem.csTitle.value);
+            appBarLayout.setTitle(oBook.csTitle.value);
          }
       }
    }
@@ -97,19 +99,161 @@ public class BookDetailFragment extends Fragment
       View rootView = inflater.inflate(R.layout.book_detail, container, false);
 
       // Show the dummy content as text in a TextView.
-      if (mItem != null)
+      if (oBook != null)
       {
 //         ((TextView) rootView.findViewById(R.id.book_detail)).setText(mItem.details);
 //         ((TextView) rootView.findViewById(R.id.book_detail)).setText(mItem.sDescription);
          
          LinearLayout llCategories = (LinearLayout) rootView.findViewById(R.id.ll_categories);
-         String sName = "", sValue = "";
+         String sName = "", 
+                sValue = "";
          
+         ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+         
+         Price oPrice = null;
+         
+         for(FieldType fieldType: DBAdapter.FIELD_TYPES)
+         {
+            sName = fieldType.sName + ":";
+            
+            if(fieldType.iID > 99)
+            {
+               switch (fieldType.iType)
+               {
+                  case FieldType.TYPE_TEXT:
+                  {
+                     switch(fieldType.iID)
+                     {
+                        case DBAdapter.FLD_TITLE:
+                           sValue = oBook.csTitle.value;
+                        break;
+                        
+                        case DBAdapter.FLD_DESCRIPTION:
+                           sValue = oBook.csDescription.value;
+                        break;
+
+                        case DBAdapter.FLD_VOLUME:
+                           if(oBook.ciVolume.value != 0)
+                              sValue = oBook.ciVolume.value.toString();
+                        break;
+
+                        case DBAdapter.FLD_PAGES:
+                           if(oBook.ciPages.value != 0)
+                              sValue = oBook.ciPages.value.toString();
+                        break;
+                         
+                        case DBAdapter.FLD_EDITION:
+                           if(oBook.ciEdition.value != 0)
+                              sValue = oBook.ciEdition.value.toString();
+                        break;
+
+                        case DBAdapter.FLD_ISBN:
+                           sValue = oBook.csISBN.value;
+                        break;
+                         
+                        case DBAdapter.FLD_WEB:
+                           sValue = oBook.csWeb.value;
+                        break;
+                     }
+                  }
+                  break;
+                  
+                  case FieldType.TYPE_MONEY:
+                  {
+                     switch(fieldType.iID)
+                     {
+                        case DBAdapter.FLD_PRICE:
+                           oPrice = new Price(oBook.csPrice.value);
+                        break;
+                        
+                        case DBAdapter.FLD_VALUE:
+                           oPrice = new Price(oBook.csValue.value);
+                        break;                  
+                        
+                     }
+                     
+                     if(oPrice == null || oPrice.iValue == 0)
+                        break;
+
+                     Field fldCurrency = null;
+                     for(Field oCurrency : alCurrencies)
+                        if(oCurrency.iID == oPrice.iCurrencyID)
+                        {
+                           fldCurrency = oCurrency;
+                           break;
+                        }
+                     
+                     sValue = fldCurrency == null ? 
+                              String.format(getResources().getString(R.string.amn_vl), oPrice.iValue / 100, DBAdapter.separator, oPrice.iValue % 100) :  
+                              String.format(getResources().getString(R.string.amn_vl_crn), oPrice.iValue / 100, DBAdapter.separator, oPrice.iValue % 100, fldCurrency.sValue);
+                  }
+                  break;
+                  
+                  case FieldType.TYPE_DATE:
+                  {
+                     Date date = null;
+                     switch(fieldType.iID)
+                     {
+                        case DBAdapter.FLD_READ_DATE:
+                           date = new Date(oBook.ciReadDate.value);
+                           
+//                           sValue = String.valueOf(new Date(oBook.ciReadDate.value).toString());
+                        break;
+                        
+                        case DBAdapter.FLD_DUE_DATE:
+                           date = new Date(oBook.ciDueDate.value);
+                           
+//                           sValue = String.valueOf(new Date(oBook.ciDueDate.value).toString());
+                        break;
+                        
+                        default:
+                           break;
+                     }
+                     if(date == null || date.toInt() == 0)
+                        break;
+                  }
+                  break;
+               }               
+            }
+            else
+            {
+               for(Field oField: oBook.alFields)
+               {
+                  if(oField.iTypeID == fieldType.iID)
+                  {
+                     switch (fieldType.iType)
+                     {
+                        case FieldType.TYPE_TEXT_AUTOCOMPLETE:
+                        case FieldType.TYPE_SPINNER:
+                           sValue = oField.sValue;
+                        break;
+
+                        case FieldType.TYPE_MULTIFIELD:
+                        case FieldType.TYPE_MULTI_SPINNER:
+                           String tsNames[] = fieldType.sName.split("\\|");
+                           if(tsNames.length > 1)
+                              sName = tsNames[1];
+                           sValue += (!sValue.trim().isEmpty() ? SEP : "") + oField.sValue;  
+                        break;
+                     }
+                  }
+               }
+            }
+            
+            if(!sValue.trim().isEmpty())
+            {
+//               sValue = sValue.replaceAll("\n", ", ");
+               addField(llCategories, sName, sValue);
+               sName = "";
+               sValue = "";
+            }            
+         }
+/*         
          for(FieldType fieldType: DBAdapter.FIELD_TYPES)
          {
             if(fieldType.iID < 100)
             {
-               for(Field oField: mItem.alFields)
+               for(Field oField: oBook.alFields)
                {
                   if(oField.iTypeID == fieldType.iID)
                   {
@@ -134,34 +278,34 @@ public class BookDetailFragment extends Fragment
                switch(fieldType.iID)
                {
                   case DBAdapter.FLD_DESCRIPTION:
-                     if(!mItem.csDescription.value.trim().isEmpty())
+                     if(!oBook.csDescription.value.trim().isEmpty())
                      {
                         sName = "Description:";
-                        sValue = mItem.csDescription.value;
+                        sValue = oBook.csDescription.value;
                      }
                   break;
                   
                   case DBAdapter.FLD_VOLUME:
-                     if(mItem.ciVolume.value != 0)
+                     if(oBook.ciVolume.value != 0)
                      {
                         sName = "Volume:";
-                        sValue = String.valueOf(mItem.ciVolume.value);
+                        sValue = String.valueOf(oBook.ciVolume.value);
                      }
                   break;
                   
                   case DBAdapter.FLD_PUBLICATION_DATE:
-                     if(mItem.ciPublicationDate.value != 0)
+                     if(oBook.ciPublicationDate.value != 0)
                      {
                         sName = "Publication Date:";
-                        sValue = String.valueOf(mItem.ciPublicationDate.value);
+                        sValue = String.valueOf(oBook.ciPublicationDate.value);
                      }
                   break;
                   
                   case DBAdapter.FLD_PAGES:
-                     if(mItem.ciPages.value != 0)
+                     if(oBook.ciPages.value != 0)
                      {
                         sName = "Pages:";
-                        sValue = String.valueOf(mItem.ciPages.value);
+                        sValue = String.valueOf(oBook.ciPages.value);
                      }
                   break;
                   
@@ -175,11 +319,10 @@ public class BookDetailFragment extends Fragment
 //                  break;
 
                   case DBAdapter.FLD_PRICE:
-                     if(!mItem.csPrice.value.trim().isEmpty())
+                     if(!oBook.csPrice.value.trim().isEmpty())
                      {
                         sName = "Price:";
-                        Price oPrice = new Price(mItem.csPrice.value);
-                        ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+                        Price oPrice = new Price(oBook.csPrice.value);
                         Field fldCurrency = null;
                         for(Field oField : alCurrencies)
                            if(oField.iID == oPrice.iCurrencyID)
@@ -206,11 +349,10 @@ public class BookDetailFragment extends Fragment
 //                  break;
 
                   case DBAdapter.FLD_VALUE:
-                     if(!mItem.csValue.value.trim().isEmpty())
+                     if(!oBook.csValue.value.trim().isEmpty())
                      {
                         sName = "Value:";
-                        Price oBookValue = new Price(mItem.csValue.value);
-                        ArrayList<Field> alCurrencies = oDbAdapter.getFieldValues(DBAdapter.FLD_CURRENCY);
+                        Price oBookValue = new Price(oBook.csValue.value);
                         Field fldCurrency = null;
                         for(Field oField : alCurrencies)
                            if(oField.iID == oBookValue.iCurrencyID)
@@ -228,42 +370,42 @@ public class BookDetailFragment extends Fragment
                   break;
                   
                   case DBAdapter.FLD_DUE_DATE:
-                     if(mItem.ciDueDate.value != 0)
+                     if(oBook.ciDueDate.value != 0)
                      {
                         sName = "Due Date:";
-                        sValue = String.valueOf(new Date(mItem.ciDueDate.value).toString());
+                        sValue = String.valueOf(new Date(oBook.ciDueDate.value).toString());
                      }
                   break;
                   
                   case DBAdapter.FLD_READ_DATE:
-                     if(mItem.ciReadDate.value != 0)
+                     if(oBook.ciReadDate.value != 0)
                      {
                         sName = "Read Date:";
-                        sValue = String.valueOf(new Date(mItem.ciReadDate.value).toString());
+                        sValue = String.valueOf(new Date(oBook.ciReadDate.value).toString());
                      }
                   break;
                   
                   case DBAdapter.FLD_EDITION:
-                     if(mItem.ciEdition.value != 0)
+                     if(oBook.ciEdition.value != 0)
                      {
                         sName = "Edition:";
-                        sValue = String.valueOf(mItem.ciEdition.value);
+                        sValue = String.valueOf(oBook.ciEdition.value);
                      }
                   break;
                   
                   case DBAdapter.FLD_ISBN:
-                     if(!mItem.csISBN.value.trim().isEmpty())
+                     if(!oBook.csISBN.value.trim().isEmpty())
                      {
                         sName = "ISBN:";
-                        sValue = String.valueOf(mItem.csISBN.value);
+                        sValue = String.valueOf(oBook.csISBN.value);
                      }
                   break;
                   
                   case DBAdapter.FLD_WEB:
-                     if(!mItem.csWeb.value.trim().isEmpty())
+                     if(!oBook.csWeb.value.trim().isEmpty())
                      {
                         sName = "Web:";
-                        sValue = String.valueOf(mItem.csWeb.value);
+                        sValue = String.valueOf(oBook.csWeb.value);
                      }
                   break;
                }
@@ -275,6 +417,7 @@ public class BookDetailFragment extends Fragment
                sValue = "";
             }
          }
+         */
       }
 
       return rootView;
@@ -291,8 +434,8 @@ public class BookDetailFragment extends Fragment
    {
       LayoutInflater oInflater = LayoutInflater.from(getActivity());
       
-      View vRow = oInflater.inflate(R.layout.row_category, null);
-      ((TextView) vRow.findViewById(R.id.tv_name)).setText(sName);
+      View vRow = oInflater.inflate(R.layout.row_category_new, null);
+      ((TextView) vRow.findViewById(R.id.tv_title)).setText(sName);
       ((TextView) vRow.findViewById(R.id.tv_value)).setText(sValue);
       
       rootView.addView(vRow);  

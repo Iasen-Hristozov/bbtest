@@ -20,11 +20,11 @@
    <string name="lbl_description">Description</string>
    <string name="lbl_category">Category</string>
    <string name="fld_title">Title</string>
-   <string name="fld_author">Author</string>
+   <string name="fld_author">Author|Authors</string>
    <string name="fld_descrition">Description</string>
    <string name="fld_serie">Serie</string>
    <string name="fld_volume">Volume</string>
-   <string name="fld_category">Category</string>
+   <string name="fld_category">Category|Categories</string>
    <string name="fld_language">Language</string>
    <string name="fld_pages">Pages</string>
    <string name="fld_publisher">Publisher</string>

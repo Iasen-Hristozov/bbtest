@@ -253,7 +253,6 @@ public class EditBookActivity extends AppCompatActivity
          oDbAdapter.insertBook(oBook);
    }
    
-   
    private <T> void addFieldText(LinearLayout rootView, FieldType oFieldType)
    {
       switch(oFieldType.iID)
@@ -518,10 +517,7 @@ public class EditBookActivity extends AppCompatActivity
 
          @Override
          public void onNothingSelected(AdapterView<?> parent)
-         {
-            // TODO Auto-generated method stub
-            
-         }
+         {}
       });
       
       rootView.addView(oFieldSpinner);
@@ -533,10 +529,11 @@ public class EditBookActivity extends AppCompatActivity
    private void addFieldMultiText(ViewGroup rootView, final FieldType oFieldType)
    {
       final FieldMultiText oFieldMultiText = new FieldMultiText(this);
-      // TODO Fix it
-      oFieldMultiText.setTitle(oFieldType.sName + "s");
+      String tsNames[] = oFieldType.sName.split("\\|");
+      oFieldMultiText.setTitle(tsNames.length > 1 ? tsNames[1] : oFieldType.sName);
       oFieldMultiText.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
-      oFieldMultiText.setHint(oFieldType.sName);
+//      oFieldMultiText.setHint(oFieldType.sName);
+      oFieldMultiText.setHint(tsNames[0]);
 
       // Set adapter
       final ArrayList<Field> alFieldsValues = oDbAdapter.getFieldValues(oFieldType.iID);
@@ -618,7 +615,8 @@ public class EditBookActivity extends AppCompatActivity
    private void addFieldMultiSpinner(ViewGroup rootView, final FieldType oFieldType)
    {
       final FieldMultiSpinner oFieldMultiSpinner = new FieldMultiSpinner(this);
-      oFieldMultiSpinner.setTitle(oFieldType.sName + "s");
+      String tsNames[] = oFieldType.sName.split("\\|");
+      oFieldMultiSpinner.setTitle(tsNames.length > 1 ? tsNames[1] : oFieldType.sName);
       oFieldMultiSpinner.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oFieldMultiSpinner.setHint(oFieldType.sName);
 

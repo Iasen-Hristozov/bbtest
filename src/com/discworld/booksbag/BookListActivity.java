@@ -433,7 +433,17 @@ public class BookListActivity extends AppCompatActivity
          oBooksAdapter.expandAll();
 //      recyclerView.swapAdapter(oSimpleItemRecyclerViewAdapter, true);
       recyclerView.setAdapter(oBooksAdapter);
-      tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
+//      tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
+      for(OrderItem oOrderItem : alOrderItems)
+         if(oOrderItem.iID == iOrderID)
+         {
+            tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount()) 
+                                 + " " 
+                                 + getString(R.string.lbl_books)
+                                 + ", "
+                                 + oOrderItem.sTitle.toLowerCase(Locale.getDefault()));
+         }
+            
    }
    
    private void loadPreferences()

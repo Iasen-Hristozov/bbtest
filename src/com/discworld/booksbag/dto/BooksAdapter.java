@@ -24,8 +24,8 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
    private static final float INITIAL_POSITION = 0f,
                               ROTATED_POSITION = 180f;
 
-//   private static final float INITIAL_POSITION = 270f, 
-//                              ROTATED_POSITION = 90;   
+//   private static final float INITIAL_POSITION = -90f, 
+//                              ROTATED_POSITION = 0;   
    
    private int iAllChildrendCount;
    
@@ -106,7 +106,15 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
          super.bind(position);
 
          name.setText(visibleItems.get(position).sText);
-         arrow.setRotation(isExpanded(position) ? ROTATED_POSITION : INITIAL_POSITION);
+//         arrow.setRotation(isExpanded(position) ? ROTATED_POSITION : INITIAL_POSITION);
+         onExpansionToggled(!isExpanded(position));
+//         if(isExpanded(position))
+//         {
+////            arrow.setRotation(ROTATED_POSITION);
+//            
+////            arrow.setRotation(45);
+//            onExpansionToggled(isExpanded(position));
+//         }
       }
       
       @SuppressLint("NewApi")
@@ -116,48 +124,54 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
          if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
          {
             RotateAnimation rotateAnimation;
-            if(!expanded)
-            { // rotate clockwise
-//               arrow.setRotation(ROTATED_POSITION);
-//               rotateAnimation = new RotateAnimation(ROTATED_POSITION,
-//                                                     INITIAL_POSITION,
-//                                                     RotateAnimation.RELATIVE_TO_SELF,
-//                                                     0.5f,
-//                                                     RotateAnimation.RELATIVE_TO_SELF,
-//                                                     0.5f);
-               
-//               arrow.setRotation(0);
-               rotateAnimation = new RotateAnimation(0,
-                                                     ROTATED_POSITION,
-                                                     RotateAnimation.RELATIVE_TO_SELF,
-                                                     0.5f,
-                                                     RotateAnimation.RELATIVE_TO_SELF,
-                                                     0.5f);
+            if(expanded)
+            { // rotate counterclockwise
+//             arrow.setRotation(INITIAL_POSITION);
+//             rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,
+//                                                   INITIAL_POSITION,
+//                                                   RotateAnimation.RELATIVE_TO_SELF,
+//                                                   0.5f,
+//                                                   RotateAnimation.RELATIVE_TO_SELF,
+//                                                   0.5f);
+
+//             arrow.setRotation(0);
+               float f  = arrow.getRotation();
+             rotateAnimation = new RotateAnimation(ROTATED_POSITION,
+                                                   INITIAL_POSITION,
+                                                   RotateAnimation.RELATIVE_TO_SELF,
+                                                   0.5f,
+                                                   RotateAnimation.RELATIVE_TO_SELF,
+                                                   0.5f);
+          
+
                
             }
             else
-            { // rotate counterclockwise
-//               arrow.setRotation(INITIAL_POSITION);
-//               rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,
-//                                                     INITIAL_POSITION,
-//                                                     RotateAnimation.RELATIVE_TO_SELF,
-//                                                     0.5f,
-//                                                     RotateAnimation.RELATIVE_TO_SELF,
-//                                                     0.5f);
+            {
+               // rotate clockwise
+//             arrow.setRotation(ROTATED_POSITION);
+//             rotateAnimation = new RotateAnimation(ROTATED_POSITION,
+//                                                   INITIAL_POSITION,
+//                                                   RotateAnimation.RELATIVE_TO_SELF,
+//                                                   0.5f,
+//                                                   RotateAnimation.RELATIVE_TO_SELF,
+//                                                   0.5f);
+             
+//             arrow.setRotation(ROTATED_POSITION);
+               float f  = arrow.getRotation();
+             rotateAnimation = new RotateAnimation(INITIAL_POSITION,
+                                                   ROTATED_POSITION,
+                                                   RotateAnimation.RELATIVE_TO_SELF,
+                                                   0.5f,
+                                                   RotateAnimation.RELATIVE_TO_SELF,
+                                                   0.5f);
 
-//               arrow.setRotation(ROTATED_POSITION);
-               rotateAnimation = new RotateAnimation(ROTATED_POSITION,
-                                                     0,
-                                                     RotateAnimation.RELATIVE_TO_SELF,
-                                                     0.5f,
-                                                     RotateAnimation.RELATIVE_TO_SELF,
-                                                     0.5f);
-            
             }
 
             rotateAnimation.setDuration(200);
             rotateAnimation.setFillAfter(true);
             arrow.startAnimation(rotateAnimation);
+//            arrow.setRotation(expanded ? INITIAL_POSITION : ROTATED_POSITION );
 //            arrow.animate().setDuration(200).rotation(expanded ? 0 : 180);
          }
       }
@@ -181,7 +195,7 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
       {
          String sText = visibleItems.get(position).sText;
          Spannable spContent = new SpannableString(sText);
-         int iFilteredStart = sText.indexOf(sFilter);
+         int iFilteredStart = sText.toLowerCase(Locale.getDefault()).indexOf(sFilter.toLowerCase(Locale.getDefault()));
          int iFilterEnd;
          if(iFilteredStart < 0)
          {
@@ -191,9 +205,9 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
          else
             iFilterEnd = iFilteredStart + sFilter.length();
          spContent.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.accent)),
-                                                                          iFilteredStart, 
-                                                                          iFilterEnd,
-                                                                          Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                                   iFilteredStart, 
+                                                   iFilterEnd,
+                                                   Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
          name.setText(spContent);
 //         name.setText(visibleItems.get(position).sText);
       }
