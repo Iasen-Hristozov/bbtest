@@ -105,11 +105,13 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
          if(toggleExpandedItems(getLayoutPosition(), false))
          {
 //            openArrow(arrow);
+            setExpanded(true);
             onExpansionToggled(false);
          }
          else
          {
 //            closeArrow(arrow);
+            setExpanded(false);
             onExpansionToggled(true);
          }
       }
@@ -117,7 +119,20 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
       public void bind(int position)
       {
 //         arrow.setRotation(isExpanded(position) ? 90 : 0);
+         setExpanded(isExpanded(position));
       }
+      
+      /**
+       * Setter method for expanded state, used for initialization of expanded state.
+       * changes to the state are given in {@link #onExpansionToggled(boolean)}
+       *
+       * @param expanded true if expanded, false if not
+       */
+      @UiThread
+      public void setExpanded(boolean expanded) 
+      {
+      }
+      
       
       /**
        * Callback triggered when expansion state is changed, but not during
@@ -132,7 +147,6 @@ public abstract class ExpandableRecyclerAdapter<T extends ExpandableRecyclerAdap
       @UiThread
       public void onExpansionToggled(boolean expanded)
       {
-
       }      
    }
 

@@ -42,6 +42,10 @@ import com.discworld.booksbag.dto.BooksAdapter;
 import com.discworld.booksbag.dto.DividerItemDecoration;
 //import com.discworld.booksbag.dto.ParrentAdapter;
 import com.discworld.booksbag.dto.Result;
+import com.discworld.booksbag.fileselector.FileOperation;
+import com.discworld.booksbag.fileselector.FileSelector;
+import com.discworld.booksbag.fileselector.FileSelectorActivity;
+import com.discworld.booksbag.fileselector.OnHandleFileListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +93,8 @@ public class BookListActivity extends AppCompatActivity
       @Override
       public void onClick(View v)
       {
-         iClickedItemNdx = recyclerView.indexOfChild(v);
+//         iClickedItemNdx = recyclerView.indexOfChild(v);
+         iClickedItemNdx = recyclerView.getChildLayoutPosition(v);
          sel_id = oBooksAdapter.getItemId(iClickedItemNdx);
          
          if(mTwoPane)
@@ -133,6 +138,30 @@ public class BookListActivity extends AppCompatActivity
          return true;      
       }
    };
+   
+   OnHandleFileListener mLoadFileListener = new OnHandleFileListener()
+   {
+      @Override
+      public void handleFile(final String filePath)
+      {
+         Toast.makeText(BookListActivity.this,
+                        "Load: " + filePath,
+                        Toast.LENGTH_SHORT).show();
+      }
+   };
+
+   OnHandleFileListener mSaveFileListener = new OnHandleFileListener()
+   {
+      @Override
+      public void handleFile(final String filePath)
+      {
+         Toast.makeText(BookListActivity.this,
+                        "Save: " + filePath,
+                        Toast.LENGTH_SHORT).show();
+      }
+   };      
+   
+   final String[] mFileFilter = { "*.*", ".jpeg", ".txt", ".png" };
    
    private RecyclerView recyclerView;
    
@@ -365,10 +394,22 @@ public class BookListActivity extends AppCompatActivity
             popupMenu.show();
             return true;
             
+         case R.id.action_imp_db_test:
+//            Intent intent2 = new Intent(getApplicationContext(), ImportActivity.class);
+//          startActivity(intent2);
+          
+          new FileSelector(BookListActivity.this,
+                           FileOperation.LOAD,
+                           mLoadFileListener,
+                           mFileFilter).show();          
+            return true;
+            
          default:
             return true;
       }
    }
+   
+
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data)

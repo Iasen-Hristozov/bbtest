@@ -107,7 +107,7 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
 
          name.setText(visibleItems.get(position).sText);
 //         arrow.setRotation(isExpanded(position) ? ROTATED_POSITION : INITIAL_POSITION);
-         onExpansionToggled(!isExpanded(position));
+//         onExpansionToggled(!isExpanded(position));
 //         if(isExpanded(position))
 //         {
 ////            arrow.setRotation(ROTATED_POSITION);
@@ -118,6 +118,15 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
       }
       
       @SuppressLint("NewApi")
+      
+      @Override
+      public void setExpanded(boolean expanded)
+      {
+         super.setExpanded(expanded);
+         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            arrow.setRotation(expanded ? ROTATED_POSITION : INITIAL_POSITION);
+      }      
+      
       @Override
       public void onExpansionToggled(boolean expanded)
       {
@@ -159,12 +168,17 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
              
 //             arrow.setRotation(ROTATED_POSITION);
                float f  = arrow.getRotation();
-             rotateAnimation = new RotateAnimation(INITIAL_POSITION,
-                                                   ROTATED_POSITION,
-                                                   RotateAnimation.RELATIVE_TO_SELF,
-                                                   0.5f,
-                                                   RotateAnimation.RELATIVE_TO_SELF,
-                                                   0.5f);
+//             rotateAnimation = new RotateAnimation(INITIAL_POSITION,
+//                                                   ROTATED_POSITION,
+//                                                   RotateAnimation.RELATIVE_TO_SELF,
+//                                                   0.5f,
+//                                                   RotateAnimation.RELATIVE_TO_SELF,
+//                                                   0.5f);
+             
+             rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,
+                                                   INITIAL_POSITION,
+                                                   RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+                                                   RotateAnimation.RELATIVE_TO_SELF, 0.5f);             
 
             }
 

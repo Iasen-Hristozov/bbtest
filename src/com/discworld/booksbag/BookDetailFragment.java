@@ -65,6 +65,7 @@ public class BookDetailFragment extends Fragment
          // to load content from a content provider.
 //         mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 //         mItem = DummyContent.BOOKS_MAP.get(getArguments().getLong(ARG_ITEM_ID));
+         long id = getArguments().getLong(ARG_ITEM_ID);
          oBook = oDbAdapter.getBook(getArguments().getLong(ARG_ITEM_ID));
 
          Activity activity = this.getActivity();
