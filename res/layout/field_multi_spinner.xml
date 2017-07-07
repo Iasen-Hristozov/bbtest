@@ -16,7 +16,7 @@
    </com.discworld.booksbag.fields.Title>
 
       <Button
-         android:id="@+id/spinner"
+         android:id="@+id/action_select_type"
          style="?android:attr/spinnerStyle"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"

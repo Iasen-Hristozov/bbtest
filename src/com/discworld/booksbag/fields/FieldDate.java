@@ -75,7 +75,7 @@ public class FieldDate extends LinearLayout
       inflater.inflate(R.layout.field_date, this, true);
       
       oTitle = (Title)this.findViewById(R.id.title);
-      btnSpinner = (Button) this.findViewById(R.id.spinner);
+      btnSpinner = (Button) this.findViewById(R.id.action_select_type);
       
       final Activity activity = (Activity) context;
       btnSpinner.setOnClickListener(new OnClickListener() 

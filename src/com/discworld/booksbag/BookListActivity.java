@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
+import java.util.Calendar;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,10 +45,10 @@ import com.discworld.booksbag.dto.DividerItemDecoration;
 //import com.discworld.booksbag.dto.ParrentAdapter;
 import com.discworld.booksbag.dto.Result;
 import com.discworld.booksbag.fileselector.FileOperation;
-import com.discworld.booksbag.fileselector.FileSelector;
-import com.discworld.booksbag.fileselector.FileSelectorActivity;
+import com.discworld.booksbag.fileselector.FileSelectorDialog;
 import com.discworld.booksbag.fileselector.OnHandleFileListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -139,33 +141,48 @@ public class BookListActivity extends AppCompatActivity
       }
    };
    
-   OnHandleFileListener mLoadFileListener = new OnHandleFileListener()
+   private OnHandleFileListener mLoadFileListener = new OnHandleFileListener()
    {
       @Override
       public void handleFile(final String filePath)
       {
-         Toast.makeText(BookListActivity.this,
-                        "Load: " + filePath,
-                        Toast.LENGTH_SHORT).show();
+         oDbAdapter.close();
+         if(oDbAdapter.importDatabase(filePath))
+            Toast.makeText(getApplicationContext(), R.string.prf_imp_db_scs, Toast.LENGTH_SHORT).show();
+         oDbAdapter.open();           
+//         Toast.makeText(BookListActivity.this,
+//                        "Load: " + filePath,
+//                        Toast.LENGTH_SHORT).show();
       }
    };
 
-   OnHandleFileListener mSaveFileListener = new OnHandleFileListener()
+   private OnHandleFileListener mSaveFileListener = new OnHandleFileListener()
    {
       @Override
       public void handleFile(final String filePath)
       {
-         Toast.makeText(BookListActivity.this,
-                        "Save: " + filePath,
-                        Toast.LENGTH_SHORT).show();
+         oDbAdapter.close();
+         if(oDbAdapter.exportDatabase(filePath))
+            Toast.makeText(getApplicationContext(), R.string.prf_xpr_db_scs, Toast.LENGTH_SHORT).show();
+         oDbAdapter.open();         
+         
+//         Toast.makeText(BookListActivity.this,
+//                        "Save: " + filePath,
+//                        Toast.LENGTH_SHORT).show();
       }
    };      
    
-   final String[] mFileFilter = { "*.*", ".jpeg", ".txt", ".png" };
+   final String[] mFileFilter = { "*.*", ".db" };
    
    private RecyclerView recyclerView;
    
    private ActionMode mActionMode;
+   
+   FragmentManager fm = getSupportFragmentManager();
+   
+   File flCurrent;
+   
+   FileSelectorDialog alertDialog;
 
    /**
     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -349,20 +366,52 @@ public class BookListActivity extends AppCompatActivity
             startActivity(intent);
             return true;
 
-         case R.id.action_exp_db:
-            oDbAdapter.close();
-            if(oDbAdapter.exportDatabase(Environment.getExternalStorageDirectory() + "/" + XPR_DIR + "/" + DBAdapter.DATABASE_NAME))
-               Toast.makeText(getApplicationContext(), R.string.prf_xpr_db_scs, Toast.LENGTH_SHORT).show();
-            oDbAdapter.open();            
-            return true;
-         
          case R.id.action_imp_db:
-            oDbAdapter.close();
-            if(oDbAdapter.importDatabase(Environment.getExternalStorageDirectory() + "/" + XPR_DIR + "/" + DBAdapter.DATABASE_NAME))
-               Toast.makeText(getApplicationContext(), R.string.prf_imp_db_scs, Toast.LENGTH_SHORT).show();
-            oDbAdapter.open();            
-            
+            flCurrent = new File(Environment.getExternalStorageDirectory()
+                                      + "/"
+                                      + XPR_DIR);
+            alertDialog = FileSelectorDialog.newInstance(flCurrent,
+                                                         FileOperation.LOAD,
+                                                         mLoadFileListener,
+                                                         mFileFilter);
+            alertDialog.show(fm, "fragment_alert");
+
             return true;
+            
+         case R.id.action_exp_db:
+            Calendar calendar = Calendar.getInstance(Locale.getDefault());
+            int iExtNdx = DBAdapter.DATABASE_NAME.lastIndexOf(".");
+            String sFileName = String.format(getString(R.string.fmt_fl_nm), 
+                                             DBAdapter.DATABASE_NAME.substring(0, iExtNdx),
+                                             calendar.get(Calendar.YEAR),
+                                             calendar.get(Calendar.MONTH) + 1,
+                                             calendar.get(Calendar.DAY_OF_MONTH),
+                                             calendar.get(Calendar.HOUR_OF_DAY),
+                                             calendar.get(Calendar.MINUTE),
+                                             DBAdapter.DATABASE_NAME.substring(iExtNdx+1));
+            File flCurrent = new File(Environment.getExternalStorageDirectory() + "/" + XPR_DIR + "/" + sFileName);
+            
+            alertDialog = FileSelectorDialog.newInstance(flCurrent,
+                                                         FileOperation.SAVE,
+                                                         mSaveFileListener,
+                                                         mFileFilter);
+            alertDialog.show(fm, "fragment_alert");
+            return true;            
+            
+//         case R.id.action_exp_db:
+//            oDbAdapter.close();
+//            if(oDbAdapter.exportDatabase(Environment.getExternalStorageDirectory() + "/" + XPR_DIR + "/" + DBAdapter.DATABASE_NAME))
+//               Toast.makeText(getApplicationContext(), R.string.prf_xpr_db_scs, Toast.LENGTH_SHORT).show();
+//            oDbAdapter.open();            
+//            return true;
+//         
+//         case R.id.action_imp_db:
+//            oDbAdapter.close();
+//            if(oDbAdapter.importDatabase(Environment.getExternalStorageDirectory() + "/" + XPR_DIR + "/" + DBAdapter.DATABASE_NAME))
+//               Toast.makeText(getApplicationContext(), R.string.prf_imp_db_scs, Toast.LENGTH_SHORT).show();
+//            oDbAdapter.open();            
+//            
+//            return true;
             
          case R.id.action_exp_all:
             oBooksAdapter.expandAll();
@@ -394,15 +443,7 @@ public class BookListActivity extends AppCompatActivity
             popupMenu.show();
             return true;
             
-         case R.id.action_imp_db_test:
-//            Intent intent2 = new Intent(getApplicationContext(), ImportActivity.class);
-//          startActivity(intent2);
-          
-          new FileSelector(BookListActivity.this,
-                           FileOperation.LOAD,
-                           mLoadFileListener,
-                           mFileFilter).show();          
-            return true;
+
             
          default:
             return true;

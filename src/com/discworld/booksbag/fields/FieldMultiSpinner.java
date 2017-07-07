@@ -81,7 +81,7 @@ public class FieldMultiSpinner extends LinearLayout
       inflater.inflate(R.layout.field_multi_spinner, this, true);
 
       oTitle = (Title) this.findViewById(R.id.title);
-      btnSpinner = (Button) this.findViewById(R.id.spinner);
+      btnSpinner = (Button) this.findViewById(R.id.action_select_type);
       
       setButtonText(btnSpinner, alItems);
       btnSpinner.setOnClickListener(new OnClickListener()

@@ -100,8 +100,8 @@ public class FileSelector
 //      mDialog.setTitle(mCurrentLocation.getAbsolutePath());
       mDialog.setTitle("aaaa");
       
-      toolbar = (Toolbar) mDialog.findViewById(R.id.my_toolbar);
-      toolbar.inflateMenu(R.menu.menu_dialog);
+      toolbar = (Toolbar) mDialog.findViewById(R.id.dlg_toolbar);
+      toolbar.inflateMenu(R.menu.menu_dialog_save);
       toolbar.setTitle(mCurrentLocation.getName());
       
       prepareFilterSpinner(fileFilters);
@@ -122,14 +122,14 @@ public class FileSelector
    private void prepareFilterSpinner(String[] fitlesFilter)
    {
 //      mFilterSpinner = (Spinner) mDialog.findViewById(R.id.fileFilter);
-      mFilterSpinner = (Spinner) mDialog.findViewById(R.id.spinner);
+      mFilterSpinner = (Spinner) mDialog.findViewById(R.id.action_select_type);
       if(fitlesFilter == null || fitlesFilter.length == 0)
       {
          fitlesFilter = new String[] { FileUtils.FILTER_ALLOW_ALL };
          mFilterSpinner.setEnabled(false);
       }
       ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext,
-                                                              R.layout.spinner_item,
+                                                              R.layout.menu_spinner_item,
                                                               fitlesFilter);
 
       mFilterSpinner.setAdapter(adapter);
@@ -347,38 +347,36 @@ public class FileSelector
       alert.setMessage(R.string.msg_new_fld);
       final EditText input = new EditText(mContext);
       alert.setView(input);
-      alert.setPositiveButton(R.string.create,
-                              new DialogInterface.OnClickListener()
-                              {
-                                 @Override
-                                 public void onClick(final DialogInterface dialog,
-                                                     final int whichButton)
-                                 {
-                                    File file = new File(mCurrentLocation.getAbsolutePath()
-                                                         + File.separator
-                                                         + input.getText()
-                                                                .toString());
-                                    if(file.mkdir())
-                                    {
-                                       Toast t = Toast.makeText(mContext,
-                                                                R.string.msg_fld_crt_ok,
-                                                                Toast.LENGTH_SHORT);
-                                       t.setGravity(Gravity.CENTER, 0, 0);
-                                       t.show();
-                                    }
-                                    else
-                                    {
-                                       Toast t = Toast.makeText(mContext,
-                                                                R.string.msg_fld_crt_err,
-                                                                Toast.LENGTH_SHORT);
-                                       t.setGravity(Gravity.CENTER, 0, 0);
-                                       t.show();
-                                    }
-                                    String fileFilter = ((TextView) mFilterSpinner.getSelectedView()).getText()
-                                                                                                     .toString();
-                                    makeList(mCurrentLocation, fileFilter);
-                                 }
-                              });
+      alert.setPositiveButton(R.string.create, new DialogInterface.OnClickListener()
+      {
+         @Override
+         public void onClick(final DialogInterface dialog,
+                             final int whichButton)
+         {
+            File file = new File(mCurrentLocation.getAbsolutePath()
+                                 + File.separator
+                                 + input.getText()
+                                        .toString());
+            if(file.mkdir())
+            {
+               Toast t = Toast.makeText(mContext,
+                                        R.string.msg_fld_crt_ok,
+                                        Toast.LENGTH_SHORT);
+                     t.setGravity(Gravity.CENTER, 0, 0);
+                     t.show();
+            }
+            else
+            {
+               Toast t = Toast.makeText(mContext,
+                                        R.string.msg_fld_crt_err,
+                                        Toast.LENGTH_SHORT);
+               t.setGravity(Gravity.CENTER, 0, 0);
+               t.show();
+            }
+            String fileFilter = ((TextView) mFilterSpinner.getSelectedView()).getText().toString();
+            makeList(mCurrentLocation, fileFilter);
+         }
+      });
       alert.show();
    }
 

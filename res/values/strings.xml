@@ -62,6 +62,7 @@
    <string name="lbl_ent_fl_nm">Enter file name:</string>
    <string name="btn_crt_nw_fld">Create new folder</string>
    <string name="btn_new_fld">New folder</string>
+   <string name="btn_fl_tp">File type</string>
    <string name="msg_new_fld">Create new folder</string>
    <string name="create">Create</string>
    <string name="msg_fld_crt_ok">Folder created successfully</string>
@@ -71,4 +72,5 @@
    <string name="msg_acc_dnd">Access denied</string>
    <string name="information">Information</string>
    <string name="msg_fl_nm_frs">Please enter the file name first</string>
+   <string name="fmt_fl_nm">%1$s_%2$d%3$02d%4$02d%5$02d%6$02d.%7$s</string>
 </resources>

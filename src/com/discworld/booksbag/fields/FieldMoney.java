@@ -75,7 +75,7 @@ public class FieldMoney extends LinearLayout
       inflater.inflate(R.layout.field_money, this, true);
       
       oTitle = (Title)this.findViewById(R.id.title);
-      oSpinner = (Spinner) this.findViewById(R.id.spinner);
+      oSpinner = (Spinner) this.findViewById(R.id.action_select_type);
       oEditTextX = (EditTextX) this.findViewById(R.id.editTextX);
       oEditTextX.setFilters(new InputFilter[] {new DecimalDigitsInputFilter()});
 //      oEditTextX.setOnUpdateListener(new EditTextX.OnUpdateListener()

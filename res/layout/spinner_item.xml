@@ -9,6 +9,6 @@
    android:paddingRight="15dip"
    android:paddingEnd="15dip"
    android:textAppearance="?android:attr/textAppearanceMedium"
-   android:textColor="?android:attr/textColorAlertDialogListItem" />
+   android:textColor="?android:attr/textColorPrimary" />
 <!--    android:paddingStart="14dip" -->
 
