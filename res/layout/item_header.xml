@@ -8,15 +8,15 @@
    android:padding="@dimen/standard_padding" >
 
    <ImageView
-      android:id="@+id/item_header_image"
+      android:id="@+id/iv_header"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:layout_marginLeft="@dimen/standard_padding_small"
-      android:src="@drawable/ic_action_collections_bookmark" />
+      android:src="@drawable/ic_header" />
 
    <TextView
-      android:id="@+id/item_header_name"
+      android:id="@+id/tv_header"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
@@ -27,7 +27,7 @@
       tools:text="Group Name" />
 
    <ImageView
-      android:id="@+id/item_arrow"
+      android:id="@+id/iv_arrow"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"

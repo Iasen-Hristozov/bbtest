@@ -10,15 +10,15 @@
    android:background="?android:attr/selectableItemBackground">
 
    <ImageView
-      android:id="@+id/item_image"
+      android:id="@+id/iv_item"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:layout_marginLeft="@dimen/standard_padding"
-      android:src="@drawable/ic_action_book" />
+      android:src="@drawable/ic_book_accent" />
 
    <TextView
-      android:id="@+id/item_name"
+      android:id="@+id/tv_item"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"

@@ -1,0 +1,8 @@
+<resources>
+
+   <item name="ic_book_accent" type="drawable">@drawable/ic_action_import_contacts_accent</item>
+   <item name="ic_book_light" type="drawable">@drawable/ic_action_import_contacts_accent</item>
+   <item name="ic_book_dark" type="drawable">@drawable/ic_action_import_contacts_dark</item>
+   <item name="ic_header" type="drawable">@drawable/ic_action_collections_bookmark_accent</item>
+
+</resources>

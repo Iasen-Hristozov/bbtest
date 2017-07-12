@@ -144,6 +144,7 @@ public class FileSelectorDialog extends DialogFragment
          case LOAD:
             str_id = R.string.load;
             toolbar.inflateMenu(R.menu.menu_dialog_load);
+            etFileName.setEnabled(false);
          break;
       }
       builder.setPositiveButton(str_id, new DialogInterface.OnClickListener()

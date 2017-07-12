@@ -5,27 +5,39 @@
    android:clipToPadding="false"
    android:orientation="vertical" >
 
-   <LinearLayout
+   <RelativeLayout
       android:id="@+id/ll_fields"
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:layout_marginTop="-2dp"
       android:elevation="4dp"
-      android:orientation="vertical"
       android:outlineProvider="bounds"
       android:paddingTop="2dp" >
 
       <TextView
-         android:id="@+id/tv_books_count"
+         android:id="@+id/tv_books_order"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:paddingLeft="16dp"
+         android:layout_alignParentLeft="true"
          android:layout_gravity="center_horizontal"
          android:background="@color/background_material_light"
          android:gravity="center_vertical"
+         android:paddingLeft="16dp"
+         android:text="153" />
+      
+      <TextView
+         android:id="@+id/tv_books_count"
+         android:layout_width="wrap_content"
+         android:layout_height="match_parent"
+         android:layout_alignParentRight="true"
+         android:layout_gravity="center_horizontal"
+         android:background="@color/background_material_light"
+         android:gravity="center_vertical"
+         android:paddingLeft="16dp"
+         android:paddingRight="16dp"
          android:text="153" />
 
-   </LinearLayout>
+   </RelativeLayout>
 
    <android.support.v7.widget.RecyclerView
       xmlns:app="http://schemas.android.com/apk/res-auto"

@@ -61,7 +61,7 @@ public class FileListAdapter extends BaseAdapter
          }
          case FileData.DIRECTORY:
          {
-            imgRes = R.drawable.ic_action_folder;
+            imgRes = R.drawable.ic_action_folder_open;
             break;
          }
          case FileData.FILE:

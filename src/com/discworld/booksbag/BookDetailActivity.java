@@ -71,14 +71,16 @@ public class BookDetailActivity extends AppCompatActivity
    }
 
    @Override
+   public boolean onCreateOptionsMenu(Menu menu)
+   {
+      getMenuInflater().inflate(R.menu.menu_details, menu);
+      
+      return true;
+   }
+
+   @Override
    public boolean onOptionsItemSelected(MenuItem item)
    {
-//      switch(item.getItemId())
-//      {
-//      default:
-//         return false;
-//      }
-      
       switch(item.getItemId())
       {
          case android.R.id.home:
@@ -156,13 +158,5 @@ public class BookDetailActivity extends AppCompatActivity
    {
       setResult(resultCode, new Intent());
       finish();                  // "Done"
-   }
-
-   @Override
-   public boolean onCreateOptionsMenu(Menu menu)
-   {
-      getMenuInflater().inflate(R.menu.menu_details, menu);
-      
-      return true;
    }
 }

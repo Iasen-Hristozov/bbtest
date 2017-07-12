@@ -2,6 +2,7 @@ package com.discworld.booksbag.dto;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
@@ -14,9 +15,11 @@ import android.view.ViewGroup;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import com.discworld.booksbag.R;
 
 public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookListItem>
@@ -97,8 +100,8 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
 //         super(view, (ImageView) view.findViewById(R.id.item_arrow));
          super(view);
          
-         arrow = (ImageView) view.findViewById(R.id.item_arrow);
-         name = (TextView) view.findViewById(R.id.item_header_name);
+         arrow = (ImageView) view.findViewById(R.id.iv_arrow);
+         name = (TextView) view.findViewById(R.id.tv_header);
       }
 
       public void bind(int position)
@@ -201,7 +204,7 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
       {
          super(view);
 
-         name = (TextView) view.findViewById(R.id.item_name);
+         name = (TextView) view.findViewById(R.id.tv_item);
          this.view = view;
       }
 
@@ -223,6 +226,8 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
                                                    iFilterEnd,
                                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
          name.setText(spContent);
+         ColorStateList oldColors =  name.getTextColors(); 
+         int a  =1;
 //         name.setText(visibleItems.get(position).sText);
       }
    }
@@ -330,6 +335,7 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
    public void removeAt(int iClickedItemNdx)
    {
       removeItemAt(iClickedItemNdx);
+      iAllChildrendCount--;
    }
 
    @Override

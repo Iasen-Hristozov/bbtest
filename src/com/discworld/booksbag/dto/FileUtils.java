@@ -6,6 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+
 public class FileUtils
 {
    /**
@@ -61,4 +66,18 @@ public class FileUtils
       FileUtils.copyFile(new FileInputStream(fromFile), new FileOutputStream(toFile));
    }
    
+   public static void verifyStoragePermissions(Activity activity)
+   {
+      // Check if we have write permission
+      int permission = ActivityCompat.checkSelfPermission(activity,
+                                                          Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+      if(permission != PackageManager.PERMISSION_GRANTED)
+      {
+         // We don't have permission so prompt the user
+         ActivityCompat.requestPermissions(activity,
+                                           new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                                           1);
+      }
+   }
 }
