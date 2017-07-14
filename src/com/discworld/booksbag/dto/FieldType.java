@@ -20,7 +20,8 @@ public class FieldType
                             TYPE_MULTIFIELD = 4,
                             TYPE_SPINNER = 5,
                             TYPE_MULTI_SPINNER = 6,
-                            TYPE_DATE = 7;
+                            TYPE_DATE = 7,
+                            TYPE_RATING = 8;
    
    
    public FieldType(int iID, String sName, boolean isVisible, byte iType)

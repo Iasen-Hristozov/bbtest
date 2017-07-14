@@ -44,7 +44,8 @@ public class Book
                               ciPublicationDate,
                               ciEdition,
                               ciReadDate,
-                              ciDueDate;
+                              ciDueDate,
+                              ciRating;
    
 //   public String sTitle,
 //                 sDescription,
@@ -69,7 +70,8 @@ public class Book
       ciPublicationDate = new Changeable<Integer>(0);
       ciEdition = new Changeable<Integer>(0);
       ciReadDate = new Changeable<Integer>(0);
-      ciDueDate = new Changeable<Integer>(0);      
+      ciDueDate = new Changeable<Integer>(0);
+      ciRating = new Changeable<Integer>(0);
    }
 
    public Book(int iID,

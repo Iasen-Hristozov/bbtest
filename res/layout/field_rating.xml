@@ -5,7 +5,8 @@
    android:layout_width="match_parent"
    android:layout_height="wrap_content"
    android:layout_marginBottom="@dimen/fld_mrg_btm"
-   android:orientation="vertical" >
+   android:orientation="vertical"
+    >
 
    <com.discworld.booksbag.fields.Title
       android:id="@+id/title"
@@ -15,12 +16,15 @@
       custom:color="@color/primary" >
    </com.discworld.booksbag.fields.Title>
 
-      <Button
-         android:id="@+id/action_select_type"
-         style="?android:attr/spinnerStyle"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:paddingLeft="0dip"
-         android:textAppearance="?android:attr/textAppearanceMedium"
-         />
+   <RatingBar
+      android:id="@+id/rating_bar"
+      style="?android:attr/ratingBarStyle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:scaleX=".5"
+      android:scaleY=".5"
+      android:transformPivotX="0dp"
+      android:transformPivotY="0dp"
+      android:paddingTop="14dp" />
+
 </LinearLayout>

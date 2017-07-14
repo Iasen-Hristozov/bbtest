@@ -2,7 +2,6 @@ package com.discworld.booksbag.dto;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
@@ -26,10 +25,6 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
 {
    private static final float INITIAL_POSITION = 0f,
                               ROTATED_POSITION = 180f;
-
-//   private static final float INITIAL_POSITION = -90f, 
-//                              ROTATED_POSITION = 0;   
-   
    private int iAllChildrendCount;
    
    private String sFilter = "";
@@ -137,59 +132,31 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
          {
             RotateAnimation rotateAnimation;
             if(expanded)
-            { // rotate counterclockwise
-//             arrow.setRotation(INITIAL_POSITION);
-//             rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,
-//                                                   INITIAL_POSITION,
-//                                                   RotateAnimation.RELATIVE_TO_SELF,
-//                                                   0.5f,
-//                                                   RotateAnimation.RELATIVE_TO_SELF,
-//                                                   0.5f);
+            { 
+               // rotate counterclockwise
+               rotateAnimation = new RotateAnimation(ROTATED_POSITION,
+                                                     INITIAL_POSITION,
+                                                     RotateAnimation.RELATIVE_TO_SELF,
+                                                     0.5f,
+                                                     RotateAnimation.RELATIVE_TO_SELF,
+                                                     0.5f);
 
-//             arrow.setRotation(0);
-               float f  = arrow.getRotation();
-             rotateAnimation = new RotateAnimation(ROTATED_POSITION,
-                                                   INITIAL_POSITION,
-                                                   RotateAnimation.RELATIVE_TO_SELF,
-                                                   0.5f,
-                                                   RotateAnimation.RELATIVE_TO_SELF,
-                                                   0.5f);
-          
-
-               
             }
             else
             {
                // rotate clockwise
-//             arrow.setRotation(ROTATED_POSITION);
-//             rotateAnimation = new RotateAnimation(ROTATED_POSITION,
-//                                                   INITIAL_POSITION,
-//                                                   RotateAnimation.RELATIVE_TO_SELF,
-//                                                   0.5f,
-//                                                   RotateAnimation.RELATIVE_TO_SELF,
-//                                                   0.5f);
-             
-//             arrow.setRotation(ROTATED_POSITION);
-               float f  = arrow.getRotation();
-//             rotateAnimation = new RotateAnimation(INITIAL_POSITION,
-//                                                   ROTATED_POSITION,
-//                                                   RotateAnimation.RELATIVE_TO_SELF,
-//                                                   0.5f,
-//                                                   RotateAnimation.RELATIVE_TO_SELF,
-//                                                   0.5f);
-             
-             rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,
-                                                   INITIAL_POSITION,
-                                                   RotateAnimation.RELATIVE_TO_SELF, 0.5f,
-                                                   RotateAnimation.RELATIVE_TO_SELF, 0.5f);             
+               rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,
+                                                     INITIAL_POSITION,
+                                                     RotateAnimation.RELATIVE_TO_SELF,
+                                                     0.5f,
+                                                     RotateAnimation.RELATIVE_TO_SELF,
+                                                     0.5f);
 
             }
 
             rotateAnimation.setDuration(200);
             rotateAnimation.setFillAfter(true);
             arrow.startAnimation(rotateAnimation);
-//            arrow.setRotation(expanded ? INITIAL_POSITION : ROTATED_POSITION );
-//            arrow.animate().setDuration(200).rotation(expanded ? 0 : 180);
          }
       }
    }
@@ -226,9 +193,6 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
                                                    iFilterEnd,
                                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
          name.setText(spContent);
-         ColorStateList oldColors =  name.getTextColors(); 
-         int a  =1;
-//         name.setText(visibleItems.get(position).sText);
       }
    }
 

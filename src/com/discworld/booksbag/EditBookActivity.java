@@ -2,7 +2,6 @@ package com.discworld.booksbag;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
 
 import com.discworld.booksbag.dto.Book;
@@ -38,6 +39,7 @@ import com.discworld.booksbag.fields.FieldEditTextUpdatableClearable;
 import com.discworld.booksbag.fields.FieldMoney;
 import com.discworld.booksbag.fields.FieldMultiSpinner;
 import com.discworld.booksbag.fields.FieldMultiText;
+import com.discworld.booksbag.fields.FieldRating;
 import com.discworld.booksbag.fields.FieldSpinner;
 import com.discworld.booksbag.fields.FieldMultiSpinner.Item;
 
@@ -180,6 +182,10 @@ public class EditBookActivity extends AppCompatActivity
             
             case FieldType.TYPE_DATE:
                addFieldDate(llFields, oFieldType);
+            break;
+            
+            case FieldType.TYPE_RATING:
+               addFieldRating(llFields, oFieldType);
             break;
                
          }
@@ -802,6 +808,50 @@ public class EditBookActivity extends AppCompatActivity
          hideField(oFieldDate, oFieldType.sName);
       
    }
+   
+   private void addFieldRating(ViewGroup rootView, FieldType oFieldType)
+   {
+      Date date;
+      int iRating;
+      float fRating;
+      
+      final FieldRating oFieldRating = new FieldRating(this);
+      
+      switch(oFieldType.iID)
+      {
+         case DBAdapter.FLD_RATING:
+            iRating = oBook.ciRating.value;
+            oFieldRating.setTag(oBook.ciRating);
+         break;
+         
+         default:
+            return;
+            
+      }
+      
+      oFieldRating.setTitle(oFieldType.sName);
+      oFieldRating.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
+
+      fRating = iRating / 10;
+      oFieldRating.setRating(fRating);
+      oFieldRating.setOnRatingBarChangeListener(new OnRatingBarChangeListener()
+      {
+         
+         @Override
+         public void onRatingChanged(RatingBar ratingBar,
+                                     float rating,
+                                     boolean fromUser)
+         {
+            ((Changeable<Integer>) oFieldRating.getTag()).value = (int) rating*10;            
+         }
+      });
+      
+      rootView.addView(oFieldRating);
+      
+      if(!oFieldType.isVisible && ((Changeable<Integer>) oFieldRating.getTag()).value == 0)
+         hideField(oFieldRating, oFieldType.sName);
+      
+   }   
    
    public class ArrayFieldsAdapter extends ArrayAdapter<Field> 
    {

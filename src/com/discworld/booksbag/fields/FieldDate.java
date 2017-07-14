@@ -37,7 +37,6 @@ public class FieldDate extends LinearLayout
    {
       super(context);
       
-//      vInit(context, alFields, oFieldType);
       vInit(context);
    }
    
@@ -50,11 +49,11 @@ public class FieldDate extends LinearLayout
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FieldDate, 0, 0);
       
       String title = a.getString(R.styleable.FieldDate_title);
-      int titleValueColor = a.getColor(R.styleable.FieldMultiSpinner_titleColor, 0);
-      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldMultiSpinner_titleTextSize, 0);
-      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldMultiSpinner_titleLineSize, 0);
-      contentDescription = a.getString(R.styleable.FieldMultiSpinner_android_contentDescription);
-      hint = a.getString(R.styleable.FieldMultiSpinner_android_hint);
+      int titleValueColor = a.getColor(R.styleable.FieldDate_titleColor, 0);
+      int titleTextSize = a.getDimensionPixelOffset(R.styleable.FieldDate_titleTextSize, 0);
+      int titleLineSize = a.getDimensionPixelOffset(R.styleable.FieldDate_titleLineSize, 0);
+      contentDescription = a.getString(R.styleable.FieldDate_android_contentDescription);
+      hint = a.getString(R.styleable.FieldDate_android_hint);
 
       a.recycle();
 

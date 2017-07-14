@@ -54,6 +54,7 @@ public class DBAdapter
    private static final String KEY_VL = "value";
    private static final String KEY_DUE_DT = "due_date";
    private static final String KEY_RD_DT = "read_date";
+   private static final String KEY_RTN = "rating";
    private static final String KEY_EDN = "edition";
    private static final String KEY_ISBN = "isbn";
    private static final String KEY_WEB = "web";
@@ -187,7 +188,6 @@ public class DBAdapter
 		FIELD_TYPES.clear();
 		FIELD_TYPES.add(new FieldType(FLD_TITLE, r.getString(R.string.fld_title), FieldType.TYPE_TEXT).setVisibility(true));
 		FIELD_TYPES.add(new FieldType(FLD_AUTHOR, r.getString(R.string.fld_author), FieldType.TYPE_MULTIFIELD).setVisibility(true));
-//		FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, r.getString(R.string.fld_descrition), true, FieldType.TYPE_TEXT_MULTILINE).setMultiline(false));
 		FIELD_TYPES.add(new FieldType(FLD_DESCRIPTION, r.getString(R.string.fld_descrition), FieldType.TYPE_TEXT).setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_MULTI_LINE).setVisibility(false));
 		FIELD_TYPES.add(new FieldType(FLD_SERIE, r.getString(R.string.fld_serie), FieldType.TYPE_TEXT_AUTOCOMPLETE));
 		FIELD_TYPES.add(new FieldType(FLD_VOLUME, r.getString(R.string.fld_volume), FieldType.TYPE_TEXT).setInputType(InputType.TYPE_CLASS_NUMBER));
@@ -202,7 +202,7 @@ public class DBAdapter
 		FIELD_TYPES.add(new FieldType(FLD_STATUS, r.getString(R.string.fld_status), FieldType.TYPE_SPINNER));
 		FIELD_TYPES.add(new FieldType(FLD_VALUE, r.getString(R.string.fld_value), FieldType.TYPE_MONEY).setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL));
 		FIELD_TYPES.add(new FieldType(FLD_READ_DATE, r.getString(R.string.fld_read_date), FieldType.TYPE_DATE));
-		FIELD_TYPES.add(new FieldType(FLD_RATING, r.getString(R.string.fld_rating), FieldType.TYPE_SPINNER));
+		FIELD_TYPES.add(new FieldType(FLD_RATING, r.getString(R.string.fld_rating), FieldType.TYPE_RATING));
 		FIELD_TYPES.add(new FieldType(FLD_FORMAT, r.getString(R.string.fld_format), FieldType.TYPE_SPINNER));
 		FIELD_TYPES.add(new FieldType(FLD_LOCATION, r.getString(R.string.fld_location), FieldType.TYPE_TEXT_AUTOCOMPLETE));
 		FIELD_TYPES.add(new FieldType(FLD_CONDITION, r.getString(R.string.fld_condition), FieldType.TYPE_SPINNER));
@@ -685,8 +685,6 @@ public class DBAdapter
             oValues.put(KEY_VLM, oBook.ciVolume.value);
             oValues.put(KEY_PBL_DT, oBook.ciPublicationDate.value);
             oValues.put(KEY_PGS, oBook.ciPages.value);
-//            oValues.put(KEY_PRC, oBook.iPrice);
-//            oValues.put(KEY_VL, oBook.iValue);
             oValues.put(KEY_PRC, oBook.csPrice.value);
             oValues.put(KEY_VL, oBook.csValue.value);
             oValues.put(KEY_DUE_DT, oBook.ciDueDate.value);
