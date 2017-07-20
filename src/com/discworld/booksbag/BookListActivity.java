@@ -196,10 +196,10 @@ public class BookListActivity extends AppCompatActivity
                assert oDbAdapter != null;
                oDbAdapter.deleteBook(sel_id);
                oBooksAdapter.removeAt(iClickedItemNdx);
-
-               tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount())
-                                    + " "
-                                    + getString(R.string.lbl_books));
+               tvBooksCount.setText(getResources().getQuantityString(R.plurals.books, oBooksAdapter.getAllChildrenCount(), oBooksAdapter.getAllChildrenCount()));
+//               tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount())
+//                                    + " "
+//                                    + getString(R.string.lbl_books));
 
                mode.finish(); // Action picked, so close the CAB
                return true;
@@ -365,7 +365,8 @@ public class BookListActivity extends AppCompatActivity
          {
             oBooksAdapter.expandAll();
             oBooksAdapter.filter(arg0);
-            tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
+            tvBooksCount.setText(getResources().getQuantityString(R.plurals.books, oBooksAdapter.getAllChildrenCount(), oBooksAdapter.getAllChildrenCount()));
+//            tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount()) + " " + getString(R.string.lbl_books));
             return true;
          }
       });
@@ -470,10 +471,10 @@ public class BookListActivity extends AppCompatActivity
          if(oOrderItem.iID == iOrderID)
          {
             tvBooksOrder.setText(oOrderItem.sTitle);
-
-            tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount())
-                                 + " " 
-                                 + getString(R.string.lbl_books));
+            tvBooksCount.setText(getResources().getQuantityString(R.plurals.books, oBooksAdapter.getAllChildrenCount(), oBooksAdapter.getAllChildrenCount()));
+//            tvBooksCount.setText(String.valueOf(oBooksAdapter.getAllChildrenCount())
+//                                 + " " 
+//                                 + getString(R.string.lbl_books));
          }
    }
    

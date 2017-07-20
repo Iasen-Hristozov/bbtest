@@ -81,28 +81,27 @@ public class EditBookActivity extends AppCompatActivity
       actionBar.setCustomView(R.layout.actionbar_custom_view_done);
       
       ((Toolbar)actionBar.getCustomView().getParent()).setContentInsetsAbsolute(0, 0);
-      actionBar.getCustomView().findViewById(R.id.actionbar_done)
-                               .setOnClickListener(new View.OnClickListener()
-                               {
-                                  @Override
-                                  public void onClick(View v)
-                                  {
-                                     getCurrentFocus().clearFocus();
-                                     if(oBook.csTitle.value.trim().isEmpty())
-                                     {
-                                        fBookTitle.setError("Empty!!!!");
-                                        return;
-                                     }
-                                     else
-                                     {
-                                        fBookTitle.setError(null);
-                                        
-                                        saveBook();
-                                        setResult(RESULT_OK, new Intent());
-                                        finish();                  // "Done"
-                                     }
-                                  }
-                               });
+      actionBar.getCustomView().findViewById(R.id.actionbar_done).setOnClickListener(new View.OnClickListener()
+      {
+         @Override
+         public void onClick(View v)
+         {
+            getCurrentFocus().clearFocus();
+            if(oBook.csTitle.value.trim().isEmpty())
+            {
+               fBookTitle.setError("Empty!!!!");
+               return;
+            }
+            else
+            {
+               fBookTitle.setError(null);
+                
+               saveBook();
+               setResult(RESULT_OK, new Intent());
+               finish();                  // "Done"
+            }
+         }
+      });
       // END_INCLUDE (inflate_set_custom_view)
 
       oDbAdapter = new DBAdapter(this);
@@ -811,7 +810,6 @@ public class EditBookActivity extends AppCompatActivity
    
    private void addFieldRating(ViewGroup rootView, FieldType oFieldType)
    {
-      Date date;
       int iRating;
       float fRating;
       
@@ -831,6 +829,21 @@ public class EditBookActivity extends AppCompatActivity
       
       oFieldRating.setTitle(oFieldType.sName);
       oFieldRating.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
+      
+      Field oField = new Field(oFieldType.iID);
+      // Looking in book field collection for field of type 
+      for(int i = 0; oField == null || i < oBook.alFields.size(); i++)
+         if(oFieldType.iID == oBook.alFields.get(i).iTypeID)
+            oField = oBook.alFields.get(i);
+
+      if(oField.iID == 0) // The book has not such a field 
+         oBook.alFields.add(oField);
+      else
+      {
+         
+         Float.parseFloat(oField.sValue);
+//         oFieldRating.setRating(fRating);
+      }
 
       fRating = iRating / 10;
       oFieldRating.setRating(fRating);

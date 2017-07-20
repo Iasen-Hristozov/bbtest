@@ -58,9 +58,9 @@ public class DummyContent
       CATEGORIES.add(new Field(6, DBAdapter.FLD_CATEGORY, "Приключения"));
       CATEGORIES.add(new Field(7, DBAdapter.FLD_CATEGORY, "Криминал"));
       
-      LANGUAGES.add(new Field(8, DBAdapter.FLD_LANGUAGE, "Български"));
-      LANGUAGES.add(new Field(9, DBAdapter.FLD_LANGUAGE, "Руски"));
-      LANGUAGES.add(new Field(10, DBAdapter.FLD_LANGUAGE, "Английски"));
+      LANGUAGES.add(new Field(8, DBAdapter.FLD_LANGUAGE, "Bulgarian"));
+      LANGUAGES.add(new Field(9, DBAdapter.FLD_LANGUAGE, "Russian"));
+      LANGUAGES.add(new Field(10, DBAdapter.FLD_LANGUAGE, "English"));
       
       PUBLISHERS.add(new Field(11, DBAdapter.FLD_PUBLISHER, "Отечество"));
       PUBLISHERS.add(new Field(12, DBAdapter.FLD_PUBLISHER, "Галактика"));
@@ -70,9 +70,9 @@ public class DummyContent
       PUBLISHING_LOCATIONS.add(new Field(16, DBAdapter.FLD_PUBLICATION_LOCATION, "Варна"));
       PUBLISHING_LOCATIONS.add(new Field(17, DBAdapter.FLD_PUBLICATION_LOCATION, "Москва"));
       
-      STATUS.add(new Field(18, DBAdapter.FLD_STATUS, "Налична"));
-      STATUS.add(new Field(19, DBAdapter.FLD_STATUS, "Търси се"));
-      STATUS.add(new Field(20, DBAdapter.FLD_STATUS, "Дадена"));
+      STATUS.add(new Field(18, DBAdapter.FLD_STATUS, "Available"));
+      STATUS.add(new Field(19, DBAdapter.FLD_STATUS, "Wanted"));
+      STATUS.add(new Field(20, DBAdapter.FLD_STATUS, "Loan"));
       
       RATINGS.add(new Field(21, DBAdapter.FLD_RATING, "1"));
       RATINGS.add(new Field(22, DBAdapter.FLD_RATING, "2"));
@@ -85,13 +85,19 @@ public class DummyContent
       LOCATIONS.add(new Field(27, DBAdapter.FLD_LOCATION, "Горна библиотека"));
       LOCATIONS.add(new Field(28, DBAdapter.FLD_LOCATION, "Долна библиотека"));
 
-      CONDITIONS.add(new Field(29, DBAdapter.FLD_CONDITION, "Отлично"));
-      CONDITIONS.add(new Field(30, DBAdapter.FLD_CONDITION, "Много добро"));
-      CONDITIONS.add(new Field(31, DBAdapter.FLD_CONDITION, "Добро"));
+      CONDITIONS.add(new Field(29, DBAdapter.FLD_CONDITION, "As New"));
+      CONDITIONS.add(new Field(30, DBAdapter.FLD_CONDITION, "Fine"));
+      CONDITIONS.add(new Field(31, DBAdapter.FLD_CONDITION, "Very Good"));
+      CONDITIONS.add(new Field(32, DBAdapter.FLD_CONDITION, "Good"));
+      CONDITIONS.add(new Field(33, DBAdapter.FLD_CONDITION, "Fair"));
+      CONDITIONS.add(new Field(34, DBAdapter.FLD_CONDITION, "Poor"));
+      CONDITIONS.add(new Field(35, DBAdapter.FLD_CONDITION, "Binding Copy"));
+      CONDITIONS.add(new Field(36, DBAdapter.FLD_CONDITION, "Reading Copy"));
+
       
-      CURRENCIES.add(new Field(32, DBAdapter.FLD_CURRENCY, "BGN"));
-      CURRENCIES.add(new Field(33, DBAdapter.FLD_CURRENCY, "EUR"));
-      CURRENCIES.add(new Field(34, DBAdapter.FLD_CURRENCY, "RBL"));
+      CURRENCIES.add(new Field(37, DBAdapter.FLD_CURRENCY, "BGN"));
+      CURRENCIES.add(new Field(38, DBAdapter.FLD_CURRENCY, "EUR"));
+      CURRENCIES.add(new Field(39, DBAdapter.FLD_CURRENCY, "RBL"));
       
       Book oBook = new Book(1,                                                   // ID
                             "Трех мушкетера",                                    // Title

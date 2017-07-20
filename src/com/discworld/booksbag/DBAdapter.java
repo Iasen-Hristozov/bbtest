@@ -12,6 +12,7 @@ import java.util.Locale;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteDatabase;
@@ -213,6 +214,7 @@ public class DBAdapter
 
 	public void open() throws SQLiteException
 	{
+	   String s[] = context.getResources().getStringArray(R.array.formats);
 		try
 		{
 			db = dbHelper.getWritableDatabase();
@@ -720,11 +722,13 @@ public class DBAdapter
 
    private static class DBOpenHelper extends SQLiteOpenHelper
 	{
-      private final static String msg_ftm = "Error inserting in %1$s TypeID:%2$d Value:%3$s";
+      private final static String msg_fmt = "Error inserting in %1$s TypeID:%2$d Value:%3$s";
+      private Context context;
 		
       public DBOpenHelper(Context context, String name, CursorFactory factory, int version)
 		{
 			super(context, name, factory, version);
+			this.context = context;
 		}
 
 		@Override
@@ -740,6 +744,65 @@ public class DBAdapter
 	         ContentValues values;
 	         String msg;
 	         
+	         TypedArray ta = context.getResources().obtainTypedArray(R.array.fields1);
+	         int n = ta.length();
+//	         String ts[] = ta.getResources().getStringArray(0);
+//	         String ts1[] = ta.getResources().getStringArray(1);
+	         int resId = ta.getResourceId (0, 0);
+	         
+	         int ti[] = context.getResources().getIntArray(resId);
+	         
+	         int id1 = ta.getResourceId (1, 0);
+	         
+	         TypedArray ta1 = context.getResources().obtainTypedArray(id1);
+	         for(int j = 0; j < ta1.length(); j++)
+	         {
+	            int id2 = ta1.getResourceId(j, -1);
+	            String ts[] = context.getResources().getStringArray(id2);
+	            int b =2;
+	         }
+	         
+	         int iTypeID;
+	         String tsValues[];
+	         TypedArray taValues;
+	         int iValuesID;
+	         int iFieldID;
+	         TypedArray taField;
+	         TypedArray taFieldsValues = context.getResources().obtainTypedArray(R.array.fields_values);
+	         for(int i = 0; i < taFieldsValues.length(); i++)
+	         {
+	            iFieldID = taFieldsValues.getResourceId(i, -1);
+	            taField = context.getResources().obtainTypedArray(iFieldID);
+	            iTypeID = taField.getInt(0, -1);
+	            iValuesID = taField.getResourceId(1, -1);
+	            tsValues = context.getResources().getStringArray(iValuesID);
+	         }
+	         int id3 = taFieldsValues.getResourceId (1, 0);
+//	         int ti2[] = context.getResources().getIntArray(id3);
+	         TypedArray ta3 = context.getResources().obtainTypedArray(id3);
+	         int id5 = ta3.getInt(0, -1);
+	         int id6 = ta3.getResourceId(1, -1);
+	         
+	         String ts2[] = context.getResources().getStringArray(id6);
+	         
+	         String[][] array = new String[n][];
+	         for (int i = 0; i < n; ++i) 
+	         {
+	             int id = ta.getResourceId(i, 0);
+	             if (id > 0) 
+	             {
+	                 array[i] = context.getResources().getStringArray(id);
+	                 int a = 1;
+	             } else {
+	                 // something wrong with the XML
+	             }
+	         }
+	         
+	         
+	         
+	         
+	         ta.recycle(); // Important!
+	         
 	         for(Field f: DummyContent.LANGUAGES)
 	         {
 	            values = new ContentValues();
@@ -747,7 +810,7 @@ public class DBAdapter
 	            values.put(KEY_NM, f.sValue);
                if(_db.insert(TABLE_FIELDS, null, values) < 0)
                {
-                  msg = String.format(Locale.getDefault(),msg_ftm, "LANGUAGES", f.iTypeID, f.sValue);
+                  msg = String.format(Locale.getDefault(), msg_fmt, "LANGUAGES", f.iTypeID, f.sValue);
                   throw new RuntimeException(msg);
                }
 	         }
@@ -759,7 +822,7 @@ public class DBAdapter
                values.put(KEY_NM, f.sValue);
                if(_db.insert(TABLE_FIELDS, null, values) < 0)
                {
-                  msg = String.format(Locale.getDefault(), msg_ftm, "STATUS", f.iTypeID, f.sValue);
+                  msg = String.format(Locale.getDefault(), msg_fmt, "STATUS", f.iTypeID, f.sValue);
                   throw new RuntimeException(msg);
                }
             }
@@ -771,7 +834,7 @@ public class DBAdapter
                values.put(KEY_NM, f.sValue);
                if(_db.insert(TABLE_FIELDS, null, values) < 0)
                {
-                  msg = String.format(Locale.getDefault(), msg_ftm, "RATINGS", f.iTypeID, f.sValue);
+                  msg = String.format(Locale.getDefault(), msg_fmt, "RATINGS", f.iTypeID, f.sValue);
                   throw new RuntimeException(msg);
                }
             }
@@ -783,7 +846,7 @@ public class DBAdapter
                values.put(KEY_NM, f.sValue);
                if(_db.insert(TABLE_FIELDS, null, values) < 0)
                {
-                  msg = String.format(Locale.getDefault(), msg_ftm, "FORMATS", f.iTypeID, f.sValue);
+                  msg = String.format(Locale.getDefault(), msg_fmt, "FORMATS", f.iTypeID, f.sValue);
                   throw new RuntimeException(msg);
                }
             }
@@ -795,7 +858,7 @@ public class DBAdapter
                values.put(KEY_NM, f.sValue);
                if(_db.insert(TABLE_FIELDS, null, values) < 0)
                {
-                  msg = String.format(Locale.getDefault(), msg_ftm, "CONDITIONS", f.iTypeID, f.sValue);
+                  msg = String.format(Locale.getDefault(), msg_fmt, "CONDITIONS", f.iTypeID, f.sValue);
                   throw new RuntimeException(msg);
                }
             }
@@ -807,7 +870,7 @@ public class DBAdapter
                values.put(KEY_NM, f.sValue);
                if(_db.insert(TABLE_FIELDS, null, values) < 0)
                {
-                  msg = String.format(Locale.getDefault(), msg_ftm, "CURRENCIES", f.iTypeID, f.sValue);
+                  msg = String.format(Locale.getDefault(), msg_fmt, "CURRENCIES", f.iTypeID, f.sValue);
                   throw new RuntimeException(msg);
                }
             }

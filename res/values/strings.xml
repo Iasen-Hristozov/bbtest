@@ -54,6 +54,9 @@
    <string name="ord_title">Order by title</string>
    <string name="ord_author">Order by author</string>
    <string name="lbl_books">books</string>
+   <string name="book_0">No books</string>
+   <string name="book">1 book</string>
+   <string name="books">%1$d books</string>
    <string name="pref_title">Settings</string>
    <string name="pref_summary_expand_all">Expand all on data loading</string>
    <string name="pref_title_expand_all">Expand all</string>
@@ -73,4 +76,25 @@
    <string name="information">Information</string>
    <string name="msg_fl_nm_frs">Please enter the file name first</string>
    <string name="fmt_fl_nm">%1$s_%2$d%3$02d%4$02d%5$02d%6$02d.%7$s</string>
+   <string name="lng_bg">Bulgarian</string>
+   <string name="lng_ru">Russian</string>
+   <string name="lng_en">English</string>
+   <string name="sts_avb">Available</string>
+   <string name="sts_wnt">Wanted</string>
+   <string name="sts_ln">Loan</string>
+   <string name="fmt_hrd_cpy">Hard copy</string>
+   <string name="fmt_fb2">fb2</string>
+   <string name="fmt_epub">epub</string>
+   <string name="cnd_nw">As New</string>
+   <string name="cnd_fn">Fine</string>
+   <string name="cnd_vr_gd">Very Good</string>
+   <string name="cnd_gd">Good</string>
+   <string name="cnd_fr">Fair</string>
+   <string name="cnd_pr">Poor</string>
+   <string name="cnd_bnd_cp">Binding Copy</string>
+   <string name="cnd_rd_cp">Reading Copy</string>
+   <string name="crn_bgn">BGN</string>
+   <string name="crn_eur">EUR</string>
+   <string name="crn_rbl">RBL</string>
+
 </resources>
