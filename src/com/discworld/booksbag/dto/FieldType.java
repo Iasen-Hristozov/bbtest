@@ -21,7 +21,8 @@ public class FieldType
                             TYPE_SPINNER = 5,
                             TYPE_MULTI_SPINNER = 6,
                             TYPE_DATE = 7,
-                            TYPE_RATING = 8;
+                            TYPE_RATING = 8,
+                            TYPE_CHECK_BOX = 9;
    
    
    public FieldType(int iID, String sName, boolean isVisible, byte iType)

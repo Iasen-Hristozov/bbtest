@@ -23,7 +23,8 @@
         android:layout_toStartOf="@+id/ib_remove_author"
         android:layout_toLeftOf="@+id/ib_remove_author"
         android:layout_alignParentLeft="true"
-        android:hint="@string/lbl_author"/>
+        android:hint="@string/lbl_author"
+        android:layout_marginLeft="-4dp"/>
     
     
     <ImageButton

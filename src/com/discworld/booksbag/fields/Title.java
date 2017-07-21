@@ -27,8 +27,8 @@ public class Title extends LinearLayout
    public Title(Context context, AttributeSet attrs)
    {
       super(context, attrs);
-//      if(!isInEditMode())
-//      {
+      if(!isInEditMode())
+      {
          TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Title, 0, 0);
          String titleText = a.getString(R.styleable.Title_text);
          
@@ -70,7 +70,7 @@ public class Title extends LinearLayout
          // mValue = getChildAt(1);
          // mValue.setBackgroundColor(valueColor);
          // mImage = (ImageView) getChildAt(2);
-//      }
+      }
    }
    
    public void setText(String text)

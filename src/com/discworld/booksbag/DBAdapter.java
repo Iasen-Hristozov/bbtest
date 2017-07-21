@@ -130,7 +130,8 @@ public class DBAdapter
                            FLD_FORMAT = 9,
                            FLD_LOCATION = 10,
                            FLD_CONDITION = 11,
-                           FLD_CURRENCY = 13,
+                           FLD_CURRENCY = 12,
+                           FLD_READ = 13,
                            FLD_TITLE = 99,
                            FLD_DESCRIPTION = 100,
                            FLD_VOLUME = 101,
@@ -202,6 +203,7 @@ public class DBAdapter
 		FIELD_TYPES.add(new FieldType(FLD_PRICE, r.getString(R.string.fld_price), FieldType.TYPE_MONEY).setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL));
 		FIELD_TYPES.add(new FieldType(FLD_STATUS, r.getString(R.string.fld_status), FieldType.TYPE_SPINNER));
 		FIELD_TYPES.add(new FieldType(FLD_VALUE, r.getString(R.string.fld_value), FieldType.TYPE_MONEY).setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL));
+		FIELD_TYPES.add(new FieldType(FLD_READ, r.getString(R.string.fld_read), FieldType.TYPE_CHECK_BOX));
 		FIELD_TYPES.add(new FieldType(FLD_READ_DATE, r.getString(R.string.fld_read_date), FieldType.TYPE_DATE));
 		FIELD_TYPES.add(new FieldType(FLD_RATING, r.getString(R.string.fld_rating), FieldType.TYPE_RATING));
 		FIELD_TYPES.add(new FieldType(FLD_FORMAT, r.getString(R.string.fld_format), FieldType.TYPE_SPINNER));
@@ -521,8 +523,8 @@ public class DBAdapter
    
          String sql = "SELECT f." + KEY_ID + ", f." + KEY_TP_ID + ", f." + KEY_NM
                   + " FROM " + TABLE_FIELDS + " as f "
-                  + " WHERE f." + KEY_TP_ID + " = " + iTypeID
-                  + " ORDER BY f." + KEY_NM;
+                  + " WHERE f." + KEY_TP_ID + " = " + iTypeID;
+//                  + " ORDER BY f." + KEY_NM;
          
          
          Cursor cursor = db.rawQuery(sql, null);
@@ -741,33 +743,18 @@ public class DBAdapter
 			_db.beginTransaction();
 	      try
 	      {
-	         ContentValues values;
-	         String msg;
-	         
-	         TypedArray ta = context.getResources().obtainTypedArray(R.array.fields1);
-	         int n = ta.length();
-//	         String ts[] = ta.getResources().getStringArray(0);
-//	         String ts1[] = ta.getResources().getStringArray(1);
-	         int resId = ta.getResourceId (0, 0);
-	         
-	         int ti[] = context.getResources().getIntArray(resId);
-	         
-	         int id1 = ta.getResourceId (1, 0);
-	         
-	         TypedArray ta1 = context.getResources().obtainTypedArray(id1);
-	         for(int j = 0; j < ta1.length(); j++)
-	         {
-	            int id2 = ta1.getResourceId(j, -1);
-	            String ts[] = context.getResources().getStringArray(id2);
-	            int b =2;
-	         }
-	         
-	         int iTypeID;
-	         String tsValues[];
-	         TypedArray taValues;
-	         int iValuesID;
-	         int iFieldID;
+	         int iTypeID,
+	             iValuesID,
+                iFieldID;
+
+	         String msg,
+	                sFieldName, 
+	                tsValues[];
+
 	         TypedArray taField;
+	         
+	         ContentValues values;
+	         
 	         TypedArray taFieldsValues = context.getResources().obtainTypedArray(R.array.fields_values);
 	         for(int i = 0; i < taFieldsValues.length(); i++)
 	         {
@@ -776,104 +763,94 @@ public class DBAdapter
 	            iTypeID = taField.getInt(0, -1);
 	            iValuesID = taField.getResourceId(1, -1);
 	            tsValues = context.getResources().getStringArray(iValuesID);
-	         }
-	         int id3 = taFieldsValues.getResourceId (1, 0);
-//	         int ti2[] = context.getResources().getIntArray(id3);
-	         TypedArray ta3 = context.getResources().obtainTypedArray(id3);
-	         int id5 = ta3.getInt(0, -1);
-	         int id6 = ta3.getResourceId(1, -1);
-	         
-	         String ts2[] = context.getResources().getStringArray(id6);
-	         
-	         String[][] array = new String[n][];
-	         for (int i = 0; i < n; ++i) 
-	         {
-	             int id = ta.getResourceId(i, 0);
-	             if (id > 0) 
-	             {
-	                 array[i] = context.getResources().getStringArray(id);
-	                 int a = 1;
-	             } else {
-	                 // something wrong with the XML
-	             }
+	            sFieldName = context.getResources().getResourceEntryName(iValuesID);
+	            for(String sValue : tsValues)
+	            {
+	               values = new ContentValues();
+	               values.put(KEY_TP_ID, iTypeID);
+	               values.put(KEY_NM, sValue);
+	               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+	               {
+	                  msg = String.format(Locale.getDefault(), msg_fmt, sFieldName, iTypeID, sValue);
+	                  throw new RuntimeException(msg);
+	               }              
+	            }
+	            taField.recycle();
 	         }
 	         
+	         taFieldsValues.recycle(); // Important!
 	         
-	         
-	         
-	         ta.recycle(); // Important!
-	         
-	         for(Field f: DummyContent.LANGUAGES)
-	         {
-	            values = new ContentValues();
-	            values.put(KEY_TP_ID, f.iTypeID);
-	            values.put(KEY_NM, f.sValue);
-               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-               {
-                  msg = String.format(Locale.getDefault(), msg_fmt, "LANGUAGES", f.iTypeID, f.sValue);
-                  throw new RuntimeException(msg);
-               }
-	         }
-	         
-            for(Field f: DummyContent.STATUS)
-            {
-               values = new ContentValues();
-               values.put(KEY_TP_ID, f.iTypeID);
-               values.put(KEY_NM, f.sValue);
-               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-               {
-                  msg = String.format(Locale.getDefault(), msg_fmt, "STATUS", f.iTypeID, f.sValue);
-                  throw new RuntimeException(msg);
-               }
-            }
-
-            for(Field f: DummyContent.RATINGS)
-            {
-               values = new ContentValues();
-               values.put(KEY_TP_ID, f.iTypeID);
-               values.put(KEY_NM, f.sValue);
-               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-               {
-                  msg = String.format(Locale.getDefault(), msg_fmt, "RATINGS", f.iTypeID, f.sValue);
-                  throw new RuntimeException(msg);
-               }
-            }
-
-            for(Field f: DummyContent.FORMATS)
-            {
-               values = new ContentValues();
-               values.put(KEY_TP_ID, f.iTypeID);
-               values.put(KEY_NM, f.sValue);
-               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-               {
-                  msg = String.format(Locale.getDefault(), msg_fmt, "FORMATS", f.iTypeID, f.sValue);
-                  throw new RuntimeException(msg);
-               }
-            }
-            
-            for(Field f: DummyContent.CONDITIONS)
-            {
-               values = new ContentValues();
-               values.put(KEY_TP_ID, f.iTypeID);
-               values.put(KEY_NM, f.sValue);
-               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-               {
-                  msg = String.format(Locale.getDefault(), msg_fmt, "CONDITIONS", f.iTypeID, f.sValue);
-                  throw new RuntimeException(msg);
-               }
-            }
-            
-            for(Field f: DummyContent.CURRENCIES)
-            {
-               values = new ContentValues();
-               values.put(KEY_TP_ID, f.iTypeID);
-               values.put(KEY_NM, f.sValue);
-               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-               {
-                  msg = String.format(Locale.getDefault(), msg_fmt, "CURRENCIES", f.iTypeID, f.sValue);
-                  throw new RuntimeException(msg);
-               }
-            }
+//	         for(Field f: DummyContent.LANGUAGES)
+//	         {
+//	            values = new ContentValues();
+//	            values.put(KEY_TP_ID, f.iTypeID);
+//	            values.put(KEY_NM, f.sValue);
+//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+//               {
+//                  msg = String.format(Locale.getDefault(), msg_fmt, "LANGUAGES", f.iTypeID, f.sValue);
+//                  throw new RuntimeException(msg);
+//               }
+//	         }
+//	         
+//            for(Field f: DummyContent.STATUS)
+//            {
+//               values = new ContentValues();
+//               values.put(KEY_TP_ID, f.iTypeID);
+//               values.put(KEY_NM, f.sValue);
+//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+//               {
+//                  msg = String.format(Locale.getDefault(), msg_fmt, "STATUS", f.iTypeID, f.sValue);
+//                  throw new RuntimeException(msg);
+//               }
+//            }
+//
+//            for(Field f: DummyContent.RATINGS)
+//            {
+//               values = new ContentValues();
+//               values.put(KEY_TP_ID, f.iTypeID);
+//               values.put(KEY_NM, f.sValue);
+//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+//               {
+//                  msg = String.format(Locale.getDefault(), msg_fmt, "RATINGS", f.iTypeID, f.sValue);
+//                  throw new RuntimeException(msg);
+//               }
+//            }
+//
+//            for(Field f: DummyContent.FORMATS)
+//            {
+//               values = new ContentValues();
+//               values.put(KEY_TP_ID, f.iTypeID);
+//               values.put(KEY_NM, f.sValue);
+//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+//               {
+//                  msg = String.format(Locale.getDefault(), msg_fmt, "FORMATS", f.iTypeID, f.sValue);
+//                  throw new RuntimeException(msg);
+//               }
+//            }
+//            
+//            for(Field f: DummyContent.CONDITIONS)
+//            {
+//               values = new ContentValues();
+//               values.put(KEY_TP_ID, f.iTypeID);
+//               values.put(KEY_NM, f.sValue);
+//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+//               {
+//                  msg = String.format(Locale.getDefault(), msg_fmt, "CONDITIONS", f.iTypeID, f.sValue);
+//                  throw new RuntimeException(msg);
+//               }
+//            }
+//            
+//            for(Field f: DummyContent.CURRENCIES)
+//            {
+//               values = new ContentValues();
+//               values.put(KEY_TP_ID, f.iTypeID);
+//               values.put(KEY_NM, f.sValue);
+//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
+//               {
+//                  msg = String.format(Locale.getDefault(), msg_fmt, "CURRENCIES", f.iTypeID, f.sValue);
+//                  throw new RuntimeException(msg);
+//               }
+//            }
             _db.setTransactionSuccessful();
 	      }
 	      catch(RuntimeException e)

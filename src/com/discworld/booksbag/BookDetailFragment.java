@@ -10,7 +10,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.discworld.booksbag.dto.Book;
@@ -40,7 +42,10 @@ public class BookDetailFragment extends Fragment
    private final static String SEP = ", ";
    
    private Book oBook;
+   
    private DBAdapter oDbAdapter = null;
+   
+   private LayoutInflater oInflater;
 
    /**
     * Mandatory empty constructor for the fragment manager to instantiate the
@@ -57,22 +62,21 @@ public class BookDetailFragment extends Fragment
       
       oDbAdapter = new DBAdapter(getActivity());
       oDbAdapter.open();
+      
+      oInflater = LayoutInflater.from(getActivity());
 
       if (getArguments().containsKey(ARG_ITEM_ID))
       {
          // Load the dummy content specified by the fragment
          // arguments. In a real-world scenario, use a Loader
          // to load content from a content provider.
-//         mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-//         mItem = DummyContent.BOOKS_MAP.get(getArguments().getLong(ARG_ITEM_ID));
-         long id = getArguments().getLong(ARG_ITEM_ID);
+//         long id = getArguments().getLong(ARG_ITEM_ID);
          oBook = oDbAdapter.getBook(getArguments().getLong(ARG_ITEM_ID));
 
          Activity activity = this.getActivity();
          CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
          if (appBarLayout != null)
          {
-//            appBarLayout.setTitle(mItem.content);
             appBarLayout.setTitle(oBook.csTitle.value);
          }
       }
@@ -115,7 +119,8 @@ public class BookDetailFragment extends Fragment
          
          for(FieldType fieldType: DBAdapter.FIELD_TYPES)
          {
-            sName = fieldType.sName + ":";
+//            sName = fieldType.sName + ":";
+            sName = fieldType.sName;
             
             if(fieldType.iID > 99)
             {
@@ -212,6 +217,7 @@ public class BookDetailFragment extends Fragment
                      }
                      if(date == null || date.toInt() == 0)
                         break;
+                     sValue = date.toString();
                   }
                   break;
                }               
@@ -224,10 +230,10 @@ public class BookDetailFragment extends Fragment
                   {
                      switch (fieldType.iType)
                      {
-                        case FieldType.TYPE_TEXT_AUTOCOMPLETE:
-                        case FieldType.TYPE_SPINNER:
-                           sValue = oField.sValue;
-                        break;
+//                        case FieldType.TYPE_TEXT_AUTOCOMPLETE:
+//                        case FieldType.TYPE_SPINNER:
+//                           sValue = oField.sValue;
+//                        break;
 
                         case FieldType.TYPE_MULTIFIELD:
                         case FieldType.TYPE_MULTI_SPINNER:
@@ -236,6 +242,10 @@ public class BookDetailFragment extends Fragment
                               sName = tsNames[1];
                            sValue += (!sValue.trim().isEmpty() ? SEP : "") + oField.sValue;  
                         break;
+                        
+                        default:
+                           sValue = oField.sValue;
+                           break;
                      }
                   }
                }
@@ -243,8 +253,12 @@ public class BookDetailFragment extends Fragment
             
             if(!sValue.trim().isEmpty())
             {
-//               sValue = sValue.replaceAll("\n", ", ");
-               addField(llCategories, sName, sValue);
+               if(fieldType.iType == FieldType.TYPE_RATING)
+                  addRatingField(llCategories, sName, sValue);
+               else if(fieldType.iType == FieldType.TYPE_CHECK_BOX)
+                  addCheckBoxField(llCategories, sName, sValue);
+               else
+                  addField(llCategories, sName, sValue);
                sName = "";
                sValue = "";
             }            
@@ -427,18 +441,38 @@ public class BookDetailFragment extends Fragment
    @Override
    public void onActivityResult(int requestCode, int resultCode, Intent data)
    {
-      // TODO Auto-generated method stub
       super.onActivityResult(requestCode, resultCode, data);
    }
 
    private void addField(LinearLayout rootView, String sName, String sValue)
    {
-      LayoutInflater oInflater = LayoutInflater.from(getActivity());
-      
       View vRow = oInflater.inflate(R.layout.row_category_new, null);
       ((TextView) vRow.findViewById(R.id.tv_title)).setText(sName);
       ((TextView) vRow.findViewById(R.id.tv_value)).setText(sValue);
       
       rootView.addView(vRow);  
    }
+
+   private void addRatingField(LinearLayout rootView,
+                               String sName,
+                               String sValue)
+   {
+      View vRow = oInflater.inflate(R.layout.row_category_rating, null);
+      ((TextView) vRow.findViewById(R.id.tv_title)).setText(sName);
+      ((RatingBar) vRow.findViewById(R.id.rating_bar)).setRating(Float.parseFloat(sValue));
+      
+      rootView.addView(vRow);
+   }
+   
+   private void addCheckBoxField(LinearLayout rootView,
+                                 String sName,
+                                 String sValue)
+   {
+      View vRow = oInflater.inflate(R.layout.row_category_check_box, null);
+      ((TextView) vRow.findViewById(R.id.tv_title)).setText(sName);
+      ((CheckBox) vRow.findViewById(R.id.check_box)).setChecked(Boolean.parseBoolean(sValue));
+
+      rootView.addView(vRow);
+   }
+   
 }

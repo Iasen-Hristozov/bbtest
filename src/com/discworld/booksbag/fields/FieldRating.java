@@ -124,6 +124,7 @@ public class FieldRating extends LinearLayout
    public void setRating(float fRating)
    {
       this.fRating = fRating;
+      oRatingBar.setRating(fRating);
    }
 
    public float getStepSize()
