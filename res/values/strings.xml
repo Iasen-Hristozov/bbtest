@@ -34,7 +34,7 @@
    <string name="fld_edition">Edition</string>
    <string name="fld_price">Price</string>
    <string name="fld_status">Status</string>
-   <string name="fld_value">Value</string>
+   <string name="fld_loaned_to">Loaned to</string><string name="fld_value">Value</string>
    <string name="fld_read">Read</string>
    <string name="fld_read_date">Read Date</string>
    <string name="fld_rating">Rating</string>
@@ -54,6 +54,11 @@
    <string name="exc_msg">Error inserting in %1$s TypeID:%2$d Value:%3$s</string>
    <string name="ord_title">Order by title</string>
    <string name="ord_author">Order by author</string>
+   <string name="ord_wanted_pbl_aut">Wanted, order by publisher and author</string>
+   <string name="ord_wanted_pbl_ttl">Wanted, order by publisher and title</string>
+   <string name="ord_read_aut">Read, order by author</string>
+   <string name="ord_not_read_aut">Not read, order by author</string>
+   <string name="ord_read_ttl">Read, order by ttl</string>
    <string name="lbl_books">books</string>
    <string name="book_0">No books</string>
    <string name="book">1 book</string>
@@ -98,5 +103,7 @@
    <string name="crn_eur">EUR</string>
    <string name="crn_rbl">RBL</string>
    <string name="err_emp_ttl">Title cannot be empty string</string>
+   
+   <string name="err_db">Error inserting in %1$s TypeID:%2$d Value:%3$s</string>
 
 </resources>

@@ -321,6 +321,10 @@ public class BookListActivity extends AppCompatActivity
       
       alOrderItems.add(new OrderItem(DBAdapter.ORD_TTL, getString(R.string.ord_title)));
       alOrderItems.add(new OrderItem(DBAdapter.ORD_AUT, getString(R.string.ord_author)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_WNT_PBL_TTL, getString(R.string.ord_wanted_pbl_ttl)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_WNT_PBL_AUT, getString(R.string.ord_wanted_pbl_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_RD_AUT, getString(R.string.ord_read_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_NOT_RD_AUT, getString(R.string.ord_not_read_aut)));
    }
 
    @Override

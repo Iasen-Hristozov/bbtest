@@ -381,7 +381,7 @@ public class EditBookActivity extends AppCompatActivity
       oFieldAutoCompleteTextView.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oFieldAutoCompleteTextView.setHint(oFieldType.sName);
 
-      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID);
+      final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID, true);
       Field oField = new Field(oFieldType.iID);
       
       // Looking in book field collection for field of type 
@@ -524,7 +524,7 @@ public class EditBookActivity extends AppCompatActivity
       oFieldMultiText.setHint(tsNames[0]);
 
       // Set adapter
-      final ArrayList<Field> alFieldsValues = oDbAdapter.getFieldValues(oFieldType.iID);
+      final ArrayList<Field> alFieldsValues = oDbAdapter.getFieldValues(oFieldType.iID, true);
       final ArrayList<FieldMultiText.Item> alItemsValues = new ArrayList<FieldMultiText.Item>();
       for(FieldMultiText.Item field: alFieldsValues)
          alItemsValues.add(field);
