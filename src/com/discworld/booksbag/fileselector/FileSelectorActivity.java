@@ -8,11 +8,6 @@ import android.widget.Toast;
 
 public class FileSelectorActivity extends Activity
 {
-
-   private Button mLoadButton;
-
-   private Button mSaveButton;
-
    /** Sample filters array */
    final String[] mFileFilter = { "*.*", ".jpeg", ".txt", ".png" };
 

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.support.v7.widget.Toolbar;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.discworld.booksbag.dto.Date;
 import com.discworld.booksbag.dto.Field;
 import com.discworld.booksbag.dto.FieldType;
 import com.discworld.booksbag.dto.Price;
+import com.discworld.booksbag.dto.Utils;
 import com.discworld.booksbag.fields.AutoCompleteTextViewX;
 import com.discworld.booksbag.fields.EditTextX;
 import com.discworld.booksbag.fields.FieldAutoCompleteTextView;
@@ -58,11 +60,18 @@ public class EditBookActivity extends AppCompatActivity
                               IS_COPY = "is_copy";
 
    private Book oBook;
+   
    private LinearLayout llFields;
+   
    private DBAdapter oDbAdapter = null;
+   
    private PopupMenu pmHiddenFields = null;
+   
    private Button btnAddField = null;
+   
    private FieldEditTextUpdatableClearable fBookTitle = null;
+   
+   private View vPrevious = null;
    
    HashMap<MenuItem, View> hmHiddenFileds = new HashMap<MenuItem, View>();
 
@@ -316,13 +325,17 @@ public class EditBookActivity extends AppCompatActivity
    private <T> void addFieldText(ViewGroup rootView, FieldType oFieldType,  final Changeable<T> cValue)
    {
       final FieldEditTextUpdatableClearable oField = new FieldEditTextUpdatableClearable(this);
+      
       oField.setTitle(oFieldType.sName);
       oField.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oField.setText(cValue.toString());
       oField.setHint(oFieldType.sName);
       oField.setInputType(oFieldType.iInputType);
       if(oFieldType.iID == DBAdapter.FLD_TITLE)
+      {
          fBookTitle = oField;
+         vPrevious = oField.findViewById(R.id.editTextX);
+      }
 //      if(oFieldType.isMultiline)
 //         oField.setMultiline();
       oField.setUpdateListener(new EditTextX.OnUpdateListener()
@@ -380,6 +393,8 @@ public class EditBookActivity extends AppCompatActivity
       oFieldAutoCompleteTextView.setTitle(oFieldType.sName);
       oFieldAutoCompleteTextView.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));
       oFieldAutoCompleteTextView.setHint(oFieldType.sName);
+      View v = new View(this);
+      v.setNextFocusDownId(oFieldAutoCompleteTextView.getId());
 
       final ArrayList<Field> alFieldValues = oDbAdapter.getFieldValues(oFieldType.iID, true);
       Field oField = new Field(oFieldType.iID);
@@ -517,6 +532,12 @@ public class EditBookActivity extends AppCompatActivity
    private void addFieldMultiText(ViewGroup rootView, final FieldType oFieldType)
    {
       final FieldMultiText oFieldMultiText = new FieldMultiText(this);
+      if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
+         oFieldMultiText.setId(Utils.generateViewId());
+      else
+         oFieldMultiText.setId(View.generateViewId());
+      if(vPrevious != null)
+         vPrevious.setNextFocusDownId(R.id.et_author_1);
       String tsNames[] = oFieldType.sName.split("\\|");
       oFieldMultiText.setTitle(tsNames.length > 1 ? tsNames[1] : oFieldType.sName);
       oFieldMultiText.setTitleColor(ResourcesCompat.getColor(getResources(), R.color.primary, null));

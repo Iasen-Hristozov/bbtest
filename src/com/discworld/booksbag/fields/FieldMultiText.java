@@ -3,9 +3,6 @@ package com.discworld.booksbag.fields;
 import java.util.ArrayList;
 
 import com.discworld.booksbag.R;
-import com.discworld.booksbag.R.id;
-import com.discworld.booksbag.R.layout;
-import com.discworld.booksbag.R.styleable;
 import com.discworld.booksbag.fields.AutoCompleteTextViewX.OnUpdateListener;
 
 import android.content.Context;
@@ -77,7 +74,6 @@ public class FieldMultiText extends LinearLayout
       oTitle.setTextSize(titleTextSize);
       oTitle.setLineSize(titleLineSize);
    }
-   
 
    void vInit(Context context)
    {
@@ -158,7 +154,10 @@ public class FieldMultiText extends LinearLayout
    private void addField(LinearLayout llFields, Item item)
    {
       final View vRow = addRow(llFields);
-      EditText etValue = (EditText)vRow.findViewById(R.id.et_value); 
+      
+      EditText etValue = (EditText)vRow.findViewById(R.id.et_value);
+      if(llFields.getChildCount() == 1)
+         etValue.setId(R.id.et_author_1);
 
       etValue.setText(item.getValue());
 //      etValue.setTag(item);

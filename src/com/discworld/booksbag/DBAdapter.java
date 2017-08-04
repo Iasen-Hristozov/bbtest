@@ -26,7 +26,6 @@ import com.discworld.booksbag.dto.FieldType;
 import com.discworld.booksbag.dto.FileUtils;
 import com.discworld.booksbag.dto.ParentResult;
 import com.discworld.booksbag.dto.Result;
-import com.discworld.booksbag.dummy.DummyContent;
 
 public class DBAdapter
 {
@@ -151,7 +150,11 @@ public class DBAdapter
                            ORD_WNT_PBL_AUT = 3,
                            ORD_WNT_PBL_TTL = 4,
                            ORD_RD_AUT = 5,
-                           ORD_NOT_RD_AUT = 6;
+                           ORD_NOT_RD_AUT = 6,
+                           ORD_NOT_RD_TTL = 7,
+                           ORD_RD_TTL = 8,
+                           ORD_PBL_AUT = 9,
+                           ORD_PBL_TTL = 10;
 
    public final static ArrayList<FieldType> FIELD_TYPES = new ArrayList<FieldType>();
    
@@ -280,67 +283,6 @@ public class DBAdapter
       }      
    }
    
-   public ArrayList<Result> getBooks(int iOrder)
-//   public ArrayList<Book> getBooks(int iOrder)
-   {
-      String query = "";
-      switch(iOrder)
-      {
-         case ORD_TTL:
-//            query = "SELECT b." + KEY_ID + ", b." + KEY_TTL + ", GROUP_CONCAT(f." + KEY_NM + ") AS authors "
-//                  + "FROM " + TABLE_BOOKS + " AS b LEFT JOIN " + TABLE_BOOK_FIELDS + " AS bf ON bf." + KEY_BK_ID + " = " + "b." + KEY_ID
-//                  + " LEFT JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-//                  + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUTHOR
-//                  + " GROUP BY b." + KEY_ID
-//                  + " ORDER BY b." + KEY_TTL;
-            
-//            query = "SELECT b." + KEY_ID + ", b." + KEY_TTL + "|| \" - \" || COALESCE(GROUP_CONCAT(f_name, \", \"), \"\") AS content"
-//                     + " FROM " + TABLE_BOOKS 
-//                     + " AS b LEFT JOIN"
-//                     + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"
-//                     + " ON ss.bf_book_id = b." + KEY_ID 
-//                     + " GROUP BY b." + KEY_ID 
-//                     + " ORDER BY b." + KEY_TTL;    
-         
-            query = "SELECT b." + KEY_ID + ", COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(f_name, \", \"), b."+ KEY_TTL + ")  AS content"
-                     + " FROM " + TABLE_BOOKS + " AS b"
-                     + " LEFT JOIN"
-                     + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name"
-                     +" FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " 
-                     + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss on ss.bf_book_id = b." + KEY_ID 
-                     + " GROUP BY b." + KEY_ID 
-                     + " ORDER BY content";
-
-         break;
-         
-         
-
-         case ORD_AUT:
-//            query = "SELECT b." + KEY_ID + ", b." + KEY_TTL + ", GROUP_CONCAT(f." + KEY_NM + ") AS authors "
-//                  + "FROM " + TABLE_BOOKS + " AS b LEFT JOIN " + TABLE_BOOK_FIELDS + " AS bf ON bf." + KEY_BK_ID + " = " + "b." + KEY_ID
-//                  + " LEFT JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-//                  + " WHERE bf." + KEY_TP_ID + " = " + FLD_AUTHOR
-//                  + " GROUP BY b." + KEY_ID
-//                  + " ORDER BY authors";
-            
-            query = "SELECT b." + KEY_ID + ", GROUP_CONCAT(f_name, \", \") || \" - \" ||" + " b." + KEY_TTL + " AS content"
-                     + " FROM " + TABLE_BOOKS 
-                     + " AS b LEFT JOIN"
-                     + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"
-                     + " ON ss.bf_book_id = b." + KEY_ID 
-                     + " GROUP BY b." + KEY_ID 
-                     + " ORDER BY content";
-            
-
-         break;
-
-         default:
-            return null;
-      }
-
-      return getBooksOrderedBy(query);
-   }
-   
    private final static String QR_TTL = "SELECT UPPER(SUBSTR(b." + KEY_TTL + ", 1, 1)) AS parent, b." + KEY_ID + " AS child_id, COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(f_name, \", \"), b." + KEY_TTL + ") AS child"
                                       + " FROM " + TABLE_BOOKS + " AS b"
                                       + " LEFT JOIN "
@@ -359,37 +301,37 @@ public class DBAdapter
                                       + " GROUP BY b." + KEY_ID 
                                       + " ORDER BY parent, child",
    
-                               QR_WNT_TTL_AUT = "SELECT IFNULL(p.f_name, \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(a.f_name, \", \"), b." + KEY_TTL + ") AS child"
-                                              + " FROM " + TABLE_BOOKS
-                                              + " AS b LEFT JOIN"
-                                              + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-                                              + " WHERE f." + KEY_TP_ID + " = " + FLD_PUBLISHER + ") AS p"
-                                              + " ON p.bf_book_id = b." + KEY_ID
-                                              + " LEFT JOIN"
-                                              + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-                                              + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS a"
-                                              + " ON a.bf_book_id = b." + KEY_ID
-                                              + " JOIN " + TABLE_BOOK_FIELDS + " as bf ON b." + KEY_ID + " = bf." + KEY_BK_ID
-                                              + " JOIN " + TABLE_FIELDS + " as f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
-                                              + " WHERE f." + KEY_NM + " = \"Wanted\""
-                                              + " GROUP BY b." + KEY_ID
-                                              + " ORDER BY parent, child",
+                               QR_WNT_TTL = "SELECT IFNULL(p.f_name, \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(a.f_name, \", \"), b." + KEY_TTL + ") AS child"
+                                          + " FROM " + TABLE_BOOKS
+                                          + " AS b LEFT JOIN"
+                                          + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_PUBLISHER + ") AS p"
+                                          + " ON p.bf_book_id = b." + KEY_ID
+                                          + " LEFT JOIN"
+                                          + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS a"
+                                          + " ON a.bf_book_id = b." + KEY_ID
+                                          + " JOIN " + TABLE_BOOK_FIELDS + " as bf ON b." + KEY_ID + " = bf." + KEY_BK_ID
+                                          + " JOIN " + TABLE_FIELDS + " as f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_STATUS + " AND f." + KEY_NM + " = \"Wanted\""
+                                          + " GROUP BY b." + KEY_ID
+                                          + " ORDER BY parent, child",
    
-                               QR_WNT_AUT_TTL = "SELECT IFNULL(p.f_name, \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, COALESCE(GROUP_CONCAT(a.f_name, \", \") || \" - \" || b." + KEY_TTL + ", b." + KEY_TTL + ") AS child"
-                                              + " FROM " + TABLE_BOOKS
-                                              + " AS b LEFT JOIN"
-                                              + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-                                              + " WHERE f." + KEY_TP_ID + " = " + FLD_PUBLISHER + ") AS p"
-                                              + " ON p.bf_book_id = b." + KEY_ID
-                                              + " LEFT JOIN"
-                                              + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
-                                              + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS a"
-                                              + " ON a.bf_book_id = b." + KEY_ID
-                                              + " JOIN " + TABLE_BOOK_FIELDS + " as bf ON b." + KEY_ID + " = bf." + KEY_BK_ID
-                                              + " JOIN " + TABLE_FIELDS + " as f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
-                                              + " WHERE f." + KEY_NM + " = \"Wanted\""
-                                              + " GROUP BY b." + KEY_ID
-                                              + " ORDER BY parent, child",
+                               QR_WNT_AUT = "SELECT IFNULL(p.f_name, \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, COALESCE(GROUP_CONCAT(a.f_name, \", \") || \" - \" || b." + KEY_TTL + ", b." + KEY_TTL + ") AS child"
+                                          + " FROM " + TABLE_BOOKS
+                                          + " AS b LEFT JOIN"
+                                          + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_PUBLISHER + ") AS p"
+                                          + " ON p.bf_book_id = b." + KEY_ID
+                                          + " LEFT JOIN"
+                                          + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS a"
+                                          + " ON a.bf_book_id = b." + KEY_ID
+                                          + " JOIN " + TABLE_BOOK_FIELDS + " as bf ON b." + KEY_ID + " = bf." + KEY_BK_ID
+                                          + " JOIN " + TABLE_FIELDS + " as f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_STATUS + " AND f." + KEY_NM + " = \"Wanted\""
+                                          + " GROUP BY b." + KEY_ID
+                                          + " ORDER BY parent, child",
    
                                QR_RD_AUT = "SELECT IFNULL(GROUP_CONCAT(a.f_name, \", \"), \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, b." + KEY_TTL + " AS child"
                                          + " FROM " + TABLE_BOOKS + " AS b"
@@ -399,7 +341,19 @@ public class DBAdapter
                                          + " ON a.bf_book_id = b." + KEY_ID
                                          + " JOIN " + TABLE_BOOK_FIELDS + " as bf ON b." + KEY_ID + " = bf." + KEY_BK_ID
                                          + " JOIN " + TABLE_FIELDS + " as f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
-                                         + " WHERE f." + KEY_NM + " = \"true\" AND f." + KEY_TP_ID + " = " + FLD_READ
+                                         + " WHERE f." + KEY_TP_ID + " = " + FLD_READ + " AND f." + KEY_NM + " = \"true\""
+                                         + " GROUP BY b." + KEY_ID
+                                         + " ORDER BY parent, child",
+
+                               QR_RD_TTL = "SELECT UPPER(SUBSTR(b." + KEY_TTL + ", 1, 1)) AS parent, b." + KEY_ID + " AS child_id, COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(a.f_name, \", \"), b." + KEY_TTL + ") AS child"
+                                         + " FROM " + TABLE_BOOKS + " AS b"
+                                         + " LEFT JOIN"
+                                         + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                         + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS a"
+                                         + " ON a.bf_book_id = b." + KEY_ID
+                                         + " JOIN " + TABLE_BOOK_FIELDS + " as bf ON b." + KEY_ID + " = bf." + KEY_BK_ID
+                                         + " JOIN " + TABLE_FIELDS + " as f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
+                                         + " WHERE f." + KEY_TP_ID + " = " + FLD_READ + " AND f." + KEY_NM + " = \"true\""
                                          + " GROUP BY b." + KEY_ID
                                          + " ORDER BY parent, child",
                               
@@ -415,52 +369,94 @@ public class DBAdapter
                                             + " ON r.bf_book_id = b." + KEY_ID
                                             + " where r.f_name = \"false\" or r.f_name isnull"
                                             + " GROUP BY b." + KEY_ID
-                                            + " ORDER BY parent, child";
-   public ArrayList<ParentResult> getBooks1(int iOrder)
+                                            + " ORDER BY parent, child",
+   
+                              QR_NOT_RD_TTL = "SELECT UPPER(SUBSTR(b." + KEY_TTL + ", 1, 1)) AS parent, b." + KEY_ID + " AS child_id, COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(a.f_name, \", \"), b." + KEY_TTL + ") AS child"
+                                            + " FROM " + TABLE_BOOKS + " AS b"
+                                            + " LEFT JOIN"
+                                            + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                            + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS a"
+                                            + " ON a.bf_book_id = b." + KEY_ID
+                                            + " LEFT JOIN"
+                                            + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                            + " WHERE f." + KEY_TP_ID + " = " + FLD_READ + ") AS r"
+                                            + " ON r.bf_book_id = b." + KEY_ID
+                                            + " where r.f_name = \"false\" or r.f_name isnull"
+                                            + " GROUP BY b." + KEY_ID
+                                            + " ORDER BY parent, child",
+   
+                               QR_PBL_AUT = "SELECT IFNULL(p.f_name, \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, COALESCE(GROUP_CONCAT(a.f_name, \", \") || \" - \" || b." + KEY_TTL + ", b." + KEY_TTL + ") AS child"
+                                          + " FROM " + TABLE_BOOKS
+                                          + " AS b LEFT JOIN"
+                                          + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_PUBLISHER + ") AS p"
+                                          + " ON p.bf_book_id = b." + KEY_ID
+                                          + " LEFT JOIN"
+                                          + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS a"
+                                          + " ON a.bf_book_id = b." + KEY_ID
+                                          + " GROUP BY b." + KEY_ID
+                                          + " ORDER BY parent, child",
+   
+                               QR_PBL_TTL = "SELECT IFNULL(p.f_name, \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(a.f_name, \", \"), b." + KEY_TTL + ") AS child"
+                                          + " FROM " + TABLE_BOOKS
+                                          + " AS b LEFT JOIN"
+                                          + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_PUBLISHER + ") AS p"
+                                          + " ON p.bf_book_id = b." + KEY_ID
+                                          + " LEFT JOIN"
+                                          + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID
+                                          + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS a"
+                                          + " ON a.bf_book_id = b." + KEY_ID
+                                          + " GROUP BY b." + KEY_ID
+                                          + " ORDER BY parent, child";   
+   
+
+   public ArrayList<ParentResult> getBooks(int iOrder)
    {
       String query = "";
       switch(iOrder)
       {
          case ORD_TTL: 
-//            query = "SELECT UPPER(SUBSTR(b." + KEY_TTL + ", 1, 1)) AS parent, b." + KEY_ID + " AS child_id, COALESCE(b." + KEY_TTL + " || \" - \" || GROUP_CONCAT(f_name, \", \"), b." + KEY_TTL + ") AS child"
-//                  + " FROM " + TABLE_BOOKS + " AS b"
-//                  + " LEFT JOIN "
-//                  + "(SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name"
-//                  + " FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f._id = bf." + KEY_FLD_ID 
-//                  + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss on ss.bf_book_id = b._id"
-//                  + " GROUP BY b." + KEY_ID 
-//                  + " ORDER BY parent, child";
             query = QR_TTL;
          break;
 
          case ORD_AUT :
-//            query = "SELECT IFNULL(GROUP_CONCAT(f_name, \", \"), \"(missing)\") AS parent, b." + KEY_ID + " AS child_id, b." + KEY_TTL + " AS child"
-//                  + " FROM " + TABLE_BOOKS 
-//                  + " AS b LEFT JOIN"
-//                  + " (SELECT bf." + KEY_FLD_ID + " AS bf_field_id, bf." + KEY_BK_ID + " AS bf_book_id, f." + KEY_NM + " AS f_name FROM " + TABLE_BOOK_FIELDS + " AS bf JOIN " + TABLE_FIELDS + " AS f ON f." + KEY_ID + " = bf." + KEY_FLD_ID 
-//                  + " WHERE f." + KEY_TP_ID + " = " + FLD_AUTHOR + ") AS ss"
-//                  + " ON ss.bf_book_id = b." + KEY_ID 
-//                  + " GROUP BY b." + KEY_ID 
-//                  + " ORDER BY parent, child";
             query = QR_AUT;
          break;
          
          case ORD_WNT_PBL_AUT:
-            query = QR_WNT_AUT_TTL;
+            query = QR_WNT_AUT;
          break;
 
          case ORD_WNT_PBL_TTL:
-            query = QR_WNT_TTL_AUT;
+            query = QR_WNT_TTL;
          break;
 
          case ORD_RD_AUT:
             query = QR_RD_AUT;
          break;
+
+         case ORD_RD_TTL:
+            query = QR_RD_TTL;
+         break;
          
          case ORD_NOT_RD_AUT:
             query = QR_NOT_RD_AUT;
          break;
-            
+
+         case ORD_NOT_RD_TTL:
+            query = QR_NOT_RD_TTL;
+         break;
+
+         case ORD_PBL_AUT:
+            query = QR_PBL_AUT;
+         break;
+
+         case ORD_PBL_TTL:
+            query = QR_PBL_TTL;
+         break;
+         
          default:
             return null;
       }
@@ -544,171 +540,125 @@ public class DBAdapter
    
    public ArrayList<Field> getFieldValues(int iTypeID, boolean isOrdered)
    {
-      if(Debug.ON)
+
+      ArrayList<Field> alFieldValues = new ArrayList<>();
+
+      // SELECT f.id, bf.type_id, f.name
+      // FROM book_fields as bf LEFT JOIN fields AS f ON bf.field_id = f.id
+      // WHERE bf.type_id =1
+      // ORDER BY f.name
+
+      // String sql = "SELECT f." + KEY_ID + ", bf." + KEY_TP_ID + ", f." +
+      // KEY_NM
+      // + " FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS +
+      // " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
+      // + " WHERE bf." + KEY_TP_ID + " = " + iTypeID
+      // + " ORDER BY f." + KEY_NM;
+
+      String sql = "SELECT f." + KEY_ID + ", f." + KEY_TP_ID + ", f." + KEY_NM
+                   + " FROM " + TABLE_FIELDS + " as f "
+                   + " WHERE f." + KEY_TP_ID + " = " + iTypeID;
+      // + " ORDER BY f." + KEY_NM;
+
+      if(isOrdered)
+         sql += " ORDER BY f." + KEY_NM;
+
+      Cursor cursor = db.rawQuery(sql, null);
+
+      Field oField;
+      // ArrayList<Field> alFields = new ArrayList<>();
+      if(cursor.moveToFirst())
       {
-         switch(iTypeID)
+         do
          {
-            case FLD_AUTHOR:
-               return DummyContent.AUTHORS;
-            case FLD_CATEGORY:
-               return DummyContent.CATEGORIES;
-            case FLD_CONDITION:
-               return DummyContent.CONDITIONS;
-            case FLD_CURRENCY:
-               return DummyContent.CURRENCIES;
-            case FLD_FORMAT:
-               return DummyContent.FORMATS;
-            case FLD_LANGUAGE:
-               return DummyContent.LANGUAGES;
-            case FLD_LOCATION:
-               return DummyContent.LOCATIONS;
-            case FLD_PUBLICATION_LOCATION:
-               return DummyContent.PUBLISHING_LOCATIONS;
-            case FLD_PUBLISHER:
-               return DummyContent.PUBLISHERS;
-            case FLD_RATING:
-               return DummyContent.RATINGS;
-            case FLD_SERIE:
-               return DummyContent.SERIES;
-            case FLD_STATUS:
-               return DummyContent.STATUS;
-            default:
-               return null;
-         }
+            oField = new Field(Integer.parseInt(cursor.getString(ID_KEY_ID)),
+                               Integer.parseInt(cursor.getString(ID_KEY_TP_ID)),
+                               cursor.getString(ID_KEY_NM));
+
+            alFieldValues.add(oField);
+         } while(cursor.moveToNext());
       }
-      else
-      {
-         ArrayList<Field> alFieldValues = new ArrayList<>();
-   
-   //      SELECT f.id, bf.type_id, f.name
-   //      FROM book_fields as bf LEFT JOIN fields AS f ON bf.field_id = f.id
-   //      WHERE bf.type_id =1
-   //      ORDER BY f.name
-   
-//         String sql = "SELECT f." + KEY_ID + ", bf." + KEY_TP_ID + ", f." + KEY_NM
-//               + " FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS + " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
-//               + " WHERE bf." + KEY_TP_ID + " = " + iTypeID
-//               + " ORDER BY f." + KEY_NM;
-   
-         String sql = "SELECT f." + KEY_ID + ", f." + KEY_TP_ID + ", f." + KEY_NM
-                  + " FROM " + TABLE_FIELDS + " as f "
-                  + " WHERE f." + KEY_TP_ID + " = " + iTypeID;
-//                  + " ORDER BY f." + KEY_NM;
-         
-         if(isOrdered)
-            sql += " ORDER BY f." + KEY_NM;
-         
-         Cursor cursor = db.rawQuery(sql, null);
-   
-         Field oField;
-   //      ArrayList<Field> alFields = new ArrayList<>();
-         if(cursor.moveToFirst())
-         {
-            do
-            {
-               oField = new Field(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-                                  Integer.parseInt(cursor.getString(ID_KEY_TP_ID)),
-                                  cursor.getString(ID_KEY_NM));
-   
-               alFieldValues.add(oField);
-            } while (cursor.moveToNext());
-         }
-   
-         return alFieldValues;
-      }
+
+      return alFieldValues;
    }
+   
 
    public Book getBook(long iBookID)
    {
-      if(Debug.ON)
+      Book oBook = null;
+
+      Cursor cursor = db.query(TABLE_BOOKS,
+                               null,
+                               KEY_ID + " = " + iBookID,
+                               null,
+                               null,
+                               null,
+                               null);
+
+      if(cursor.moveToFirst())
       {
-         return DummyContent.BOOKS_MAP.get(iBookID);
+         oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
+                          cursor.getString(ID_KEY_TTL),
+                          cursor.getString(ID_KEY_DSCR),
+                          Integer.parseInt(cursor.getString(ID_KEY_VLM)),
+                          Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
+                          Integer.parseInt(cursor.getString(ID_KEY_PGS)),
+                          // Integer.parseInt(cursor.getString(ID_KEY_PRC)),
+                          // Integer.parseInt(cursor.getString(ID_KEY_VL)),
+                          cursor.getString(ID_KEY_PRC),
+                          cursor.getString(ID_KEY_VL),
+                          Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
+                          Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
+                          Integer.parseInt(cursor.getString(ID_KEY_EDN)),
+                          cursor.getString(ID_KEY_ISBN),
+                          cursor.getString(ID_KEY_WEB));
       }
-      else
+
+      String sql = "SELECT f." + KEY_ID + ", f." + KEY_TP_ID + ", f." + KEY_NM
+                   + " FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS + " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
+                   + " WHERE bf." + KEY_BK_ID + " = " + iBookID;
+
+      cursor = db.rawQuery(sql, null);
+
+      Field oField;
+      // ArrayList<Field> alFields = new ArrayList<>();
+      if(cursor.moveToFirst())
       {
-         Book oBook = null;
-   
-         Cursor cursor = db.query(TABLE_BOOKS,
-                                  null,
-                                  KEY_ID + " = " + iBookID,
-                                  null,
-                                  null,
-                                  null,
-                                  null);
-   
-         if(cursor.moveToFirst())
+         do
          {
-            oBook = new Book(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-                             cursor.getString(ID_KEY_TTL),
-                             cursor.getString(ID_KEY_DSCR),
-                             Integer.parseInt(cursor.getString(ID_KEY_VLM)),
-                             Integer.parseInt(cursor.getString(ID_KEY_PBL_DT)),
-                             Integer.parseInt(cursor.getString(ID_KEY_PGS)),
-//                             Integer.parseInt(cursor.getString(ID_KEY_PRC)),
-//                             Integer.parseInt(cursor.getString(ID_KEY_VL)),
-                             cursor.getString(ID_KEY_PRC),
-                             cursor.getString(ID_KEY_VL),
-                             Integer.parseInt(cursor.getString(ID_KEY_DUE_DT)),
-                             Integer.parseInt(cursor.getString(ID_KEY_RD_DT)),
-                             Integer.parseInt(cursor.getString(ID_KEY_EDN)),
-                             cursor.getString(ID_KEY_ISBN),
-                             cursor.getString(ID_KEY_WEB));
-         }
-   
-         String sql = "SELECT f." + KEY_ID + ", f." + KEY_TP_ID + ", f." + KEY_NM
-                     +" FROM " + TABLE_BOOK_FIELDS + " as bf LEFT JOIN " + TABLE_FIELDS + " AS f ON bf." + KEY_FLD_ID + " = f." + KEY_ID
-                     +" WHERE bf." + KEY_BK_ID + " = " + iBookID;
-   
-         cursor = db.rawQuery(sql, null);
-   
-         Field oField;
-//         ArrayList<Field> alFields = new ArrayList<>();
-         if(cursor.moveToFirst())
-         {
-            do
-            {
-               oField = new Field(Integer.parseInt(cursor.getString(ID_KEY_ID)),
-                                  Integer.parseInt(cursor.getString(ID_KEY_TP_ID)),
-                                  cursor.getString(ID_KEY_NM));
-   
-               oBook.alFields.add(oField);
-            } while (cursor.moveToNext());
-         }
-//         oBook.alFields = alFields;
-   
-         return oBook;
+            oField = new Field(Integer.parseInt(cursor.getString(ID_KEY_ID)),
+                               Integer.parseInt(cursor.getString(ID_KEY_TP_ID)),
+                               cursor.getString(ID_KEY_NM));
+
+            oBook.alFields.add(oField);
+         } while(cursor.moveToNext());
       }
-      
+      // oBook.alFields = alFields;
+
+      return oBook;
    }
 
    public boolean deleteBook(long iBookID)
    {
       boolean result = true;
 
-      if(Debug.ON)
+      db.beginTransaction();
+      try
       {
-         DummyContent.BOOKS_MAP.remove(iBookID);         
+         db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + iBookID, null);
+         db.delete(TABLE_BOOKS, KEY_ID + " = " + iBookID, null);
+
+         db.setTransactionSuccessful();
       }
-      else
+      catch(Exception e)
       {
-         db.beginTransaction();
-         try
-         {
-            db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + iBookID, null);
-            db.delete(TABLE_BOOKS, KEY_ID + " = " + iBookID, null);
-            
-            db.setTransactionSuccessful();
-         }
-         catch (Exception e)
-         {
-            Log.e(TAG, e.getMessage());
-            result = false;
-         }
-         finally
-         {
-            db.endTransaction();
-            shrink();
-         }
+         Log.e(TAG, e.getMessage());
+         result = false;
+      }
+      finally
+      {
+         db.endTransaction();
+         shrink();
       }
 
       return result;
@@ -716,76 +666,61 @@ public class DBAdapter
 
    public boolean updateBook(Book oBook)
    {
-      
-      if(Debug.ON)
-      {
-         DummyContent.BOOKS_MAP.remove(oBook.iID);
-         DummyContent.BOOKS_MAP.put(oBook.iID, oBook);
-         DummyContent.BOOKS.remove(oBook);
-         DummyContent.BOOKS.add(oBook);
-         return true;
-      }
-      else
-      {
-         ContentValues oValues;
-         boolean result = true;
+      ContentValues oValues;
+      boolean result = true;
 
-         db.beginTransaction();
-         try
+      db.beginTransaction();
+      try
+      {
+         for(Field oField : oBook.alFields)
          {
-            for (Field oField : oBook.alFields)
-            {
-               if (oField.iID == 0)
-               {
-                  oValues = new ContentValues();
-                  oValues.put(KEY_TP_ID, oField.iTypeID);
-                  oValues.put(KEY_NM, oField.sValue);
-                  oField.iID = db.insert(TABLE_FIELDS, null, oValues);
-               }
-            }
-   
-            db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + oBook.iID, null);
-   
-            for (Field oField : oBook.alFields)
+            if(oField.iID == 0)
             {
                oValues = new ContentValues();
-               oValues.put(KEY_FLD_ID, oField.iID);
-               oValues.put(KEY_BK_ID, oBook.iID);
-               db.insert(TABLE_BOOK_FIELDS, null, oValues);
+               oValues.put(KEY_TP_ID, oField.iTypeID);
+               oValues.put(KEY_NM, oField.sValue);
+               oField.iID = db.insert(TABLE_FIELDS, null, oValues);
             }
-   
+         }
+
+         db.delete(TABLE_BOOK_FIELDS, KEY_BK_ID + " = " + oBook.iID, null);
+
+         for(Field oField : oBook.alFields)
+         {
             oValues = new ContentValues();
-            oValues.put(KEY_TTL, oBook.csTitle.value);
-            oValues.put(KEY_DSCR, oBook.csDescription.value);
-            oValues.put(KEY_VLM, oBook.ciVolume.value);
-            oValues.put(KEY_PBL_DT, oBook.ciPublicationDate.value);
-            oValues.put(KEY_PGS, oBook.ciPages.value);
-            oValues.put(KEY_PRC, oBook.csPrice.value);
-            oValues.put(KEY_VL, oBook.csValue.value);
-            oValues.put(KEY_DUE_DT, oBook.ciDueDate.value);
-            oValues.put(KEY_RD_DT, oBook.ciReadDate.value);
-            oValues.put(KEY_EDN, oBook.ciEdition.value);
-            oValues.put(KEY_ISBN, oBook.csISBN.value);
-            oValues.put(KEY_WEB, oBook.csWeb.value);
-            db.update(TABLE_BOOKS,
-                      oValues,
-                      KEY_ID + " = " + oBook.iID,
-                      null);
-   
-            db.setTransactionSuccessful();
+            oValues.put(KEY_FLD_ID, oField.iID);
+            oValues.put(KEY_BK_ID, oBook.iID);
+            db.insert(TABLE_BOOK_FIELDS, null, oValues);
          }
-         catch (Exception e)
-         {
-            Log.e(TAG, e.getMessage());
-            result = false;
-         }
-         finally
-         {
-            db.endTransaction();
-            shrink();
-         }
-         return result;
+
+         oValues = new ContentValues();
+         oValues.put(KEY_TTL, oBook.csTitle.value);
+         oValues.put(KEY_DSCR, oBook.csDescription.value);
+         oValues.put(KEY_VLM, oBook.ciVolume.value);
+         oValues.put(KEY_PBL_DT, oBook.ciPublicationDate.value);
+         oValues.put(KEY_PGS, oBook.ciPages.value);
+         oValues.put(KEY_PRC, oBook.csPrice.value);
+         oValues.put(KEY_VL, oBook.csValue.value);
+         oValues.put(KEY_DUE_DT, oBook.ciDueDate.value);
+         oValues.put(KEY_RD_DT, oBook.ciReadDate.value);
+         oValues.put(KEY_EDN, oBook.ciEdition.value);
+         oValues.put(KEY_ISBN, oBook.csISBN.value);
+         oValues.put(KEY_WEB, oBook.csWeb.value);
+         db.update(TABLE_BOOKS, oValues, KEY_ID + " = " + oBook.iID, null);
+
+         db.setTransactionSuccessful();
       }
+      catch(Exception e)
+      {
+         Log.e(TAG, e.getMessage());
+         result = false;
+      }
+      finally
+      {
+         db.endTransaction();
+         shrink();
+      }
+      return result;
    }
 
    public void shrink()
@@ -817,8 +752,7 @@ public class DBAdapter
 	             iValuesID,
                 iFieldID;
 
-	         String msg,
-	                sFieldName, 
+	         String sFieldName, 
 	                tsValues[];
 
 	         TypedArray taField;
@@ -848,78 +782,7 @@ public class DBAdapter
 	         }
 	         
 	         taFieldsValues.recycle(); // Important!
-	         
-//	         for(Field f: DummyContent.LANGUAGES)
-//	         {
-//	            values = new ContentValues();
-//	            values.put(KEY_TP_ID, f.iTypeID);
-//	            values.put(KEY_NM, f.sValue);
-//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-//               {
-//                  msg = String.format(Locale.getDefault(), msg_fmt, "LANGUAGES", f.iTypeID, f.sValue);
-//                  throw new RuntimeException(msg);
-//               }
-//	         }
-//	         
-//            for(Field f: DummyContent.STATUS)
-//            {
-//               values = new ContentValues();
-//               values.put(KEY_TP_ID, f.iTypeID);
-//               values.put(KEY_NM, f.sValue);
-//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-//               {
-//                  msg = String.format(Locale.getDefault(), msg_fmt, "STATUS", f.iTypeID, f.sValue);
-//                  throw new RuntimeException(msg);
-//               }
-//            }
-//
-//            for(Field f: DummyContent.RATINGS)
-//            {
-//               values = new ContentValues();
-//               values.put(KEY_TP_ID, f.iTypeID);
-//               values.put(KEY_NM, f.sValue);
-//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-//               {
-//                  msg = String.format(Locale.getDefault(), msg_fmt, "RATINGS", f.iTypeID, f.sValue);
-//                  throw new RuntimeException(msg);
-//               }
-//            }
-//
-//            for(Field f: DummyContent.FORMATS)
-//            {
-//               values = new ContentValues();
-//               values.put(KEY_TP_ID, f.iTypeID);
-//               values.put(KEY_NM, f.sValue);
-//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-//               {
-//                  msg = String.format(Locale.getDefault(), msg_fmt, "FORMATS", f.iTypeID, f.sValue);
-//                  throw new RuntimeException(msg);
-//               }
-//            }
-//            
-//            for(Field f: DummyContent.CONDITIONS)
-//            {
-//               values = new ContentValues();
-//               values.put(KEY_TP_ID, f.iTypeID);
-//               values.put(KEY_NM, f.sValue);
-//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-//               {
-//                  msg = String.format(Locale.getDefault(), msg_fmt, "CONDITIONS", f.iTypeID, f.sValue);
-//                  throw new RuntimeException(msg);
-//               }
-//            }
-//            
-//            for(Field f: DummyContent.CURRENCIES)
-//            {
-//               values = new ContentValues();
-//               values.put(KEY_TP_ID, f.iTypeID);
-//               values.put(KEY_NM, f.sValue);
-//               if(_db.insert(TABLE_FIELDS, null, values) < 0)
-//               {
-//                  msg = String.format(Locale.getDefault(), msg_fmt, "CURRENCIES", f.iTypeID, f.sValue);
-//                  throw new RuntimeException(msg);
-//               }
-//            }
+
             _db.setTransactionSuccessful();
 	      }
 	      catch(RuntimeException e)

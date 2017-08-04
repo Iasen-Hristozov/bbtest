@@ -5,50 +5,39 @@
    android:layout_width="match_parent"
    android:layout_height="wrap_content"
    android:layout_marginBottom="@dimen/fld_mrg_btm"
+   android:imeOptions="actionNext"
    android:orientation="vertical" >
 
-      <RelativeLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content" >
-
-   <com.discworld.booksbag.fields.Title
-      android:id="@+id/title"
+   <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      custom:text="@string/et_title"
-      custom:color="@color/primary" />
-         
-<!--          <TextView -->
-<!--             android:layout_width="wrap_content" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_centerVertical="true" -->
-<!--             android:text="@string/lbl_authors" -->
-<!--             android:textAppearance="?android:attr/textAppearanceMedium" -->
-<!--             android:textColor="@color/colorBlue" /> -->
+      android:layout_height="wrap_content" >
 
-         <ImageButton
-            android:id="@+id/ib_add_field"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:paddingBottom="1dp"
-            android:src="@drawable/ic_action_add_primary" />
-<!--          android:src="@android:drawable/ic_input_add" -->
-
-      </RelativeLayout>
-
-<!--       <ImageView -->
-<!--          android:layout_width="match_parent" -->
-<!--          android:layout_height="wrap_content" -->
-<!--          android:src="@drawable/list_divide" /> -->
-
-      <LinearLayout
-         android:id="@+id/ll_fields"
+      <com.discworld.booksbag.fields.Title
+         android:id="@+id/title"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:orientation="vertical" >
-      </LinearLayout>
+         android:layout_alignParentBottom="true"
+         custom:text="@string/et_title"
+         custom:color="@color/primary" />
+
+      <ImageButton
+         android:id="@+id/ib_add_field"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:background="@android:color/transparent"
+         android:paddingBottom="1dp"
+         android:src="@drawable/ic_action_add_primary" />
+      <!-- android:src="@android:drawable/ic_input_add" -->
+
+   </RelativeLayout>
+
+   <LinearLayout
+      android:id="@+id/ll_fields"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical" >
+   </LinearLayout>
+
 </LinearLayout>

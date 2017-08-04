@@ -6,27 +6,20 @@ import android.support.v7.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity
 {
-//   @Override
-//   public void onCreate(Bundle savedInstanceState) 
-//   {
-//       super.onCreate(savedInstanceState);
-//       addPreferencesFromResource(R.xml.preferences);
-//   }
-   
    @Override
    protected void onCreate(final Bundle savedInstanceState)
    {
-       super.onCreate(savedInstanceState);
-       getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
+      super.onCreate(savedInstanceState);
+      getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
    }
 
    public static class MyPreferenceFragment extends PreferenceFragment
    {
-       @Override
-       public void onCreate(final Bundle savedInstanceState)
-       {
-           super.onCreate(savedInstanceState);
-           addPreferencesFromResource(R.xml.preference_screen);
-       }
-   }   
+      @Override
+      public void onCreate(final Bundle savedInstanceState)
+      {
+         super.onCreate(savedInstanceState);
+         addPreferencesFromResource(R.xml.preference_screen);
+      }
+   }
 }

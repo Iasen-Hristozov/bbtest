@@ -56,7 +56,8 @@ public class BookListActivity extends AppCompatActivity
    
    private static final String XPR_DIR = "BooksBag",
                                PREF_ORDER_ID = "order_id",
-                               PREF_EXPAND_ALL = "pref_expand_all";
+                               PREF_EXPAND_ALL = "pref_expand_all",
+                               PREF_EXPORT_FOLDER = "pref_export_folder";
    
    private int iOrderID = DBAdapter.ORD_TTL,
                iClickedItemNdx = -1;
@@ -65,6 +66,7 @@ public class BookListActivity extends AppCompatActivity
    
    private long sel_id;
    
+   private String sExportFolder;
    private TextView tvBooksOrder, 
                     tvBooksCount;
    
@@ -275,11 +277,19 @@ public class BookListActivity extends AppCompatActivity
          public void onSharedPreferenceChanged(SharedPreferences prefs, String key) 
          {
             if(key.equalsIgnoreCase(PREF_EXPAND_ALL))
-               bExpandAll = oPreferences.getBoolean(PREF_EXPAND_ALL, false); 
+               bExpandAll = oPreferences.getBoolean(PREF_EXPAND_ALL, false);
+            if(key.equalsIgnoreCase(PREF_EXPORT_FOLDER))
+            {
+               sExportFolder = oPreferences.getString(PREF_EXPORT_FOLDER, getString(R.string.app_name));
+               new File(Environment.getExternalStorageDirectory() + File.separator + sExportFolder + File.separator).mkdirs();
+            }
+            
          }
       };
 
       oPreferences.registerOnSharedPreferenceChangeListener(listener);
+
+      new File(Environment.getExternalStorageDirectory() + File.separator + sExportFolder + File.separator).mkdirs();
       
       tvBooksOrder = (TextView) findViewById(R.id.tv_books_order);
       tvBooksCount = (TextView) findViewById(R.id.tv_books_count);
@@ -324,7 +334,11 @@ public class BookListActivity extends AppCompatActivity
       alOrderItems.add(new OrderItem(DBAdapter.ORD_WNT_PBL_TTL, getString(R.string.ord_wanted_pbl_ttl)));
       alOrderItems.add(new OrderItem(DBAdapter.ORD_WNT_PBL_AUT, getString(R.string.ord_wanted_pbl_aut)));
       alOrderItems.add(new OrderItem(DBAdapter.ORD_RD_AUT, getString(R.string.ord_read_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_RD_TTL, getString(R.string.ord_read_ttl)));
       alOrderItems.add(new OrderItem(DBAdapter.ORD_NOT_RD_AUT, getString(R.string.ord_not_read_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_NOT_RD_TTL, getString(R.string.ord_not_read_ttl)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_PBL_AUT, getString(R.string.ord_pbl_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.ORD_PBL_TTL, getString(R.string.ord_pbl_ttl)));
    }
 
    @Override
@@ -389,12 +403,12 @@ public class BookListActivity extends AppCompatActivity
 
          case R.id.action_imp_db:
             flCurrent = new File(Environment.getExternalStorageDirectory()
-                                      + "/"
-                                      + XPR_DIR);
+                                      + File.separator
+                                      + sExportFolder);
             oFileSelectorDialog = FileSelectorDialog.newInstance(flCurrent,
-                                                         FileOperation.LOAD,
-                                                         mLoadFileListener,
-                                                         mFileFilter);
+                                                                 FileOperation.LOAD,
+                                                                 mLoadFileListener,
+                                                                 mFileFilter);
             oFileSelectorDialog.show(fm, "fragment_alert");
 
             return true;
@@ -410,12 +424,16 @@ public class BookListActivity extends AppCompatActivity
                                              calendar.get(Calendar.HOUR_OF_DAY),
                                              calendar.get(Calendar.MINUTE),
                                              DBAdapter.DATABASE_NAME.substring(iExtNdx+1));
-            File flCurrent = new File(Environment.getExternalStorageDirectory() + "/" + XPR_DIR + "/" + sFileName);
+            File flCurrent = new File(Environment.getExternalStorageDirectory() 
+                                      + File.separator 
+                                      + sExportFolder 
+                                      + File.separator 
+                                      + sFileName);
             
             oFileSelectorDialog = FileSelectorDialog.newInstance(flCurrent,
-                                                         FileOperation.SAVE,
-                                                         mSaveFileListener,
-                                                         mFileFilter);
+                                                                 FileOperation.SAVE,
+                                                                 mSaveFileListener,
+                                                                 mFileFilter);
             oFileSelectorDialog.show(fm, "fragment_alert");
             return true;            
             
@@ -465,7 +483,7 @@ public class BookListActivity extends AppCompatActivity
 
    private void setupRecyclerView(@NonNull RecyclerView recyclerView, int iOrderID)
    {
-      oBooksAdapter = new BooksAdapter(this, oDbAdapter.getBooks1(iOrderID));
+      oBooksAdapter = new BooksAdapter(this, oDbAdapter.getBooks(iOrderID));
       oBooksAdapter.setClickListener(onRecyclerViewClickListener);
       oBooksAdapter.setLongClickListener(onRecyclerViewLongClickListener);
       if(bExpandAll)
@@ -485,7 +503,8 @@ public class BookListActivity extends AppCompatActivity
    private void loadPreferences()
    {
       iOrderID = oPreferences.getInt(PREF_ORDER_ID, DBAdapter.ORD_TTL);
-      bExpandAll = oPreferences.getBoolean(PREF_EXPAND_ALL, false); 
+      bExpandAll = oPreferences.getBoolean(PREF_EXPAND_ALL, false);
+      sExportFolder = oPreferences.getString(PREF_EXPORT_FOLDER, getString(R.string.app_name));
    }
    
    private void saveOrderID(int iOrderID)

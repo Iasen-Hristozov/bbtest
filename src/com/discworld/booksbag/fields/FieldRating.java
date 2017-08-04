@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.support.v7.widget.AppCompatRatingBar;
 
 public class FieldRating extends LinearLayout
 {
@@ -24,7 +24,7 @@ public class FieldRating extends LinearLayout
    
    private String contentDescription = "";
    
-   private RatingBar oRatingBar; 
+   private AppCompatRatingBar oRatingBar; 
    
    public FieldRating(Context context)
    {
@@ -73,7 +73,7 @@ public class FieldRating extends LinearLayout
       inflater.inflate(R.layout.field_rating, this, true);
       
       oTitle = (Title)this.findViewById(R.id.title);
-      oRatingBar = (RatingBar) findViewById(R.id.rating_bar);
+      oRatingBar = (AppCompatRatingBar) findViewById(R.id.rating_bar);
    }
 
    public void setTitle(String title)

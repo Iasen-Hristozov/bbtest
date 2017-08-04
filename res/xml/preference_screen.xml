@@ -4,7 +4,12 @@
             android:summary="@string/pref_summary_expand_all"
             android:title="@string/pref_title_expand_all"
             android:defaultValue="false"/>
-   
+        <EditTextPreference
+            android:key="pref_export_folder"
+            android:summary="@string/pref_summary_export_folder"
+            android:title="@string/pref_title_export_folder" 
+            android:defaultValue="@string/app_name"/>
+        
 <!--    <PreferenceCategory -->
 <!--         android:title="@string/pref_title" -->
 <!--         android:key="pref_key_storage_settings"> -->
