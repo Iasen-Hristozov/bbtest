@@ -308,7 +308,7 @@ public class FileSelectorDialog extends DialogFragment
    {
       AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
       alert.setTitle(R.string.btn_new_fld);
-      alert.setMessage(R.string.msg_new_fld);
+      alert.setMessage(" ");
       final EditText input = new EditText(mContext);
       alert.setView(input);
       alert.setPositiveButton(R.string.create, new DialogInterface.OnClickListener()
