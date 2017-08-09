@@ -12,8 +12,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       custom:text="@string/et_title"
-      custom:color="@color/primary" >
-   </com.discworld.booksbag.fields.Title>
+      custom:color="@color/primary" />
 
    <LinearLayout
       android:layout_width="match_parent"
@@ -34,7 +33,6 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_weight="1" />
-
    </LinearLayout>
 
 </LinearLayout>

@@ -77,7 +77,6 @@ public class FileSelectorDialog extends DialogFragment
    {
       FileSelectorDialog frag = new FileSelectorDialog();
 
-//      frag.mContext = getContext();
       frag.mOnHandleFileListener = onHandleFileListener;
       frag.fileFilters = fileFilters;
       frag.operation = operation;
@@ -395,57 +394,10 @@ public class FileSelectorDialog extends DialogFragment
     * @param operation
     *           Performed file operation.
     */
-   
    public File getCurrentLocation()
    {
       return mCurrentLocation;
    }
-
-   /**
-    * Constructor that creates the file selector dialog.
-    * 
-    * @param context
-    *           The current context.
-    * @param operation
-    *           LOAD - to load file / SAVE - to save file
-    * @param onHandleFileListener
-    *           Notified after pressing the save or load button.
-    * @param fileFilters
-    *           Array with filters
-    */
-
-//   public FileSelectorNew(final Context context,
-//                          final FileOperation operation,
-//                          final OnHandleFileListener onHandleFileListener,
-//                          final String[] fileFilters)
-//   {
-//      mContext = context;
-//      mOnHandleFileListener = onHandleFileListener;
-//      this.fileFilters = fileFilters;
-//      this.operation = operation;
-//
-//      final File sdCard = Environment.getExternalStorageDirectory();
-//      if(sdCard.canRead())
-//      {
-//         mCurrentLocation = sdCard;
-//      }
-//      else
-//      {
-//         mCurrentLocation = Environment.getRootDirectory();
-//      }
-//
-//      // mDialog = new Dialog(context);
-//      // mDialog.setContentView(R.layout.dialog);
-//      // // mDialog.setTitle(mCurrentLocation.getAbsolutePath());
-//      // mDialog.setTitle("aaaa");
-//
-//      mDialog = new FileManagerDialogFragment();
-//      // toolbar = (Toolbar) mDialog.findViewById(R.id.my_toolbar);
-//      // toolbar.inflateMenu(R.menu.menu_dialog);
-//      // toolbar.setTitle(mCurrentLocation.getName());
-//
-//      setNewFolderButton(operation);
-//   }
 
    /**
     * The method that fills the list with a directories contents.

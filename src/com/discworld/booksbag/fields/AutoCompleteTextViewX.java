@@ -138,7 +138,11 @@ public class AutoCompleteTextViewX extends android.support.v7.widget.AppCompatAu
       setOnFocusChangeListener(onFocusChangeListener);      
       
       addTextChangedListener(textWatcher);
-
+      
+      setSingleLine(true);
+      setMaxLines(1);
+      setLines(1);
+      
       // NOTE: The most important.
       setOnTouchListener(onTouchListener);      
    }

@@ -17,10 +17,9 @@
 
       <Button
          android:id="@+id/action_select_type"
-         style="?android:attr/spinnerStyle"
+         style="@style/Widget.AppCompat.Spinner"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:paddingLeft="14dip"
          android:textAppearance="?android:attr/textAppearanceMedium"
          />
 </LinearLayout>

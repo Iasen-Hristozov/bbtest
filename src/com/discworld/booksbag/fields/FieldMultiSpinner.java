@@ -146,7 +146,7 @@ public class FieldMultiSpinner extends LinearLayout
                         {
                            public void onClick(DialogInterface dialog, int id)
                            {
-                              String sNewValue = etNewValue.getText().toString();
+                              String sNewValue = etNewValue.getText().toString().trim();
                               Item item = new Item(sNewValue);
                               item.setId(alItems.size());
                               item.setSelected(true);

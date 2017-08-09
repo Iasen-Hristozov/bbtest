@@ -12,15 +12,14 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       custom:text="@string/et_title"
-      custom:color="@color/primary" >
-   </com.discworld.booksbag.fields.Title>
+      custom:color="@color/primary" />
 
-      <Button
-         android:id="@+id/action_select_type"
-         style="?android:attr/spinnerStyle"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:paddingLeft="0dip"
-         android:textAppearance="?android:attr/textAppearanceMedium"
-         />
+   <Button
+      android:id="@+id/action_select_type"
+      style="@style/Widget.AppCompat.Spinner"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="0dip"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </LinearLayout>
