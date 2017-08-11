@@ -48,14 +48,10 @@
       <item>@array/currencies</item>
    </array>
    
-   <array name="fields1">
-      <item>@array/type_id</item>
-      <item>@array/type_arrays</item>
-   </array>   
-   <array name="field_types">
-      <item>@array/type_id</item>
-      <item>@array/type_arrays</item>
-   </array>
+<!--    <array name="field_types"> -->
+<!--       <item>@array/type_id</item> -->
+<!--       <item>@array/type_arrays</item> -->
+<!--    </array> -->
    <integer-array name="field_language">
       <item name="id">4</item>
       <item name="values">@array/languages</item>

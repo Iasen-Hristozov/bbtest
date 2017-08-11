@@ -54,8 +54,7 @@ public class BookListActivity extends AppCompatActivity
    public final static int SHOW_EDIT_BOOK = 101,
                            SHOW_EDIT_BOOK_COPY = 102;
    
-   private static final String XPR_DIR = "BooksBag",
-                               PREF_ORDER_ID = "order_id",
+   private static final String PREF_ORDER_ID = "order_id",
                                PREF_EXPAND_ALL = "pref_expand_all",
                                PREF_EXPORT_FOLDER = "pref_export_folder";
    
@@ -80,6 +79,30 @@ public class BookListActivity extends AppCompatActivity
 
    private View vSelected = null;
    
+   final String[] mFileFilter = { "*.*", ".db" };
+
+   private RecyclerView recyclerView;
+
+   private ActionMode mActionMode;
+
+   FragmentManager fm = getSupportFragmentManager();
+
+   File flCurrent;
+
+   FileSelectorDialog oFileSelectorDialog;
+
+   /**
+    * Whether or not the activity is in two-pane mode, i.e. running on a tablet
+    * device.
+    */
+   private boolean mTwoPane;
+
+   /**
+    * Whether or not the activity is in two-pane mode, i.e. running on a tablet
+    * device.
+    */
+   private boolean bUpdate = true;
+
    private View.OnClickListener onRecyclerViewClickListener = new View.OnClickListener()
    {
       @Override
@@ -219,7 +242,6 @@ public class BookListActivity extends AppCompatActivity
       }
    };
    
-   
    private OnHandleFileListener mLoadFileListener = new OnHandleFileListener()
    {
       @Override
@@ -245,25 +267,6 @@ public class BookListActivity extends AppCompatActivity
       }
    };      
    
-   final String[] mFileFilter = { "*.*", ".db" };
-   
-   private RecyclerView recyclerView;
-   
-   private ActionMode mActionMode;
-   
-   FragmentManager fm = getSupportFragmentManager();
-   
-   File flCurrent;
-   
-   FileSelectorDialog oFileSelectorDialog;
-
-   /**
-    * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-    * device.
-    */
-   private boolean mTwoPane,
-                   bUpdate = true;
-
    @Override
    protected void onCreate(Bundle savedInstanceState)
    {
@@ -271,8 +274,8 @@ public class BookListActivity extends AppCompatActivity
       setContentView(R.layout.activity_book_list);
   
       oPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-      loadPreferences();
-      SharedPreferences.OnSharedPreferenceChangeListener listener  = new SharedPreferences.OnSharedPreferenceChangeListener() 
+
+      oPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() 
       {
          public void onSharedPreferenceChanged(SharedPreferences prefs, String key) 
          {
@@ -285,18 +288,18 @@ public class BookListActivity extends AppCompatActivity
             }
             
          }
-      };
+      });
 
-      oPreferences.registerOnSharedPreferenceChangeListener(listener);
-
-      new File(Environment.getExternalStorageDirectory() + File.separator + sExportFolder + File.separator).mkdirs();
+      loadPreferences();
       
       tvBooksOrder = (TextView) findViewById(R.id.tv_books_order);
       tvBooksCount = (TextView) findViewById(R.id.tv_books_count);
+
+      FileUtils.verifyStoragePermissions(this);
       
       oDbAdapter = new DBAdapter(this);
-      
-      FileUtils.verifyStoragePermissions(this);
+
+      new File(Environment.getExternalStorageDirectory() + File.separator + sExportFolder + File.separator).mkdirs();
       
       Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
       setSupportActionBar(toolbar);

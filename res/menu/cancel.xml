@@ -18,7 +18,7 @@
       xmlns:android="http://schemas.android.com/apk/res-auto">
     <item android2:id="@+id/cancel"
           android2:title="@string/cancel"
-          android:icon="@drawable/ic_action_cancel"
+          android:icon="@drawable/ic_action_cancel_light"
           android:showAsAction="never"
           />
 </menu>

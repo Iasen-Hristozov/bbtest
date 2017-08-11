@@ -116,7 +116,6 @@ public class BooksAdapter extends ExpandableRecyclerAdapter<BooksAdapter.BookLis
       }
       
       @SuppressLint("NewApi")
-      
       @Override
       public void setExpanded(boolean expanded)
       {

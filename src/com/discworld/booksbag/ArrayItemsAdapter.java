@@ -14,19 +14,19 @@ import com.discworld.booksbag.fields.FieldMultiText.Item;
 
 public class ArrayItemsAdapter extends ArrayAdapter<Item> 
 {
-   private final String MY_DEBUG_TAG = "ArrayFieldsAdapter";
-   private ArrayList<? extends Item> items;
+//   private final String MY_DEBUG_TAG = "ArrayFieldsAdapter";
+//   private ArrayList<? extends Item> items;
    private ArrayList<Item> itemsAll;
    private ArrayList<Item> suggestions;
-   private int viewResourceId;
+//   private int viewResourceId;
 
-   public ArrayItemsAdapter(Context context, int viewResourceId, ArrayList<Item> alDictionaryFields1) 
+   public ArrayItemsAdapter(Context context, int viewResourceId, ArrayList<Item> alDictionaryFields) 
    {
-       super(context, viewResourceId, alDictionaryFields1);
-       this.items = alDictionaryFields1;
-       this.itemsAll = (ArrayList<Item>) alDictionaryFields1.clone();
+       super(context, viewResourceId, alDictionaryFields);
+//       this.items = alDictionaryFields1;
+       this.itemsAll = (ArrayList<Item>) alDictionaryFields.clone();
        this.suggestions = new ArrayList<Item>();
-       this.viewResourceId = viewResourceId;
+//       this.viewResourceId = viewResourceId;
    }
 
    public View getView(int position, View convertView, ViewGroup parent) 

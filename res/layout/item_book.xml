@@ -15,7 +15,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:layout_marginLeft="@dimen/standard_padding"
-      android:src="@drawable/ic_book_accent" />
+      android:src="@drawable/ic_book" />
 
    <TextView
       android:id="@+id/tv_item"

@@ -8,7 +8,6 @@
    <string name="action_exp_all">Expand all</string>
    <string name="action_clp_all">Collapse all</string>
    <string name="action_delete">Delete</string>
-   <string name="action_search">Search</string>
    <string name="action_duplicate">Copy</string>
    <string name="action_sort">Sort</string>
    <string name="prf_xpr_db_scs">Data successfully exported</string>
@@ -18,8 +17,6 @@
    <string name="et_title">Title</string>
    <!-- <string name="lbl_authors">Authors</string> -->
    <string name="lbl_author">Author</string>
-   <string name="lbl_description">Description</string>
-   <string name="lbl_category">Genre</string>
    <string name="fld_title">Title</string>
    <string name="fld_author">Author|Authors</string>
    <string name="fld_descrition">Description</string>
@@ -62,11 +59,9 @@
    <string name="ord_not_read_ttl">Unread, sorted by title</string>
    <string name="ord_pbl_aut">Publishers, sorted by author</string>
    <string name="ord_pbl_ttl">Publishers, sorted by title</string>
-   <string name="lbl_books">books</string>
    <string name="book_0">No books</string>
    <string name="book">1 book</string>
    <string name="books">%1$d books</string>
-   <string name="pref_title">Settings</string>
    <string name="pref_title_expand_all">Expand all</string>
    <string name="pref_summary_expand_all">Expand all on data load</string>
    <string name="pref_title_export_folder">Export folder</string>
@@ -108,4 +103,5 @@
    <string name="crn_eur">EUR</string>
    <string name="crn_rbl">RBL</string>
    <string name="err_emp_ttl">The title is required</string>
+   <string name="smp_fl_nm">file name</string>
 </resources>

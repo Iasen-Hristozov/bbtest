@@ -6,7 +6,7 @@ import java.util.Collections;
 
 import com.discworld.booksbag.R;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.support.v7.widget.AppCompatEditText;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -105,7 +106,7 @@ public class FileSelectorDialog extends DialogFragment
    public Dialog onCreateDialog(Bundle savedInstanceState)
    {
       // Use the Builder class for convenient dialog construction
-      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
       mContext = getContext();
 
       LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -306,10 +307,10 @@ public class FileSelectorDialog extends DialogFragment
    /** Opens a dialog for creating a new folder. */
    private void openNewFolderDialog()
    {
-      AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+      AlertDialog.Builder alert = new AlertDialog.Builder(mContext, R.style.AppCompatAlertDialogStyle);
       alert.setTitle(R.string.btn_new_fld);
       alert.setMessage(" ");
-      final EditText input = new EditText(mContext);
+      final AppCompatEditText input = new AppCompatEditText(mContext);
       alert.setView(input);
       alert.setPositiveButton(R.string.create, new DialogInterface.OnClickListener()
       {

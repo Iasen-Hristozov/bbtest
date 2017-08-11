@@ -10,6 +10,7 @@ import com.discworld.booksbag.dto.Date;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+//import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -32,7 +33,7 @@ public class FieldDate extends LinearLayout
    private String hint = "";
    private String contentDescription = "";
    private OnUpdateListener onUpdateListener = null;
-   
+   DatePickerDialog datePickerDialog ;
    public FieldDate(Context context)
    {
       super(context);
@@ -77,13 +78,14 @@ public class FieldDate extends LinearLayout
       btnSpinner = (Button) this.findViewById(R.id.action_select_type);
       
       final Activity activity = (Activity) context;
+      
       btnSpinner.setOnClickListener(new OnClickListener() 
       {
          @Override
          public void onClick(View v) 
          {
             DialogFragment newFragment = new DatePickerFragment();
-            newFragment.show(activity.getFragmentManager(), "datePicker");         
+            newFragment.show(activity.getFragmentManager(), "datePicker");
          }
       });
    }
@@ -152,6 +154,7 @@ public class FieldDate extends LinearLayout
 
    private class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
    {
+      
       @Override
       public Dialog onCreateDialog(Bundle savedInstanceState)
       {
@@ -178,6 +181,49 @@ public class FieldDate extends LinearLayout
       }
    }
 
+//   private class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
+//   {
+//      
+//      @Override
+//      public Dialog onCreateDialog(Bundle savedInstanceState)
+//      {
+//         if(date.toInt() == 0)
+//         {
+//            // Use the current date as the default date in the picker
+//            final Calendar c = Calendar.getInstance();
+//            date = new Date(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH) + 1, c.get(Calendar.YEAR));
+//         }
+//
+//         // Create a new instance of DatePickerDialog and return it
+////         return new DatePickerDialog(getActivity(), this, date.iYear, date.iMonth - 1, date.iDay);
+//         
+//         datePickerDialog = DatePickerDialog.newInstance(FieldDate.this, date.iYear, date.iMonth - 1, date.iDay);
+//
+//         datePickerDialog.setThemeDark(false);
+//
+//         datePickerDialog.showYearPickerFirst(false);
+//
+//         datePickerDialog.setAccentColor(Color.parseColor("#009688"));
+//
+//         datePickerDialog.setTitle("Select Date From DatePickerDialog");
+//
+//         datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
+//         
+//         return datePickerDialog.getDialog(); 
+//      }
+//
+//      @Override
+//      public void onDateSet(DatePickerDialog view,
+//                            int year,
+//                            int monthOfYear,
+//                            int dayOfMonth)
+//      {
+//         // TODO Auto-generated method stub
+//         
+//      }
+//   }
+   
+   
    public void setUpdateListener(OnUpdateListener onUpdateListener)
    {
       this.onUpdateListener = onUpdateListener;
@@ -188,4 +234,5 @@ public class FieldDate extends LinearLayout
       void onUpdate(Date date);
       void onUpdate(FieldDate oFieldDate);
    }
+
 }
