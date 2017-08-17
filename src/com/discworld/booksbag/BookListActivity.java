@@ -58,7 +58,7 @@ public class BookListActivity extends AppCompatActivity
                                PREF_EXPAND_ALL = "pref_expand_all",
                                PREF_EXPORT_FOLDER = "pref_export_folder";
    
-   private int iOrderID = DBAdapter.ORD_TTL,
+   private int iOrderID = DBAdapter.SRT_TTL,
                iClickedItemNdx = -1;
    
    private boolean bExpandAll = false;
@@ -332,16 +332,18 @@ public class BookListActivity extends AppCompatActivity
          mTwoPane = true;
       }
       
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_TTL, getString(R.string.ord_title)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_AUT, getString(R.string.ord_author)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_WNT_PBL_TTL, getString(R.string.ord_wanted_pbl_ttl)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_WNT_PBL_AUT, getString(R.string.ord_wanted_pbl_aut)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_RD_AUT, getString(R.string.ord_read_aut)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_RD_TTL, getString(R.string.ord_read_ttl)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_NOT_RD_AUT, getString(R.string.ord_not_read_aut)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_NOT_RD_TTL, getString(R.string.ord_not_read_ttl)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_PBL_AUT, getString(R.string.ord_pbl_aut)));
-      alOrderItems.add(new OrderItem(DBAdapter.ORD_PBL_TTL, getString(R.string.ord_pbl_ttl)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_TTL, getString(R.string.srt_title)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_AUT, getString(R.string.srt_author)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_WNT_PBL_TTL, getString(R.string.srt_wanted_pbl_ttl)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_WNT_PBL_AUT, getString(R.string.srt_wanted_pbl_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_RD_AUT, getString(R.string.srt_read_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_RD_TTL, getString(R.string.srt_read_ttl)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_NOT_RD_AUT, getString(R.string.srt_not_read_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_NOT_RD_TTL, getString(R.string.srt_not_read_ttl)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_PBL_AUT, getString(R.string.srt_pbl_aut)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_PBL_TTL, getString(R.string.srt_pbl_ttl)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_LND_TTL, getString(R.string.srt_lnd_ttl)));
+      alOrderItems.add(new OrderItem(DBAdapter.SRT_LND_BRW, getString(R.string.srt_lnd_brw)));
    }
 
    @Override
@@ -505,7 +507,7 @@ public class BookListActivity extends AppCompatActivity
    
    private void loadPreferences()
    {
-      iOrderID = oPreferences.getInt(PREF_ORDER_ID, DBAdapter.ORD_TTL);
+      iOrderID = oPreferences.getInt(PREF_ORDER_ID, DBAdapter.SRT_TTL);
       bExpandAll = oPreferences.getBoolean(PREF_EXPAND_ALL, false);
       sExportFolder = oPreferences.getString(PREF_EXPORT_FOLDER, getString(R.string.app_name));
    }

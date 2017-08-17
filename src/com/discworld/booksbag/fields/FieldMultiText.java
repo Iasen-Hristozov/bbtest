@@ -133,7 +133,7 @@ public class FieldMultiText extends LinearLayout
          public void onUpdate(EditText et)
          {
 //            onAddRemoveFieldListener.onFieldUpdated(et);
-            onAddRemoveFieldListener.onFieldUpdated(vRow, et.getText().toString());
+            onAddRemoveFieldListener.onFieldUpdated(vRow, et.getText().toString().trim());
          }
       });
       
@@ -141,6 +141,8 @@ public class FieldMultiText extends LinearLayout
 
       if(llFields.getChildCount() == 1)
          vRow.findViewById(R.id.ib_remove_field).setVisibility(View.INVISIBLE);
+      else
+         etValue.requestFocus();
       
       return vRow;
    }

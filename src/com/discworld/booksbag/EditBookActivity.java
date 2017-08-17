@@ -155,6 +155,7 @@ public class EditBookActivity extends AppCompatActivity
          {
 //            ((View) menuItem.getActionView().getTag()).setVisibility(View.VISIBLE);
             hmHiddenFileds.get(menuItem).setVisibility(View.VISIBLE);
+            hmHiddenFileds.get(menuItem).requestFocus();
             pmHiddenFields.getMenu().removeItem(menuItem.getItemId());
 
             return false;
@@ -345,7 +346,7 @@ public class EditBookActivity extends AppCompatActivity
          public void onUpdate(EditText et)
          {
             Class<?> c = cValue.getGenericType();
-            T t = null;
+//            T t = null;
             
             Class<?> clazz;
             Object object;
@@ -353,7 +354,7 @@ public class EditBookActivity extends AppCompatActivity
             {
                clazz = Class.forName(c.getName());
                Constructor<?> ctor = clazz.getConstructor(String.class);
-               object = ctor.newInstance(et.getText().toString());
+               object = ctor.newInstance(et.getText().toString().trim());
 
             } catch(ClassNotFoundException 
                     | NoSuchMethodException
@@ -369,17 +370,17 @@ public class EditBookActivity extends AppCompatActivity
             
             cValue.value = (T) object;
             
-            if(t instanceof Integer)
-            {
-               t = (T) Integer.valueOf(et.getText().toString());
-               cValue.value = t;
-            }
-            else if(t instanceof String)
-            {
-               t = (T) et.getText().toString();
-               cValue.value = t;
-               
-            }
+//            if(t instanceof Integer)
+//            {
+//               t = (T) Integer.valueOf(et.getText().toString());
+//               cValue.value = t;
+//            }
+//            else if(t instanceof String)
+//            {
+//               t = (T) et.getText().toString().trim();
+//               cValue.value = t;
+//               
+//            }
          }
       });
       rootView.addView(oField);
