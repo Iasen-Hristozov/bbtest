@@ -3,17 +3,14 @@ package com.discworld.booksbag.fields;
 import java.util.ArrayList;
 
 import com.discworld.booksbag.R;
-import com.discworld.booksbag.R.id;
-import com.discworld.booksbag.R.layout;
-import com.discworld.booksbag.R.string;
-import com.discworld.booksbag.R.styleable;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.util.AttributeSet;
@@ -24,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 public class FieldMultiSpinner extends LinearLayout
@@ -135,45 +131,44 @@ public class FieldMultiSpinner extends LinearLayout
                onUpdateListener.onUpdate(item);
 
                popupMenu.show();
-            } else
+            } 
+            else
             {
-               AlertDialog.Builder builder = new AlertDialog.Builder(context);
+               AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle);
                builder.setTitle(R.string.add_new);
-               final EditText etNewValue = new EditText(context);
+               final AppCompatEditText etNewValue = new AppCompatEditText(context);
                builder.setView(etNewValue);
-               builder.setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener()
-                        {
-                           public void onClick(DialogInterface dialog, int id)
-                           {
-                              String sNewValue = etNewValue.getText().toString().trim();
-                              Item item = new Item(sNewValue);
-                              item.setId(alItems.size());
-                              item.setSelected(true);
-                              alItems.add(item);
-                              setButtonText((Button) anchorView, alItems);
-                              onUpdateListener.onUpdate(item);
-                              popupMenu.dismiss();
-                              initPopupMenu(popupMenu, alItems);
+               builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+               {
+                  public void onClick(DialogInterface dialog, int id)
+                  {
+                     String sNewValue = etNewValue.getText().toString().trim();
+                     Item item = new Item(sNewValue);
+                     item.setId(alItems.size());
+                     item.setSelected(true);
+                     alItems.add(item);
+                     setButtonText((Button) anchorView, alItems);
+                     onUpdateListener.onUpdate(item);
+                     popupMenu.dismiss();
+                     initPopupMenu(popupMenu, alItems);
+                     
+                     InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                     dialog.cancel();
+                     popupMenu.show();
+                  }
+               });
 
-                              InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                              imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                              dialog.cancel();
-                              popupMenu.show();
-                           }
-                        });
-
-               builder.setNegativeButton(android.R.string.cancel,
-                        new DialogInterface.OnClickListener()
-                        {
-                           public void onClick(DialogInterface dialog, int id)
-                           {
-                              InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                              imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                              dialog.cancel();
-                              popupMenu.show();
-                           }
-                        });
+               builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+               {
+                  public void onClick(DialogInterface dialog, int id)
+                  {
+                     InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                     dialog.cancel();
+                     popupMenu.show();
+                  }
+               });
 
                builder.show();
 
