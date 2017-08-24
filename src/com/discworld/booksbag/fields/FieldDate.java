@@ -3,9 +3,6 @@ package com.discworld.booksbag.fields;
 import java.util.Calendar;
 
 import com.discworld.booksbag.R;
-import com.discworld.booksbag.R.id;
-import com.discworld.booksbag.R.layout;
-import com.discworld.booksbag.R.styleable;
 import com.discworld.booksbag.dto.Date;
 
 import android.app.Activity;
@@ -73,11 +70,11 @@ public class FieldDate extends LinearLayout
    {
       LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       inflater.inflate(R.layout.field_date, this, true);
+
+      final Activity activity = (Activity) context;
       
       oTitle = (Title)this.findViewById(R.id.title);
       btnSpinner = (Button) this.findViewById(R.id.action_select_type);
-      
-      final Activity activity = (Activity) context;
       
       btnSpinner.setOnClickListener(new OnClickListener() 
       {
