@@ -1,10 +1,10 @@
 package com.discworld.booksbag.fields;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.AttributeSet;
 import android.view.Gravity;

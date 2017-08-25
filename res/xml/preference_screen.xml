@@ -1,17 +1,19 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-        <CheckBoxPreference
+<android.support.v7.preference.PreferenceScreen 
+    xmlns:android="http://schemas.android.com/apk/res/android">
+        <android.support.v7.preference.CheckBoxPreference
             android:key="pref_expand_all"
             android:summary="@string/pref_summary_expand_all"
             android:title="@string/pref_title_expand_all"
             android:defaultValue="false"/>
-        <EditTextPreference
+        <android.support.v7.preference.EditTextPreference
             android:key="pref_export_folder"
             android:summary="@string/pref_summary_export_folder"
             android:title="@string/pref_title_export_folder" 
-            android:defaultValue="@string/app_name"/>
+            android:defaultValue="@string/app_name"
+            android:dialogLayout="@layout/preference_dialog_edittext_fix"/>
         
 <!--    <PreferenceCategory -->
 <!--         android:title="@string/pref_title" -->
 <!--         android:key="pref_key_storage_settings"> -->
 <!--     </PreferenceCategory> -->
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>
