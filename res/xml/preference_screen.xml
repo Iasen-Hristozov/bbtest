@@ -4,7 +4,8 @@
             android:key="pref_expand_all"
             android:summary="@string/pref_summary_expand_all"
             android:title="@string/pref_title_expand_all"
-            android:defaultValue="false"/>
+            android:defaultValue="false"
+            />
         <android.support.v7.preference.EditTextPreference
             android:key="pref_export_folder"
             android:summary="@string/pref_summary_export_folder"
