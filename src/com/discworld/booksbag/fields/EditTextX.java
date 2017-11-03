@@ -20,7 +20,7 @@ public class EditTextX extends android.support.v7.widget.AppCompatEditText
 {
    private Context oContext;
    
-   private OnUpdateListener onUpdateListener = null;
+   protected OnUpdateListener onUpdateListener = null;
 
    private Callback oCallback = null;
    
@@ -34,12 +34,14 @@ public class EditTextX extends android.support.v7.widget.AppCompatEditText
 
             if(onUpdateListener != null)
                onUpdateListener.onUpdate((EditText) v);
-            
-            InputMethodManager inputManager = (InputMethodManager) oContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.toggleSoftInput(0, 0);
+            if(actionId == EditorInfo.IME_ACTION_DONE)
+            {
+               InputMethodManager inputManager = (InputMethodManager) oContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+               inputManager.toggleSoftInput(0, 0);
+            }
             
             v.clearFocus();
-            return true; 
+            return false; // New
          }
          return false;      
       }
@@ -97,8 +99,10 @@ public class EditTextX extends android.support.v7.widget.AppCompatEditText
                    if (oCallback != null) oCallback.beforeClear(EditTextX.this);
                    setText("");
                    requestFocus();
+                   if(onUpdateListener != null)
+                      onUpdateListener.onUpdate((EditText) v);                   
                    if (oCallback != null) oCallback.afterClear(EditTextX.this);
-                   return true;
+                   return false; // New
                }
            }
            return false;
