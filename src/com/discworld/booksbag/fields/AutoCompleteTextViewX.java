@@ -13,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -35,12 +34,13 @@ public class AutoCompleteTextViewX extends android.support.v7.widget.AppCompatAu
 
             if(onUpdateListener != null)
                onUpdateListener.onUpdate((EditText) v);
-            
-            InputMethodManager inputManager = (InputMethodManager) oContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.toggleSoftInput(0, 0);
-            
+            if(actionId == EditorInfo.IME_ACTION_DONE)
+            {
+               InputMethodManager inputManager = (InputMethodManager) oContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+               inputManager.toggleSoftInput(0, 0);
+            }
             v.clearFocus();
-            return true; 
+            return false; 
          }
          return false;      
       }
@@ -99,7 +99,7 @@ public class AutoCompleteTextViewX extends android.support.v7.widget.AppCompatAu
                    setText("");
                    requestFocus();
                    if (oCallback != null) oCallback.afterClear(AutoCompleteTextViewX.this);
-                   return true;
+                   return false;
                }
            }
            return false;
