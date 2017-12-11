@@ -1,4 +1,4 @@
-package com.discworld.booksbag;
+package org.d1scw0rld.bookbag;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.discworld.booksbag.dto.Field;
+import org.d1scw0rld.bookbag.dto.Field;
 
 public class ArrayFieldsAdapter extends ArrayAdapter<Field> 
 {
